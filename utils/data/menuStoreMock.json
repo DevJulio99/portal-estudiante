@@ -1,0 +1,20 @@
+{
+    "menuNav": false,
+    "menuProfile": false,
+    "menuInfo": false,
+    "mainMenuData": {
+      "data": null,
+      "pending": false,
+      "error": null
+    },
+    "headerMenuData": {
+      "data": null,
+      "pending": false,
+      "error": null
+    },
+    "footerMenuData": {
+      "data": null,
+      "pending": false,
+      "error": null
+    }
+}

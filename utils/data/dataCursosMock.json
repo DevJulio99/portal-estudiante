@@ -1,0 +1,110 @@
+[
+    {
+        "modalidad": "Virtual",
+        "codCurso": "INVE1578A",
+        "descCurso": "TALLER DE TESIS 1",
+        "periodo": "224413",
+        "salon": "INVE1578A",
+        "seccion": "22441322625",
+        "docente": [
+            {
+                "nombresDocentes": "HANIEL JOSUE TORRES JOAQUIN",
+                "apellidoPaternoDocente": "",
+                "apellidoMaternoDocente": "",
+                "emailDocente": "haniel.torres@upn.pe",
+                "descCategoriaDocente": "Titular",
+                "codUsuarioDocente": "",
+                "codCategoriaDocente": ""
+            }
+        ],
+        "ciclo": "9",
+        "creditos": "8",
+        "cantidadVeces": "1",
+        "inasistencias": "0",
+        "statusCurso": "Iniciado",
+        "orden": 1,
+        "notaFinal": 0,
+        "tieneHorario": false
+    },
+    {
+        "modalidad": "Virtual",
+        "codCurso": "INVE1455A",
+        "descCurso": "PRÁCTICAS PREPROFESIONALES",
+        "periodo": "224413",
+        "salon": "INVE1455A",
+        "seccion": "22441323661",
+        "docente": [
+            {
+                "nombresDocentes": "JOSE MIGUEL OTAZU MEJIA",
+                "apellidoPaternoDocente": "",
+                "apellidoMaternoDocente": "",
+                "emailDocente": "jose.otazu@upn.pe",
+                "descCategoriaDocente": "Titular",
+                "codUsuarioDocente": "",
+                "codCategoriaDocente": ""
+            }
+        ],
+        "ciclo": "8",
+        "creditos": "8",
+        "cantidadVeces": "1",
+        "inasistencias": "0",
+        "statusCurso": "Iniciado",
+        "orden": 1,
+        "notaFinal": 0,
+        "tieneHorario": false
+    },
+    {
+        "modalidad": "Presencial",
+        "codCurso": "ICIV1408A",
+        "descCurso": "PAVIMENTOS",
+        "periodo": "224413",
+        "salon": "ICIV1408A",
+        "seccion": "22441320554",
+        "docente": [
+            {
+                "nombresDocentes": "HENRY WILDER SANTIAGO FLORES",
+                "apellidoPaternoDocente": "",
+                "apellidoMaternoDocente": "",
+                "emailDocente": "henry.santiago@upn.edu.pe",
+                "descCategoriaDocente": "Titular",
+                "codUsuarioDocente": "",
+                "codCategoriaDocente": ""
+            }
+        ],
+        "ciclo": "7",
+        "creditos": "3",
+        "cantidadVeces": "1",
+        "inasistencias": "0",
+        "statusCurso": "Retirado",
+        "orden": 3,
+        "notaFinal": 0,
+        "tieneHorario": true
+    },
+    {
+        "modalidad": "Remoto",
+        "codCurso": "CONS1524A",
+        "descCurso": "PRODUC. Y CALIDAD DE OBRAS",
+        "periodo": "224413",
+        "salon": "CONS1524A",
+        "seccion": "22441320634",
+        "docente": [
+            {
+                "nombresDocentes": "WILDER ALEXANDER CALIXTRO CALIXTRO",
+                "apellidoPaternoDocente": "",
+                "apellidoMaternoDocente": "",
+                "emailDocente": "wilder.calixtro@upn.edu.pe",
+                "descCategoriaDocente": "Titular",
+                "codUsuarioDocente": "",
+                "codCategoriaDocente": ""
+            }
+        ],
+        "ciclo": "8",
+        "creditos": "2",
+        "cantidadVeces": "1",
+        "inasistencias": "3",
+        "statusCurso": "Finalizado",
+        "orden": 3,
+        "notaFinal": 0,
+        "tieneHorario": true
+    }
+]

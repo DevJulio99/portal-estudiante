@@ -1,0 +1,4 @@
+<template>
+    <MenuHeader />
+    <MenuMainNav />
+</template>

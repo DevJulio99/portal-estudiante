@@ -1,0 +1,181 @@
+[
+    {
+        "id": 3,
+        "etiqueta": "inicio",
+        "nombre": "Inicio",
+        "url": "/inicio",
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/b03d4f93-e769-4d93-af8f-c28b5addd380",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": true,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 4,
+        "etiqueta": "estudios",
+        "nombre": "Mis estudios",
+        "url": null,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/9ef8c2ca-005b-44c7-90f3-e5d74effd0fc",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [
+            {
+                "etiqueta": "notas",
+                "nombre": "Cursos y notas",
+                "url": "/notas",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "horarios",
+                "nombre": "Horario",
+                "url": "/horario",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "contenido",
+                "nombre": "Contenido",
+                "url": null,
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "calendario",
+                "nombre": "Calendario",
+                "url": null,
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            }
+        ],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 5,
+        "etiqueta": "pagos",
+        "nombre": "Pagos",
+        "url": null,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/cc5ddd86-c01b-4de6-9c63-3d417958a0ce",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [
+            {
+                "etiqueta": "obligaciones-por-pagar",
+                "nombre": "Obligaciones por pagar",
+                "url": "obligaciones-por-pagar",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "obligaciones-pagadas",
+                "nombre": "Obligaciones pagadas",
+                "url": null,
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            }
+        ],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 6,
+        "etiqueta": "solicitudes",
+        "nombre": "Solicitudes",
+        "url": null,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/2fea34d9-0c2b-4f9f-ae1b-3dad6e75c133",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 12,
+        "etiqueta": "solicitudes",
+        "nombre": "Solicitudes",
+        "url": null,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/2fea34d9-0c2b-4f9f-ae1b-3dad6e75c133",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [
+            {
+                "etiqueta": "consolidados_de_matricula",
+                "nombre": "Consolidado de Matrícula",
+                "url": "/consolidado",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "carta_de_presentacion",
+                "nombre": "Solicitud de carta de presentación",
+                "url": "/carta-de-presentacion",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "documentos_virtuales",
+                "nombre": "Documentos virtuales",
+                "url": "https://solicitudes.upn.edu.pe",
+                "abrir_nueva_pagina": true,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "otras_solicitudes",
+                "nombre": "Otras solicitudes",
+                "url": "https://otrassolicitudes.upn.edu.pe",
+                "abrir_nueva_pagina": true,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            }
+        ],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 9,
+        "etiqueta": "documentos",
+        "nombre": "Documentos",
+        "url": "/documentos",
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/6b982112-c3d9-4b8f-874a-3fa993601ce3",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 7,
+        "etiqueta": "servicios",
+        "nombre": "Mis servicios",
+        "url": null,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/d361e9c2-54ca-409a-96da-c3b4001732c8",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 14,
+        "etiqueta": "evento",
+        "nombre": "evento",
+        "url": "/eventos",
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/b51cf8b5-2881-4aa8-8676-9b8cfc837c9f",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    }
+]

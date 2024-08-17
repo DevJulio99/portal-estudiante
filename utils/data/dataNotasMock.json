@@ -1,0 +1,46 @@
+{
+    "notas": [
+        {
+            "codTipoPrueba": "T1",
+            "desTipoPrueba": "TRABAJO 1",
+            "numPrueba": "",
+            "pesoPonderado": "30%",
+            "nota": "18"
+        },
+        {
+            "codTipoPrueba": "T2",
+            "desTipoPrueba": "TRABAJO 2",
+            "numPrueba": "",
+            "pesoPonderado": "30%",
+            "nota": "19"
+        },
+        {
+            "codTipoPrueba": "EF",
+            "desTipoPrueba": "EXAMEN FINAL",
+            "numPrueba": "",
+            "pesoPonderado": "40%",
+            "nota": "19"
+        },
+        {
+            "codTipoPrueba": "PF",
+            "desTipoPrueba": "PROMEDIO FINAL",
+            "numPrueba": "",
+            "pesoPonderado": "100%",
+            "nota": "19"
+        },
+        {
+            "codTipoPrueba": "RE",
+            "desTipoPrueba": "SUSTITUTORIO",
+            "numPrueba": "",
+            "pesoPonderado": "",
+            "nota": "00"
+        }
+    ],
+    "inasistencias": 0,
+    "codTipoPruebaFinal": null,
+    "desTipoPruebaFinal": null,
+    "numPruebaFinal": null,
+    "pesoPonderadoFinal": null,
+    "notaFinal": 0.0,
+    "dscFormula": ""
+}

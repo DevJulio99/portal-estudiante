@@ -1,0 +1,103 @@
+{
+    "faltasPermitidas": "-",
+    "cantidadFaltas": "4",
+    "status": "Habilitado",
+    "inasistencias": [
+        {
+            "dia": "25/05/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "F"
+        },
+        {
+            "dia": "25/05/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "F"
+        },
+        {
+            "dia": "01/06/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "A"
+        },
+        {
+            "dia": "01/06/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "A"
+        },
+        {
+            "dia": "08/06/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "A"
+        },
+        {
+            "dia": "08/06/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "F"
+        },
+        {
+            "dia": "15/06/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "T"
+        },
+        {
+            "dia": "15/06/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "T"
+        },
+        {
+            "dia": "22/06/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "A"
+        },
+        {
+            "dia": "22/06/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "A"
+        },
+        {
+            "dia": "25/06/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "A"
+        },
+        {
+            "dia": "25/06/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "A"
+        },
+        {
+            "dia": "06/07/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "A"
+        },
+        {
+            "dia": "06/07/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "A"
+        },
+        {
+            "dia": "13/07/2024",
+            "inicio": "02:30 PM",
+            "fin": "04:00 PM",
+            "status": "A"
+        },
+        {
+            "dia": "13/07/2024",
+            "inicio": "04:10 PM",
+            "fin": "07:20 PM",
+            "status": "A"
+        }
+    ]
+}

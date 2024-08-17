@@ -1,0 +1,67 @@
+[
+    {
+        "horario": {
+            "fechaInicio": null,
+            "fechaFin": null,
+            "diaNombre": "SÁBADO",
+            "diaNumero": null,
+            "codPeriodo": null
+        },
+        "detalleHorario": [
+            {
+                "titulo": null,
+                "nrc": null,
+                "descripMetodoEducativo": null,
+                "codmetodoEducativo": null,
+                "descripMateria": null,
+                "codMateria": null,
+                "codSeccion": null,
+                "descripPartePeriodo": null,
+                "codPartePeriodo": null,
+                "cantidadVeces": null,
+                "codAula": "C101",
+                "descripAula": "",
+                "codCampus": null,
+                "descripCampus": "Lima Los Olivos",
+                "codEdificio": null,
+                "descripEdificio": null,
+                "fechaInicio": "25/05/2024",
+                "fechaFin": "13/07/2024",
+                "diaNombre": "",
+                "diaNumero": "",
+                "horaInicio": "02:30 PM",
+                "horaFin": "04:00 PM",
+                "profesor": [],
+                "orden": null,
+                "codCurso": null
+            },
+            {
+                "titulo": null,
+                "nrc": null,
+                "descripMetodoEducativo": null,
+                "codmetodoEducativo": null,
+                "descripMateria": null,
+                "codMateria": null,
+                "codSeccion": null,
+                "descripPartePeriodo": null,
+                "codPartePeriodo": null,
+                "cantidadVeces": null,
+                "codAula": "LCOM14",
+                "descripAula": "",
+                "codCampus": null,
+                "descripCampus": "Lima Los Olivos",
+                "codEdificio": null,
+                "descripEdificio": null,
+                "fechaInicio": "25/05/2024",
+                "fechaFin": "13/07/2024",
+                "diaNombre": "",
+                "diaNumero": "",
+                "horaInicio": "04:10 PM",
+                "horaFin": "07:20 PM",
+                "profesor": [],
+                "orden": null,
+                "codCurso": null
+            }
+        ]
+    }
+]

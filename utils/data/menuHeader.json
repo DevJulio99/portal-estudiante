@@ -1,0 +1,28 @@
+[
+    {
+        "id": 11,
+        "status": "published",
+        "parent": "0",
+        "titulo": "Correo",
+        "descripcion": "correo",
+        "imagen": "https://res.cloudinary.com/upcbinary/image/upload/v1704914541/iconos-upn/dfqeppcq8iwhywtlzzu7.svg",
+        "url": "https://outlook.office365.com/mail/",
+        "secuencia": 1,
+        "abrir_nueva_pagina": true,
+        "date_created": null,
+        "submenu": []
+    },
+    {
+        "id": 12,
+        "status": "published",
+        "parent": "0",
+        "titulo": "AULA VIRTUAL",
+        "descripcion": null,
+        "imagen": "https://res.cloudinary.com/upcbinary/image/upload/v1704914541/iconos-upn/hby1vw5jkm7vi2umvu0k.svg",
+        "url": "https://upn.blackboard.com/auth-saml/saml/login?apId=_111_1&redirectUrl=https%3A%2F%2Fupn.blackboard.com%2Fultra",
+        "secuencia": 2,
+        "abrir_nueva_pagina": true,
+        "date_created": "2023-11-02T10:50:26.000Z",
+        "submenu": []
+    }
+]

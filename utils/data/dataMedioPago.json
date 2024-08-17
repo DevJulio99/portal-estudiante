@@ -1,0 +1,34 @@
+[
+    {
+        "nombreMedioDePago": "Interbank",
+        "descripcion": null,
+        "url": "https://interbank.pe/",
+        "prioridad": 1,
+        "abrirNuevaPagina": true,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/bfedea2a-5471-47f8-bbc2-174c05ca7d17"
+    },
+    {
+        "nombreMedioDePago": "Scotiabank",
+        "descripcion": null,
+        "url": "https://www.scotiabank.com.pe",
+        "prioridad": 2,
+        "abrirNuevaPagina": true,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/aceadca0-c698-4b74-9da0-1eb860bdbfcf"
+    },
+    {
+        "nombreMedioDePago": "BBVA",
+        "descripcion": null,
+        "url": "https://www.bbva.pe/",
+        "prioridad": 3,
+        "abrirNuevaPagina": true,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/555fb9ae-d653-4d75-b1b4-7c30e82ecfd1"
+    },
+    {
+        "nombreMedioDePago": "BCP",
+        "descripcion": null,
+        "url": "https://www.viabcp.com/",
+        "prioridad": 4,
+        "abrirNuevaPagina": true,
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/26ac303c-aed3-4dae-8d24-52e9d79fc67d"
+    }
+]

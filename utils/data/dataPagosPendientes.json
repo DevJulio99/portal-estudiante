@@ -1,0 +1,142 @@
+[
+    {
+        "docType": "B1",
+        "numDoc": "BV03-01917273",
+        "expirationDate": "26/04/2024",
+        "semester": "224513",
+        "arrearsTotal": "763.45",
+        "amountPaid": "0.00",
+        "balance": "763.45",
+        "debtAmount": "0.00",
+        "debtType": "",
+        "amountDetail": [
+            {
+                "description": "Cursos por 2da SIC-WA",
+                "fee": "1",
+                "amount": "1.00",
+                "price": "46.25",
+                "subtotal": "46.25"
+            },
+            {
+                "description": "Arancel SIC-WA",
+                "fee": "1",
+                "amount": "1.00",
+                "price": "815.00",
+                "subtotal": "815.00"
+            },
+            {
+                "description": "DESCUENTO",
+                "fee": "1",
+                "amount": "1.00",
+                "price": "-97.80",
+                "subtotal": "-97.80"
+            }
+        ],
+        "invoice": "0014681316"
+    },
+    {
+        "docType": "B1",
+        "numDoc": "",
+        "expirationDate": "15/05/2024",
+        "semester": "224513",
+        "arrearsTotal": "763.45",
+        "amountPaid": "0.00",
+        "balance": "763.45",
+        "debtAmount": "0.00",
+        "debtType": "",
+        "amountDetail": [
+            {
+                "description": "DESCUENTO",
+                "fee": "2",
+                "amount": "1.00",
+                "price": "-97.80",
+                "subtotal": "-97.80"
+            },
+            {
+                "description": "Arancel SIC-WA",
+                "fee": "2",
+                "amount": "1.00",
+                "price": "815.00",
+                "subtotal": "815.00"
+            },
+            {
+                "description": "Cursos por 2da SIC-WA",
+                "fee": "2",
+                "amount": "1.00",
+                "price": "46.25",
+                "subtotal": "46.25"
+            }
+        ],
+        "invoice": "0014681317"
+    },
+    {
+        "docType": "B1",
+        "numDoc": "",
+        "expirationDate": "15/06/2024",
+        "semester": "224513",
+        "arrearsTotal": "763.45",
+        "amountPaid": "0.00",
+        "balance": "763.45",
+        "debtAmount": "0.00",
+        "debtType": "",
+        "amountDetail": [
+            {
+                "description": "Arancel SIC-WA",
+                "fee": "3",
+                "amount": "1.00",
+                "price": "815.00",
+                "subtotal": "815.00"
+            },
+            {
+                "description": "DESCUENTO",
+                "fee": "3",
+                "amount": "1.00",
+                "price": "-97.80",
+                "subtotal": "-97.80"
+            },
+            {
+                "description": "Cursos por 2da SIC-WA",
+                "fee": "3",
+                "amount": "1.00",
+                "price": "46.25",
+                "subtotal": "46.25"
+            }
+        ],
+        "invoice": "0014681318"
+    },
+    {
+        "docType": "B1",
+        "numDoc": "",
+        "expirationDate": "15/07/2024",
+        "semester": "224513",
+        "arrearsTotal": "763.45",
+        "amountPaid": "0.00",
+        "balance": "763.45",
+        "debtAmount": "0.00",
+        "debtType": "",
+        "amountDetail": [
+            {
+                "description": "Arancel SIC-WA",
+                "fee": "4",
+                "amount": "1.00",
+                "price": "815.00",
+                "subtotal": "815.00"
+            },
+            {
+                "description": "Cursos por 2da SIC-WA",
+                "fee": "4",
+                "amount": "1.00",
+                "price": "46.25",
+                "subtotal": "46.25"
+            },
+            {
+                "description": "DESCUENTO",
+                "fee": "4",
+                "amount": "1.00",
+                "price": "-97.80",
+                "subtotal": "-97.80"
+            }
+        ],
+        "invoice": "0014681319"
+    }
+]

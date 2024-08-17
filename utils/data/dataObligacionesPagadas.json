@@ -1,0 +1,882 @@
+[
+    {
+        "period": "224513",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "02/04/2024",
+                "concept": "T1 CONFIRMACION MAT. SIC-WA",
+                "fee": "0",
+                "import": "815.00",
+                "paid": "815.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01904320"
+            },
+            {
+                "paidDate": "02/04/2024",
+                "concept": "FM PREMATRICULA SIC-WA",
+                "fee": "0",
+                "import": "300.00",
+                "paid": "300.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01867048"
+            }
+        ]
+    },
+    {
+        "period": "224502",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "10/01/2024",
+                "concept": "T1 CONFIRMACION MAT. SIC-WA",
+                "fee": "0",
+                "import": "195.00",
+                "paid": "195.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01843027"
+            }
+        ]
+    },
+    {
+        "period": "223534",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "02/09/2023",
+                "concept": "FM PREMATRICULA SIC-WA",
+                "fee": "0",
+                "import": "300.00",
+                "paid": "300.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01687713"
+            },
+            {
+                "paidDate": "02/09/2023",
+                "concept": "T1 CONFIRMACION MAT. SIC-WA",
+                "fee": "0",
+                "import": "780.00",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01687992"
+            },
+            {
+                "paidDate": "25/09/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "1",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01726895"
+            },
+            {
+                "paidDate": "25/09/2023",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "732.65",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01726895"
+            },
+            {
+                "paidDate": "15/10/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "2",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01753774"
+            },
+            {
+                "paidDate": "15/10/2023",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "732.65",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01753774"
+            },
+            {
+                "paidDate": "15/11/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "3",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01784434"
+            },
+            {
+                "paidDate": "15/11/2023",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "732.65",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01784434"
+            },
+            {
+                "paidDate": "15/12/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "4",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01817542"
+            },
+            {
+                "paidDate": "15/12/2023",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "732.65",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01817542"
+            },
+            {
+                "paidDate": "18/09/2023",
+                "concept": "LN0 RETIRO DE CURSO WA",
+                "fee": "0",
+                "import": "100.00",
+                "paid": "100.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01719990"
+            },
+            {
+                "paidDate": "27/09/2023",
+                "concept": "LN0 RETIRO DE CURSO WA",
+                "fee": "0",
+                "import": "100.00",
+                "paid": "100.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01748503"
+            }
+        ]
+    },
+    {
+        "period": "223513",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "04/04/2023",
+                "concept": "T1 CONFIRMACION MAT. SIC-WA",
+                "fee": "0",
+                "import": "780.00",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01486691"
+            },
+            {
+                "paidDate": "04/04/2023",
+                "concept": "FM PREMATRICULA SIC-WA",
+                "fee": "0",
+                "import": "300.00",
+                "paid": "300.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01467785"
+            },
+            {
+                "paidDate": "25/04/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "1",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01542087"
+            },
+            {
+                "paidDate": "25/04/2023",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "826.25",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01542087"
+            },
+            {
+                "paidDate": "15/05/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "2",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01568153"
+            },
+            {
+                "paidDate": "15/05/2023",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "826.25",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01568153"
+            },
+            {
+                "paidDate": "15/06/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "3",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01604359"
+            },
+            {
+                "paidDate": "15/06/2023",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "826.25",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01604359"
+            },
+            {
+                "paidDate": "15/07/2023",
+                "concept": "Cursos por 2da SIC-WA",
+                "fee": "4",
+                "import": "46.25",
+                "paid": "46.25",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01640314"
+            },
+            {
+                "paidDate": "15/07/2023",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "826.25",
+                "paid": "780.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01640314"
+            }
+        ]
+    },
+    {
+        "period": "222513",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "05/04/2022",
+                "concept": "T1 CONFIRMACION MAT. SIC-WA",
+                "fee": "0",
+                "import": "744.00",
+                "paid": "744.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01140875"
+            },
+            {
+                "paidDate": "05/04/2022",
+                "concept": "FM PREMATRICULA SIC-WA",
+                "fee": "0",
+                "import": "290.00",
+                "paid": "290.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01066236"
+            },
+            {
+                "paidDate": "28/04/2022",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "511.50",
+                "paid": "-232.50",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01199481"
+            },
+            {
+                "paidDate": "28/04/2022",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "511.50",
+                "paid": "744.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01199481"
+            },
+            {
+                "paidDate": "19/05/2022",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "511.50",
+                "paid": "-232.50",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01210495"
+            },
+            {
+                "paidDate": "19/05/2022",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "511.50",
+                "paid": "744.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01210495"
+            },
+            {
+                "paidDate": "15/06/2022",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "511.50",
+                "paid": "-232.50",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01256103"
+            },
+            {
+                "paidDate": "15/06/2022",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "511.50",
+                "paid": "744.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01256103"
+            },
+            {
+                "paidDate": "15/07/2022",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "511.50",
+                "paid": "-232.50",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01287168"
+            },
+            {
+                "paidDate": "15/07/2022",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "511.50",
+                "paid": "744.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01287168"
+            },
+            {
+                "paidDate": "24/05/2022",
+                "concept": "LN0 RETIRO DE CICLO WA",
+                "fee": "0",
+                "import": "100.00",
+                "paid": "100.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-01232772"
+            }
+        ]
+    },
+    {
+        "period": "221413",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "05/04/2021",
+                "concept": "T1 CONFIRMACION MAT. SIC-UG",
+                "fee": "0",
+                "import": "719.00",
+                "paid": "719.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00825575"
+            },
+            {
+                "paidDate": "05/04/2021",
+                "concept": "FM PREMATRICULA SIC-UG",
+                "fee": "0",
+                "import": "285.00",
+                "paid": "285.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00825576"
+            },
+            {
+                "paidDate": "22/04/2021",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "1",
+                "import": "43.75",
+                "paid": "43.75",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00865804"
+            },
+            {
+                "paidDate": "22/04/2021",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "762.75",
+                "paid": "719.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00865804"
+            },
+            {
+                "paidDate": "15/05/2021",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "2",
+                "import": "43.75",
+                "paid": "43.75",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00892613"
+            },
+            {
+                "paidDate": "15/05/2021",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "762.75",
+                "paid": "719.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00892613"
+            },
+            {
+                "paidDate": "15/06/2021",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "3",
+                "import": "43.75",
+                "paid": "43.75",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00910993"
+            },
+            {
+                "paidDate": "15/06/2021",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "762.75",
+                "paid": "719.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00910993"
+            },
+            {
+                "paidDate": "15/07/2021",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "4",
+                "import": "43.75",
+                "paid": "43.75",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00942190"
+            },
+            {
+                "paidDate": "15/07/2021",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "762.75",
+                "paid": "719.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00942190"
+            },
+            {
+                "paidDate": "16/05/2021",
+                "concept": "LN0 RETIRO DE CURSO UG",
+                "fee": "0",
+                "import": "200.00",
+                "paid": "200.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00900575"
+            }
+        ]
+    },
+    {
+        "period": "220413",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "01/04/2020",
+                "concept": "Matricula",
+                "fee": "0",
+                "import": "285.00",
+                "paid": "285.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00569063"
+            },
+            {
+                "paidDate": "01/04/2020",
+                "concept": "Cuota Inicial",
+                "fee": "0",
+                "import": "705.00",
+                "paid": "705.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00569063"
+            },
+            {
+                "paidDate": "27/04/2020",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "1",
+                "import": "35.00",
+                "paid": "35.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00579411"
+            },
+            {
+                "paidDate": "27/04/2020",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "599.00",
+                "paid": "564.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00579411"
+            },
+            {
+                "paidDate": "15/05/2020",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "2",
+                "import": "35.00",
+                "paid": "35.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00605326"
+            },
+            {
+                "paidDate": "15/05/2020",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "599.00",
+                "paid": "564.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00605326"
+            },
+            {
+                "paidDate": "15/06/2020",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "3",
+                "import": "35.00",
+                "paid": "35.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00624736"
+            },
+            {
+                "paidDate": "15/06/2020",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "599.00",
+                "paid": "564.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00624736"
+            },
+            {
+                "paidDate": "08/07/2020",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "4",
+                "import": "35.00",
+                "paid": "35.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00651542"
+            },
+            {
+                "paidDate": "08/07/2020",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "599.00",
+                "paid": "564.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00651542"
+            },
+            {
+                "paidDate": "24/07/2020",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "5",
+                "import": "35.00",
+                "paid": "35.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00664950"
+            },
+            {
+                "paidDate": "24/07/2020",
+                "concept": "Cuota 5",
+                "fee": "5",
+                "import": "599.00",
+                "paid": "564.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00664950"
+            }
+        ]
+    },
+    {
+        "period": "219435",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "02/09/2019",
+                "concept": "Matricula",
+                "fee": "0",
+                "import": "280.00",
+                "paid": "280.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00435529"
+            },
+            {
+                "paidDate": "02/09/2019",
+                "concept": "Cuota Inicial",
+                "fee": "0",
+                "import": "670.00",
+                "paid": "670.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00435529"
+            },
+            {
+                "paidDate": "16/09/2019",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "670.00",
+                "paid": "670.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00453918"
+            },
+            {
+                "paidDate": "09/10/2019",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "670.00",
+                "paid": "670.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00477300"
+            },
+            {
+                "paidDate": "09/11/2019",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "670.00",
+                "paid": "670.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00508767"
+            },
+            {
+                "paidDate": "09/12/2019",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "670.00",
+                "paid": "670.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00530445"
+            },
+            {
+                "paidDate": "27/09/2019",
+                "concept": "LN0 Sol.Carne UG",
+                "fee": "0",
+                "import": "16.00",
+                "paid": "16.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00467700"
+            }
+        ]
+    },
+    {
+        "period": "219413",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "09/04/2019",
+                "concept": "Matricula",
+                "fee": "0",
+                "import": "280.00",
+                "paid": "280.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00284790"
+            },
+            {
+                "paidDate": "09/04/2019",
+                "concept": "Cuota Inicial",
+                "fee": "0",
+                "import": "670.00",
+                "paid": "670.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00284790"
+            },
+            {
+                "paidDate": "22/04/2019",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "1",
+                "import": "43.75",
+                "paid": "43.75",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00312766"
+            },
+            {
+                "paidDate": "22/04/2019",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "504.38",
+                "paid": "460.63",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00312766"
+            },
+            {
+                "paidDate": "08/05/2019",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "2",
+                "import": "43.75",
+                "paid": "43.75",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00332763"
+            },
+            {
+                "paidDate": "08/05/2019",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "504.38",
+                "paid": "460.63",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00332763"
+            },
+            {
+                "paidDate": "08/06/2019",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "3",
+                "import": "43.75",
+                "paid": "43.75",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00376488"
+            },
+            {
+                "paidDate": "08/06/2019",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "504.38",
+                "paid": "460.63",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00376488"
+            },
+            {
+                "paidDate": "08/07/2019",
+                "concept": "Cursos por 2da SIC-UG",
+                "fee": "4",
+                "import": "43.73",
+                "paid": "43.73",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00405759"
+            },
+            {
+                "paidDate": "08/07/2019",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "504.36",
+                "paid": "460.63",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00405759"
+            }
+        ]
+    },
+    {
+        "period": "218434",
+        "debtType": "",
+        "payments": [
+            {
+                "paidDate": "08/09/2018",
+                "concept": "Matricula",
+                "fee": "0",
+                "import": "250.00",
+                "paid": "250.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00135547"
+            },
+            {
+                "paidDate": "08/09/2018",
+                "concept": "Cuota Inicial",
+                "fee": "0",
+                "import": "660.00",
+                "paid": "660.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00135547"
+            },
+            {
+                "paidDate": "17/09/2018",
+                "concept": "Cuota 1",
+                "fee": "1",
+                "import": "660.00",
+                "paid": "660.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00162698"
+            },
+            {
+                "paidDate": "10/10/2018",
+                "concept": "Cuota 2",
+                "fee": "2",
+                "import": "660.00",
+                "paid": "660.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00198561"
+            },
+            {
+                "paidDate": "10/11/2018",
+                "concept": "Cuota 3",
+                "fee": "3",
+                "import": "660.00",
+                "paid": "660.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00219883"
+            },
+            {
+                "paidDate": "10/12/2018",
+                "concept": "Cuota 4",
+                "fee": "4",
+                "import": "660.00",
+                "paid": "660.00",
+                "balance": "0.00",
+                "status": "",
+                "documentNumber": "BV03-00246564"
+            }
+        ]
+    }
+]

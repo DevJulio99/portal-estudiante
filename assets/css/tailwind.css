@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "telegraf";
+    font-style: normal;
+    font-weight: 500;
+    src: url("../fonts/Telegraf-Regular.woff") format("woff");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "telegraf";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../fonts/Telegraf-UltraBold.woff") format("woff");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "grotesk";
+    font-style: normal;
+    font-weight: 600;
+    src: url("../fonts/SharpGrotesk-SemiBold15.woff") format("woff");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "grotesk";
+    font-style: normal;
+    font-weight: 500;
+    src: url("../fonts/SharpGrotesk-Book15.woff") format("woff");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "grotesk";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../fonts/SharpGrotesk-Bold15.woff") format("woff");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "whitney";
+    font-style: normal;
+    font-weight: 600;
+    src: url("../fonts/WhitneyHTF-SemiBold.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "whitney";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../fonts/WhitneyHTF-Bold.otf") format("opentype");
+    font-display: swap;
+  }
+
+  html {
+    @apply font-telegraf
+  }
+  
+  .container-white {
+    @apply px-6 pt-4 md:px-10 bg-white h-full;
+  }
+
+  .container-gray {
+    @apply px-6 pt-4 md:px-10 bg-[#F5F5F5] h-full;
+  }
+
+  .no-margin.nuxt-icon svg {
+    margin-bottom: 0;
+  }
+}
