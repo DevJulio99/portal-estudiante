@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { useMediaQuery } from '@vueuse/core';
 import { vOnClickOutside } from '@vueuse/components';
-import menuStoreMock from "~/utils/data/menuStoreMock.json";
 import { Menu } from '~/types/helper.types';
 
 const menuStore = useMenuStore();

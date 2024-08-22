@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import jsonDefMenuHeader from '~/utils/data/menuHeader.json';
-import menuStoreMock from "~/utils/data/menuStoreMock.json";
 
-const menuStore = menuStoreMock;
+const menuStore = useMenuStore();
 const helpInfo = menuStore.headerMenuData?.data?.find(
 	(item: any) => item.submenu.length,
 );
@@ -11,6 +10,10 @@ const menuInfo = menuStore.headerMenuData?.data
 	: jsonDefMenuHeader.filter((item) => !item.submenu.length);
 
 const isMediumScreen = true;//useMediaQuery('(min-width: 768px)');
+
+const eventClickOpen = (title: string) => {
+	menuStore.toggleMenuInfo();
+};
 
 </script>
 
@@ -38,6 +41,7 @@ const isMediumScreen = true;//useMediaQuery('(min-width: 768px)');
 			v-if="Boolean(helpInfo)"
 			class="btn-help"
 			:aria-label="helpInfo?.titulo ?? 'Más ayuda'"
+			@click.stop="eventClickOpen(helpInfo?.titulo ?? '')"
 		>
 			<nuxt-img
 				:preload="!isMediumScreen"

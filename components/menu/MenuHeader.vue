@@ -26,6 +26,10 @@ const viewAccessDenied =
 const redirectHome = () => {
   return navigateTo("/inicio", { replace: true });
 };
+
+const eventClick = () => {
+	menuStore.toggleMenuProfile();
+};
 </script>
 
 <template>
@@ -80,6 +84,7 @@ const redirectHome = () => {
           v-if="!menuStore.menuProfile || isLargeScreen"
           :aria-label="menuStore.menuProfile ? 'Cerrar menú' : 'Abrir menú'"
           class="flex items-center relative"
+          @click.stop="eventClick"
         >
           <img
             :src="

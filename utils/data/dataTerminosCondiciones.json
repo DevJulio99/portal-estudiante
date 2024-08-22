@@ -1,0 +1,14 @@
+[
+    {
+        "tipo": "autorizaDatosPersonales",
+        "descripcion": "<p>Autorizo el tratamiento de mis datos personales descritas en el siguiente <span style=\"color: #0010cc;\"><a style=\"color: #0010cc;\" href=\"https://www.upn.edu.pe/proteccion-de-datos\" target=\"_blank\" rel=\"noopener\">Enlace</a></span></p>"
+    },
+    {
+        "tipo": "autorizaAlumni",
+        "descripcion": "<p>Autorizo el tratamiento de mis datos personales para registrarme y participar como Alumni, bajo las condiciones descritas en el siguiente <span style=\"color: #0010cc;\"><a style=\"color: #0010cc;\" href=\"https://educorpperu-my.sharepoint.com/:b:/g/personal/secretaria_general_upn_edu_pe/EUs0ohYlkEVBlkQrA5ov7w0BKTTRzzpg0_msuFUNpvnHNA?e=HaLwnh\" target=\"_blank\" rel=\"noopener\">Enlace</a>.</span></p>"
+    },
+    {
+        "tipo": "autorizaAdicionales",
+        "descripcion": "<p>Autorizo el tratamiento de mis datos personales para los fines comerciales adicionales descritos en el siguiente <span style=\"color: #0010cc;\"><a style=\"color: #0010cc;\" href=\"https://educorpperu-my.sharepoint.com/:b:/g/personal/secretaria_general_upn_edu_pe/ERNaQ2m7JyNIgO1XN1HCR_wByQnOrkTBI2hnZo5-nA1BLw?e=YhvJdS\" target=\"_blank\" rel=\"noopener\">Enlace</a>.</span></p>"
+    }
+]

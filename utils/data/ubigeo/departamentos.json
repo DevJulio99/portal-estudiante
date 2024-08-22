@@ -1,0 +1,103 @@
+[
+ {
+   "id_departamento": "1",
+   "departamento_nombre": "AMAZONAS"
+ },
+ {
+   "id_departamento": "2",
+   "departamento_nombre": "ANCASH"
+ },
+ {
+   "id_departamento": "3",
+   "departamento_nombre": "APURIMAC"
+ },
+ {
+   "id_departamento": "4",
+   "departamento_nombre": "AREQUIPA"
+ },
+ {
+   "id_departamento": "5",
+   "departamento_nombre": "AYACUCHO"
+ },
+ {
+   "id_departamento": "6",
+   "departamento_nombre": "CAJAMARCA"
+ },
+ {
+   "id_departamento": "7",
+   "departamento_nombre": "CALLAO"
+ },
+ {
+   "id_departamento": "8",
+   "departamento_nombre": "CUSCO"
+ },
+ {
+   "id_departamento": "9",
+   "departamento_nombre": "HUANCAVELICA"
+ },
+ {
+   "id_departamento": "10",
+   "departamento_nombre": "HUANUCO"
+ },
+ {
+   "id_departamento": "11",
+   "departamento_nombre": "ICA",
+   "FIELD3": " "
+ },
+ {
+   "id_departamento": "12",
+   "departamento_nombre": "JUNIN"
+ },
+ {
+   "id_departamento": "13",
+   "departamento_nombre": "LA LIBERTAD"
+ },
+ {
+   "id_departamento": "14",
+   "departamento_nombre": "LAMBAYEQUE"
+ },
+ {
+   "id_departamento": "15",
+   "departamento_nombre": "LIMA"
+ },
+ {
+   "id_departamento": "16",
+   "departamento_nombre": "LORETO"
+ },
+ {
+   "id_departamento": "17",
+   "departamento_nombre": "MADRE DE DIOS"
+ },
+ {
+   "id_departamento": "18",
+   "departamento_nombre": "MOQUEGUA"
+ },
+ {
+   "id_departamento": "19",
+   "departamento_nombre": "PASCO"
+ },
+ {
+   "id_departamento": "20",
+   "departamento_nombre": "PIURA"
+ },
+ {
+   "id_departamento": "21",
+   "departamento_nombre": "PUNO"
+ },
+ {
+   "id_departamento": "22",
+   "departamento_nombre": "SAN MARTIN"
+ },
+ {
+   "id_departamento": "23",
+   "departamento_nombre": "TACNA"
+ },
+ {
+   "id_departamento": "24",
+   "departamento_nombre": "TUMBES"
+ },
+ {
+   "id_departamento": "25",
+   "departamento_nombre": "UCAYALI"
+ }
+]

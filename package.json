@@ -13,11 +13,14 @@
     "@nuxt/image": "^1.7.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.3",
+    "@vee-validate/nuxt": "^4.12.8",
+    "@vee-validate/yup": "^4.12.8",
     "@vueuse/components": "^10.11.1",
     "nuxt": "3.11.2",
     "nuxt-icons": "^3.2.1",
     "pinia": "^2.2.1",
-    "vue": "latest"
+    "vue": "latest",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@vueuse/core": "^10.11.1",
