@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 // @ts-ignore
-import html2pdf from 'html2pdf.js';
+// import html2pdf from 'html2pdf.js';
 import { useDateFormat } from '@vueuse/core';
 import { EventStatus } from '~/types/calendar.types';
 import type { HorarioData, CourseExtend } from '~/types/cursos.types';
 import type { RangeWeek, WeekDates } from '~/types/schedule.types';
 import dataHorarioMock from '~/utils/data/dataHorarioMock.json'
 
-const { $api } = useNuxtApp();
+// const { $api } = useNuxtApp();
 const { codAlum } = useUserStoreAuth();
 const { profileData } = useProfileStore();
-const states = scheduleState();
+// const states = scheduleState();
 
 useHead({
 	title: 'Horario',
@@ -99,16 +99,16 @@ const actionWeek = (range: RangeWeek) => {
 	dataWeek.value = range.weekDates;
 	dataHorario.value = [];
 
-	states.setWeekCourses([]);
-	states.setFilter([]);
-	states.setDataStatus(false);
+	// states.setWeekCourses([]);
+	// states.setFilter([]);
+	// states.setDataStatus(false);
 	// callHorarioRango();
 };
 
 onMounted(() => {
-	states.setWeekCourses(dataHorarioMock);
-	states.setFilter(dataHorarioMock as any);
-	states.setDataStatus(true);
+	// states.setWeekCourses(dataHorarioMock);
+	// states.setFilter(dataHorarioMock as any);
+	// states.setDataStatus(true);
 	dataHorario.value = dataHorarioMock as any;
 })
 </script>
@@ -119,17 +119,17 @@ onMounted(() => {
 		<BaseTitle text="Horario Semanal" />
 		<div class="layout-container">
 			<div id="pdf-content" ref="pdfSection" class="mt-[18px]">
-				<SchedulePdf
+				<!-- <SchedulePdf
 					:dataHorario="dataPdf"
 					:dataWeek="dataWeek"
 					:current-cicle="states.currentCicle"
-				/>
+				/> -->
 			</div>
 		</div>
 		<Schedule
-			:pending="pending"
-			:errorService="errorService"
-			:error="error"
+			:pending="false"
+			:errorService="null"
+			:error="null"
 			:on-download="generatePDF"
 			:on-action-week="actionWeek"
 			:loadingPdf="loadingPdf"

@@ -31,7 +31,7 @@
             {
                 "etiqueta": "horarios",
                 "nombre": "Horario",
-                "url": "/horario",
+                "url": "/horarios",
                 "abrir_nueva_pagina": false,
                 "es_clasico": 0,
                 "modalidad": "ALL"
@@ -117,7 +117,7 @@
             {
                 "etiqueta": "carta_de_presentacion",
                 "nombre": "Solicitud de carta de presentación",
-                "url": "/carta-de-presentacion",
+                "url": "",
                 "abrir_nueva_pagina": false,
                 "es_clasico": 0,
                 "modalidad": "ALL"
@@ -125,16 +125,16 @@
             {
                 "etiqueta": "documentos_virtuales",
                 "nombre": "Documentos virtuales",
-                "url": "https://solicitudes.upn.edu.pe",
-                "abrir_nueva_pagina": true,
+                "url": "",
+                "abrir_nueva_pagina": false,
                 "es_clasico": 0,
                 "modalidad": "ALL"
             },
             {
                 "etiqueta": "otras_solicitudes",
                 "nombre": "Otras solicitudes",
-                "url": "https://otrassolicitudes.upn.edu.pe",
-                "abrir_nueva_pagina": true,
+                "url": "",
+                "abrir_nueva_pagina": false,
                 "es_clasico": 0,
                 "modalidad": "ALL"
             }

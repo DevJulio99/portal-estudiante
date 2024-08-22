@@ -61,11 +61,11 @@ const hidePopup = () => {
 			:pdf="pdf"
 			@click="showPopup"
 		/>
-		<ScheduleCardPopUp
+		<!--<ScheduleCardPopUp
 			v-if="popupIsVisible"
 			:closePopup="hidePopup"
 			:course="course"
-		/>
+		/>-->
 	</div>
 	<!-- </div> -->
 </template>

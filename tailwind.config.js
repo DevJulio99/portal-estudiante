@@ -8,7 +8,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        telegraf: ["telegraf"],
+        grotesk: ['grotesk'],
+		telegraf: ['telegraf'],
+		whitney: ['whitney'],
       },
       colors: {
         primary: '#FDBA30',
