@@ -1,10 +1,9 @@
 <script setup lang="ts">
 // import { useMediaQuery } from '@vueuse/core';
-import profileStoreMock from "~/utils/data/profileStoreMock.json";
 
 const menuStore = useMenuStore();
 
-const profileStore = profileStoreMock;
+const profileStore = useProfileStore();
 
 const notificationStore = {
   notificationData: {

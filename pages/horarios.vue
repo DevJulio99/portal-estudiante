@@ -22,6 +22,7 @@ const breadcrumbsItem = [
 	{ name: 'Horario', current: true, url: '' },
 ];
 
+const states = scheduleState();
 const weekDate = getWeekDates();
 const dataHorario = ref<HorarioData[]>([]);
 const dataWeek = ref<WeekDates>(weekDate);
@@ -33,6 +34,7 @@ const startDate = ref<string>(
 const endDate = ref<string>(
 	`${useDateFormat(weekDate.Sunday, 'YYYY-MM-DD').value}T23:59:00Z`,
 );
+const pending = ref<boolean>(true);
 
 // const callHorarioRango = async () => {
 // 	const { data, error, pending } = await $api.horarioRango.getHorariosRango(
@@ -94,22 +96,24 @@ const generatePDF = async () => {
 };
 
 const actionWeek = (range: RangeWeek) => {
+	console.log('actionWeek', range);
 	startDate.value = range.init;
 	endDate.value = range.end;
 	dataWeek.value = range.weekDates;
 	dataHorario.value = [];
 
-	// states.setWeekCourses([]);
-	// states.setFilter([]);
-	// states.setDataStatus(false);
+	states.setWeekCourses([]);
+	states.setFilter([]);
+	states.setDataStatus(false);
 	// callHorarioRango();
 };
 
 onMounted(() => {
-	// states.setWeekCourses(dataHorarioMock);
-	// states.setFilter(dataHorarioMock as any);
-	// states.setDataStatus(true);
+	states.setWeekCourses(dataHorarioMock);
+	states.setFilter(dataHorarioMock as any);
+	states.setDataStatus(true);
 	dataHorario.value = dataHorarioMock as any;
+	pending.value = false;
 })
 </script>
 <template>
@@ -119,15 +123,15 @@ onMounted(() => {
 		<BaseTitle text="Horario Semanal" />
 		<div class="layout-container">
 			<div id="pdf-content" ref="pdfSection" class="mt-[18px]">
-				<!-- <SchedulePdf
+				<SchedulePdf
 					:dataHorario="dataPdf"
 					:dataWeek="dataWeek"
 					:current-cicle="states.currentCicle"
-				/> -->
+				/>
 			</div>
 		</div>
 		<Schedule
-			:pending="false"
+			:pending="pending"
 			:errorService="null"
 			:error="null"
 			:on-download="generatePDF"

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { BienvenidoData } from '~/types/bienvenido.types';
-import profileStoreMock from "~/utils/data/profileStoreMock.json";
 
 const props = defineProps<{
 	fullname: string;
@@ -9,7 +8,7 @@ const props = defineProps<{
 }>();
 const gender = ref<string | null>(null);
 const noDataB = !props.message?.length;
-const profileStore = profileStoreMock;
+const profileStore = useProfileStore();
 gender.value = profileStore.profileData.data?.sexo ?? null;
 
 const formatContent = (html: string) => {

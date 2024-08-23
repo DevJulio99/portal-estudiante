@@ -44,7 +44,7 @@ const eventClick = (url: string, title: string) => {
 		>
 			Horario Semanal
 		</nuxt-link>
-		<a
+		<!-- <a
 			href="https://upn.blackboard.com/auth-saml/saml/login?apId=_111_1&redirectUrl=https%3A%2F%2Fupn.blackboard.com%2Fultra"
 			class="box"
 			:class="{
@@ -55,7 +55,7 @@ const eventClick = (url: string, title: string) => {
 			@click="eventClick('https://upn.blackboard.com/', 'Aula Virtual')"
 		>
 			Aula Virtual
-		</a>
+		</a> -->
 	</div>
 </template>
 

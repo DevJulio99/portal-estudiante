@@ -5,12 +5,10 @@ import type {
 	PaymentMethodsData,
 	PaymentOrderData,
 } from '~/types/pagos.types';
-import profileStoreMock from "~/utils/data/profileStoreMock.json";
 import mediosPagosMock from "~/utils/data/dataMedioPago.json";
 import pagosPendientesMock from "~/utils/data/dataPagosPendientes.json";
 
-const { $api } = useNuxtApp();
-const { profileData } = profileStoreMock;
+const { profileData } = useProfileStore();
 const isMediumScreen = useMediaQuery('(min-width: 768px)');
 
 const listaPaymentMethods = ref<PaymentMethodsData[]>([]);

@@ -72,7 +72,7 @@ const getWeekData = (range: RangeWeek) => {
 			:error="error"
 		/>
 		<ScheduleBoardMobile
-			v-else
+			v-if="!isLargeScreen"
 			:data="states.fullWeek[states.day] ?? null"
 			:data-week="weekData"
 			:day="states.day"
