@@ -102,9 +102,16 @@ const eventClick = (title: string, nameEvent: string) => {
 };
 
 const onSelectCategory = (name: string) => {
-  const filter = dataEventos.filter(
+  let filter = dataEventos.filter(
     (x) => x.categoria_evento.toLocaleLowerCase() === name.toLocaleLowerCase()
-  ) as any;
+  ) as any[];
+  console.log('currentType.value', currentType.value);
+  const type = currentType.value;
+  if(type && filter.length){
+    const filtertype = filter.filter(x =>  x.tipo_de_evento.toLocaleLowerCase() === type.toLocaleLowerCase());
+    if(filtertype.length) filter = filtertype;
+    // console.log('filtertype', filtertype);
+  }
   currentPage.value = 1;
   serviceError.value = null;
   offset.value = "0";
@@ -119,11 +126,19 @@ const onSelectCategory = (name: string) => {
 };
 
 const onSelectType = (val: any) => {
+  const category = currentEvent.value;
   if (val.id !== 1) {
-    const filter = dataEventos.filter(
+    let filter = dataEventos.filter(
       (x) =>
         x.tipo_de_evento.toLocaleLowerCase() === val.name.toLocaleLowerCase()
-    ) as any;
+    ) as any[];
+    if(category && filter.length){
+      const filterCategory = filter.filter(
+    (x) => x.categoria_evento.toLocaleLowerCase() === category.toLocaleLowerCase()
+     ) as any[];
+     console.log('filter', filter);
+     if(filterCategory.length) filter = filterCategory;
+    }
     typeId.value = val.id;
     currentPage.value = 1;
     serviceError.value = null;
@@ -136,9 +151,17 @@ const onSelectType = (val: any) => {
     eventsData.value = filter;
     totalEvents.value = filter.length;
   } else {
-	typeId.value = val.id;
-	eventsData.value = dataEventos as any;
-    totalEvents.value = dataEventos.length;
+    let allData = dataEventos;
+    if(category && allData.length){
+      const filterCategory = dataEventos.filter(
+    (x) => x.categoria_evento.toLocaleLowerCase() === category.toLocaleLowerCase()
+     ) as any[];
+     if(filterCategory.length) allData = filterCategory;
+    }
+    currentType.value = undefined;
+    typeId.value = val.id;
+	  eventsData.value = allData as any;
+    totalEvents.value = allData.length;
   }
 };
 

@@ -26,6 +26,7 @@ export enum Menu {
 export enum BtnColor {
 	default = 'default',
 	black = 'black',
+	blueLight= 'blueLight'
 }
 
 export enum TagStyle {

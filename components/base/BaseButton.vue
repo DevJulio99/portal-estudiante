@@ -42,6 +42,10 @@ withDefaults(
 					color === BtnColor.black && (disabled || disabledStyle),
 				'bg-black text-white':
 					color === BtnColor.black && (!disabled || !disabledStyle),
+				'bg-blue_light text-white':
+					color === BtnColor.blueLight && (!disabled || !disabledStyle),
+				'bg-blue_light text-white opacity-50 cursor-not-allowed':
+				    color === BtnColor.blueLight && (disabled || disabledStyle),
 			},
 		]"
 		:disabled="disabled"

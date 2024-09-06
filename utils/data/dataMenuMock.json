@@ -177,5 +177,17 @@
         "submenu": [],
         "es_clasico": 0,
         "modalidad": "ALL"
+    },
+    {
+        "id": 15,
+        "etiqueta": "evaluaciones",
+        "nombre": "evaluaciones",
+        "url": "/evaluaciones",
+        "icono": "https://adminmi-dev-upn.stage01.link/assets/b51cf8b5-2881-4aa8-8676-9b8cfc837c9f",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
     }
 ]

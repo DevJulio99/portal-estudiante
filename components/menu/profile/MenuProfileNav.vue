@@ -9,6 +9,7 @@ const menuStore = useMenuStore();
 const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 const openedSubmenu = ref<null | number>(null);
 const needHelp = ref();
+const profileStore = useProfileStore();
 
 const handleSubmenu = (id: number, title: string) => {
 	if (openedSubmenu.value !== id) {
@@ -21,6 +22,11 @@ const handleSubmenu = (id: number, title: string) => {
 		// }
 		openedSubmenu.value = id;
 	} else openedSubmenu.value = null;
+};
+
+const validImg = ref(true);
+const imageLoadError = () => {
+	validImg.value = false;
 };
 
 async function signOut() {
@@ -73,9 +79,32 @@ const eventClick = (url: string, title: string) => {
 <template>
 	<nav
 		v-on-click-outside.bubble="menuStore.closeMenuProfile"
-		class="main-nav !z-20"
+		class="main-nav !z-[35]"
 		:class="{ block: menuStore.menuProfile, hidden: !menuStore.menuProfile }"
 	>
+		<div v-if="isLargeScreen" class="py-[10px] flex flex-col items-center">
+			<img
+				v-if="profileStore.profileData.data?.fotoUrl"
+				:src="profileStore.profileData.data?.fotoUrl"
+				class="h-[60px] w-[60px] md:mr-1 row-span-2 rounded-full object-cover"
+				alt="Foto de perfil"
+			/>
+			<img
+				v-else-if="
+					!profileStore.profileData.pending &&
+					profileStore.profileData.data?.fotoUrlLow &&
+					validImg
+				"
+				:src="profileStore.profileData.data?.fotoUrlLow"
+				class="h-[60px] w-[60px] md:mr-1 row-span-2 rounded-full object-cover"
+				alt="Foto de perfil"
+				@error="imageLoadError"
+			/>
+			<p class="capitalize text-sm font-bold mt-2">
+				{{ profileStore.profileData.data?.fullName.toLowerCase() }}
+			</p>
+			<p>({{ profileStore.profileData.data?.codAlumno }})</p>
+		</div>
 		<ul class="w-full">
 			<MenuProfileItem />
 			<template v-if="!isLargeScreen && !menuStore.headerMenuData?.pending">
@@ -137,11 +166,18 @@ const eventClick = (url: string, title: string) => {
 			</template>
 			<li class="mb-4 lg:mb-2 border-t-[1px] border-t-[#C2D1D9] lg:border-none">
 				<button
-					class="w-full flex items-center gap-x-1 text-left pl-4 pr-2 py-2 mt-2 lg:mt-0 lg:py-2.5 md:hover:bg-primary"
+					class="group w-full flex items-center gap-x-1 text-left pl-4 pr-2 py-2 mt-2 lg:mt-0 lg:py-2.5 md:hover:bg-error"
 					@click="signOut"
 				>
-					<nuxt-icon name="upn-icon-logout-box" class="text-[20px]" />
-					<span class="text-styles cursos-pointer">Cerrar sesión </span>
+					<nuxt-icon
+						name="upn-icon-logout-box"
+						class="text-[20px] text-error md:group-hover:text-white"
+					/>
+					<span
+						class="text-styles cursos-pointer text-error md:group-hover:text-white"
+					>
+						Cerrar sesión
+					</span>
 				</button>
 			</li>
 		</ul>
@@ -150,11 +186,11 @@ const eventClick = (url: string, title: string) => {
 
 <style lang="postcss" scoped>
 .main-nav {
-	@apply absolute top-[64px] left-0 md:left-[initial] md:right-[24px] w-full md:w-[240px] bg-[#FAFAFA] lg:bg-white shadow-bgBox pt-5 md:pt-2 z-10;
+	@apply fixed top-[64px] left-0 md:left-[initial] md:right-[24px] w-full md:w-[284px] bg-[#FAFAFA] lg:bg-white shadow-bgBox pt-5 md:pt-2 z-10;
 }
 
 .text-styles {
-	@apply leading-[18px] font-telegraf font-extrabold text-[14px] text-black;
+	@apply leading-[18px] font-telegraf font-extrabold text-[14px];
 }
 .submenu-item {
 	@apply relative flex flex-col lg:flex-row items-center mb-4 lg:py-1 lg:pl-4 lg:pr-2 md:hover:bg-primary;

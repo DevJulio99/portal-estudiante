@@ -57,6 +57,11 @@ export default {
 				white_transparent: 'rgba(255, 255, 255, 0.8)',
 				black_transparent: 'rgba(0, 0, 0, 0.5)',
 				amber_60: '#FFC107',
+				gray_50: "#CDCDCD",
+				gray_60: "#C2CAD4",
+				cyan_5: "#F3F9FF",
+				neutron80: "#262626",
+				gray1: "#697074"
       },
       boxShadow: {
         bgBox: "0px 4px 6px 0px rgba(25, 25, 25, 0.15)",

@@ -85,7 +85,7 @@ function callCurrentDayClass() {
 	fechaSession2.value = `${currentDay.getFullYear()}-${
 		currentDay.getMonth() + 1
 	}-${currentDay.getDate()}T23:00:00Z`;
-	// callHorarios();
+	callHorarios();
 }
 
 function callNextDayClass() {
@@ -105,7 +105,7 @@ function callNextDayClass() {
 	fechaSession2.value = `${nextDay.getFullYear()}-${
 		nextDay.getMonth() + 1
 	}-${nextDay.getDate()}T23:00:00Z`;
-	// callHorarios();
+	callHorarios();
 }
 
 const handleScroll = (e: any) => {
@@ -120,11 +120,15 @@ const handleScroll = (e: any) => {
 	}
 };
 
-onMounted(() => {
-	elementHorario.value?.addEventListener('scroll', handleScroll);
+const callHorarios = () => {
 	dataHorario.value = dataHorarioMock.filter((item) => {
 			return Number(item.horario.diaNumero) === visibleDay.value;
 	}) as any;
+}
+
+onMounted(() => {
+	elementHorario.value?.addEventListener('scroll', handleScroll);
+	callHorarios();
 	pending.value = false;
 });
 

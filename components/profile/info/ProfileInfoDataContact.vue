@@ -27,7 +27,7 @@ const handleEdit = (val: boolean) => {
 	<section class="px-6 mb-10 md:mb-[3.75rem]">
 		<div class="flex items-center justify-between">
 			<BaseSubtitle text="Datos de contacto" />
-			<BaseButton
+			<!-- <BaseButton
 				:disabled="editField"
 				styles="!w-[76px] md:!w-[106px]"
 				:iconName="!editField ? 'editIcon' : ''"
@@ -35,7 +35,7 @@ const handleEdit = (val: boolean) => {
 				@click="handleEdit(true)"
 			>
 				<span>{{ editField ? 'Editando...' : 'Editar' }}</span>
-			</BaseButton>
+			</BaseButton> -->
 		</div>
 		<hr class="bg-primary text-primary h-[1px] border-0 mb-4" />
 		<div

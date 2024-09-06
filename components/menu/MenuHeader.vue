@@ -72,9 +72,13 @@ const eventClick = () => {
           :isActive="showCardNotifications"
         />
       </div>
-      <div v-if="!viewAccessDenied" class="flex items-center">
-        <div class="text-right text-sm mr-1 hidden lg:block min-w-[210px]">
-          <p class="font-bold capitalize">
+      <div v-if="!viewAccessDenied" class="flex items-center cursor-pointer" :class="{
+						'lg:shadow-[_0_0_0_1px_#FDBA30] lg:bg-[#FFECD5] lg:rounded':
+							menuStore.menuProfile,
+					}"
+        @click.stop="eventClick">
+        <div class="text-right text-sm mr-1 hidden lg:block w-[220px]">
+          <p class="font-bold capitalize truncate">
             {{ profileStore.profileData.data?.fullName?.toLowerCase() }}
           </p>
 
@@ -83,7 +87,6 @@ const eventClick = () => {
           v-if="!menuStore.menuProfile || isLargeScreen"
           :aria-label="menuStore.menuProfile ? 'Cerrar menú' : 'Abrir menú'"
           class="flex items-center relative"
-          @click.stop="eventClick"
         >
           <img
             :src="

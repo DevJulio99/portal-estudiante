@@ -22,7 +22,7 @@ function handleAcordion() {
 	<div :class="className">
 		<div
 			role="button"
-			class="w-full flex justify-between gap-4 md:gap-[26px] py-4 px-6 border border-disable bg-extra_gray"
+			class="w-full flex justify-between gap-4 md:gap-[26px] py-4 px-6 border border-disable bg-extra_gray hover:bg-gray_40 transition-colors"
 			:class="openActive ? 'rounded-t-lg' : 'rounded-lg'"
 			@click="handleAcordion"
 		>
