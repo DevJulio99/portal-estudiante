@@ -1,22 +1,26 @@
 <script lang="ts" setup>
+import { BtnColor } from '~/types/helper.types';
+
 export interface ResumenPregunta {
   respondidas: number;
   pendientes: number;
+  currentQuestion: number;
 }
 
 const props = withDefaults(
   defineProps<{
     cantidad: number;
-    preguntaActual: number;
+    preguntaActual?: number;
     preguntaRespondida: boolean;
-    onBack: () => void;
-    onNext: () => void;
-    onEnd: (resument: ResumenPregunta) => void;
+    finish?: boolean;
+    onBack: (resumen: ResumenPregunta) => void;
+    onNext: (resumen: ResumenPregunta) => void;
   }>(),
   {
     cantidad: 0,
     preguntaActual: 1,
     preguntaRespondida: false,
+    finish: false
   }
 );
 
@@ -29,35 +33,58 @@ const NumeroPregunta = (numero: number) =>
 
 const next = () => {
   if (preguntaActual_.value !== props.cantidad) {
-    (props.preguntaRespondida) &&
+    // console.log('preguntaActual_.value', preguntaActual_.value);
+    // console.log('props.cantidad', props.cantidad);
+    if(props.preguntaRespondida && !respuestasRespondidas.value.includes(preguntaActual_.value) && preguntaActual_.value <= props.cantidad){
       respuestasRespondidas.value.push(preguntaActual_.value);
-    (!props.preguntaRespondida && !respuestasRespondidas.value.includes(preguntaActual_.value)) &&
+      updatePending(preguntaActual_.value);
+    }
+    (!props.preguntaRespondida && !respuestasRespondidas.value.includes(preguntaActual_.value) && !respuestasPendientes.value.includes(preguntaActual_.value)) &&
       respuestasPendientes.value.push(preguntaActual_.value);
     preguntaActual_.value = preguntaActual_.value + 1;
     // mapPreguntas();
-    props.onNext();
+    props.onNext(getResumen());
   }
 
-  if(preguntaActual_.value === props.cantidad && props.preguntaRespondida) {
-    // console.log('temino preguntas');
-    respuestasRespondidas.value.push(preguntaActual_.value);
-    mapPreguntas();
+  // if(preguntaActual_.value === props.cantidad && props.preguntaRespondida) {
+  //   // console.log('temino preguntas');
+  //   // console.log('preguntaActual_.value', preguntaActual_.value);
+  //   // console.log('props.cantidad', props.cantidad);
+  //   preguntaActual_.value <= props.cantidad && !respuestasRespondidas.value.includes(preguntaActual_.value) && respuestasRespondidas.value.push(preguntaActual_.value);
+  //   // mapPreguntas();
 
-    props.onEnd({
-      respondidas: respuestasRespondidas.value.length,
-      pendientes: respuestasPendientes.value.length
-    });
-  }
+  //   props.onEnd({
+  //     respondidas: respuestasRespondidas.value.length,
+  //     pendientes: respuestasPendientes.value.length,
+  //     currentQuestion: preguntaActual_.value
+  //   });
+  //   console.log('respuestasPendientes', respuestasPendientes.value);
+  // }
 
   // console.log('preguntaActual_.value', preguntaActual_.value);
   // console.log('props.preguntaRespondida', props.preguntaRespondida);
   
 };
 
+const getResumen = () => ({
+      respondidas: respuestasRespondidas.value.length,
+      pendientes: respuestasPendientes.value.length,
+      currentQuestion: preguntaActual_.value
+});
+
+const updatePending = (questionNumber: number) => {
+  const indexQuestion = respuestasPendientes.value.findIndex(x => x === questionNumber);
+  if(indexQuestion >= 0){
+     respuestasPendientes.value.splice(indexQuestion, 1);
+     // console.log('indexQuestion', indexQuestion);
+     // console.log('respuestasPendientes.value', respuestasPendientes.value);
+  }
+}
+
 const back = () => {
     if (preguntaActual_.value !== 1) {
         preguntaActual_.value = preguntaActual_.value - 1;
-        props.onBack();
+        props.onBack(getResumen());
     }
 }
 
@@ -76,8 +103,8 @@ const mapPreguntas = () => {
     }
   }
   
-  // console.log('respuestasBorrar', respuestasBorrar);
-  // console.log('nuevosPendientes', nuevosPendientes);
+  console.log('respuestasBorrar', respuestasBorrar);
+  console.log('nuevosPendientes', nuevosPendientes);
   respuestasPendientes.value = nuevosPendientes;
 }
 </script>
@@ -92,7 +119,7 @@ const mapPreguntas = () => {
           class="w-[43px] h-[12px] transition-colors"
           :class="`${
             preguntaActual_ === i + 1
-              ? 'bg-blue_light'
+              ? (finish ? 'bg-green_60' : 'bg-blue_light')
               : respuestasRespondidas.includes(i + 1) 
               ? 'bg-green_60'
               : respuestasPendientes.includes(i + 1)
@@ -116,15 +143,19 @@ const mapPreguntas = () => {
 
     <div class="w-full flex flex-wrap justify-center gap-4 xl:w-auto">
       <BaseButton
-        styles="!w-full max-w-[109px] !bg-blue_light text-white rounded-[6px]"
+        styles="!w-full max-w-[109px] text-white rounded-[6px]"
+        :color="BtnColor.blueLight"
+        :disabled="finish"
         @click="back"
       >
         Anterior
       </BaseButton>
 
       <BaseButton
-        styles="!w-full max-w-[109px] !bg-blue_light text-white rounded-[6px]"
+        styles="!w-full max-w-[109px] text-white rounded-[6px]"
+        :color="BtnColor.blueLight"
         @click="next"
+        :disabled="preguntaActual_ === props.cantidad"
       >
         Siguiente
       </BaseButton>
