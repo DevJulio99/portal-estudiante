@@ -107,3 +107,8 @@
     border-radius: 10px;
   }
 }
+
+.container-img img{
+   width: 100%;
+   cursor: pointer;
+}

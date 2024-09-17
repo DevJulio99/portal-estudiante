@@ -9,7 +9,7 @@ export interface timeEvaluation {
 const props = withDefaults(
   defineProps<{
 	init: boolean;
-  onExpired?: () => void;
+  onExpired: () => void;
   stop?: boolean;
   onfinish?: (time: timeEvaluation) => void;
   timeDefect?: timeEvaluation;
@@ -18,24 +18,35 @@ const props = withDefaults(
   init: true,
   stop: false,
   onfinish: () => {},
+  onExpired: () => {}
 }
 );
 
 const littleTime = ref(true);
+const wasStopped = ref(false);
+const stopTime = ref({
+  countDownData: 0,
+  now: 0
+});
 
-const initTime = () => {
+const initTime = (countDownDate_?: number, now_?: number) => {
   var timeEvaluation = 5;
 
-  var countDownDate = new Date(new Date().getTime() + (timeEvaluation * 60 * 1000)).getTime();//new Date("Jan 5, 2030 15:37:25").getTime();
+  var countDownDate = countDownDate_ ?? new Date(new Date().getTime() + (timeEvaluation * 60 * 1000)).getTime();//new Date("Jan 5, 2030 15:37:25").getTime();
   const elememtTime = document.getElementById("time-test");
   const elememtHour = document.getElementById("hour");
   const elememtMin = document.getElementById("min");
   const elememtSeg = document.getElementById("seg");
+  // console.log('countDownDate', countDownDate);
+  // var currentDate = new Date();
+  // now_ && currentDate.setTime(now_);
 // Update the count down every 1 second
 var x = setInterval(function() {
-
+  var current =  new Date();
   // Get today's date and time
-  var now = new Date().getTime();
+  var now =  current.getTime();
+  // console.log('now interval', now);
+  // console.log('current interval', current);
 
   // Find the distance between now and the count down date
   var distance = countDownDate - now;
@@ -74,6 +85,13 @@ var x = setInterval(function() {
 
   if(props.stop){
     clearInterval(x);
+    console.log('distance', distance);
+    console.log('countDownDate', countDownDate);
+    console.log('now', now);
+    stopTime.value = {
+      countDownData: countDownDate,
+      now
+    };
     props.onfinish({
       hour: elememtHour.innerText,
       min: elememtMin.innerText,
@@ -84,11 +102,27 @@ var x = setInterval(function() {
 }, 1000);
 }
 
+const initInterval = (distance: number) => {
+
+}
+
 const formatTime = (time: number) => time < 10 ? `0${time}` : `${time}`;
 
 onMounted(() => {
   props.init && initTime();
 });
+
+onBeforeUpdate(() => {
+  // console.log('onBeforeUpdate', props.stop)
+  if(wasStopped.value){
+    console.log('se detuvo va a volver a empezar');
+    wasStopped.value = false;
+    initTime(stopTime.value.countDownData, stopTime.value.now);
+  }
+  if(props.stop){
+    wasStopped.value = true;
+  }
+})
 </script>
 
 <template>

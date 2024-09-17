@@ -8,6 +8,8 @@
   }
   );
 
+  const showQuestions = ref(true);
+
 const opciones = [
     {
       title: 'Alternativa 1',
@@ -49,8 +51,21 @@ const opciones = [
 </script>
 <template>
 
-    <div class="flex flex-wrap gap-[11px] w-fit">
+    <div class="relative w-fit">
+      <div class="absolute left-[-42px] top-[15px]">
+          <div class="btn-show relative flex justify-center items-center w-[28px] h-[31px] bg-[#3A5475] rounded-md cursor-pointer" @click="() => showQuestions = !showQuestions">
+            <div class="w-max tooltp absolute text-[8px] top-[-34px] py-2 px-3 bg-[#3A5475] rounded-md text-white">
+               {{ showQuestions ? 'Ocultar preguntas' : 'Ver preguntas' }}
+            </div>
+            <nuxt-icon
+			           filled
+			           :class="`text-2xl cursor-pointer`"
+			           name="upn-icon-nav-arrow-white-left" 
+		        />
+          </div>
+      </div>
 
+      <div :class="`flex flex-wrap gap-[11px] max-h-[469px] transition-all overflow-hidden ${showQuestions ? 'w-[577px]' : 'w-0 h-0'}`">
         <span class="w-full block text-sm font-semibold mb-[15px]">Pregunta N° 1: La idea principal del texto es...</span>
         <!-- <p>option {{ checkedOption }}</p> -->
         <div v-for="(opcion, index) in opciones" class="flex w-full cursor-pointer px-[11px] pt-[10px] pb-[7px] border 
@@ -64,5 +79,32 @@ const opciones = [
             </div>
         </div>
     </div>
+    </div>
 
 </template>
+
+<style scoped>
+.tooltp {
+ visibility: hidden;
+}
+
+.tooltp::after {
+	content: '';
+	display: block;
+	position: absolute;
+	width: 0;
+	height: 0;
+	background-color: transparent;
+	bottom: -5px;
+	border: 6.93px solid transparent;
+	border-bottom: 0;
+	border-top: 6px solid #3A5475;
+	text-align: center;
+	transform: translateX(-60%);
+	left: 50%;
+}
+
+.btn-show:hover .tooltp {
+  visibility: visible;
+}
+</style>

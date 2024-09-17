@@ -42,27 +42,9 @@ const next = () => {
     (!props.preguntaRespondida && !respuestasRespondidas.value.includes(preguntaActual_.value) && !respuestasPendientes.value.includes(preguntaActual_.value)) &&
       respuestasPendientes.value.push(preguntaActual_.value);
     preguntaActual_.value = preguntaActual_.value + 1;
-    // mapPreguntas();
     props.onNext(getResumen());
   }
 
-  // if(preguntaActual_.value === props.cantidad && props.preguntaRespondida) {
-  //   // console.log('temino preguntas');
-  //   // console.log('preguntaActual_.value', preguntaActual_.value);
-  //   // console.log('props.cantidad', props.cantidad);
-  //   preguntaActual_.value <= props.cantidad && !respuestasRespondidas.value.includes(preguntaActual_.value) && respuestasRespondidas.value.push(preguntaActual_.value);
-  //   // mapPreguntas();
-
-  //   props.onEnd({
-  //     respondidas: respuestasRespondidas.value.length,
-  //     pendientes: respuestasPendientes.value.length,
-  //     currentQuestion: preguntaActual_.value
-  //   });
-  //   console.log('respuestasPendientes', respuestasPendientes.value);
-  // }
-
-  // console.log('preguntaActual_.value', preguntaActual_.value);
-  // console.log('props.preguntaRespondida', props.preguntaRespondida);
   
 };
 
@@ -86,26 +68,6 @@ const back = () => {
         preguntaActual_.value = preguntaActual_.value - 1;
         props.onBack(getResumen());
     }
-}
-
-const mapPreguntas = () => {
-  const respuestasBorrar = [];
-  const nuevosPendientes = [];
-  for(const numeroResp of respuestasRespondidas.value){
-      if(respuestasPendientes.value.includes(numeroResp)){
-        respuestasBorrar.push(numeroResp);
-      }
-  }
-
-  for(const pendiente of respuestasPendientes.value){
-    if(!respuestasBorrar.includes(pendiente)){
-      nuevosPendientes.push(pendiente);
-    }
-  }
-  
-  console.log('respuestasBorrar', respuestasBorrar);
-  console.log('nuevosPendientes', nuevosPendientes);
-  respuestasPendientes.value = nuevosPendientes;
 }
 </script>
 
