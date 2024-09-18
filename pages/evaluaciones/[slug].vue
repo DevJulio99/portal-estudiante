@@ -12,13 +12,14 @@ const route = useRoute();
 
 const title = `${route.params.slug}`;
 const preguntaRespondida = ref(false);
-const respuesta = ref(false);
+const savedAnswer = ref(false);
 const currentSelect = ref("");
 const totalQuestions = ref(20);
 const summaryEvaluation = ref<ResumenPregunta>({
   currentQuestion: 1,
   pendientes: 0,
   respondidas: 0,
+  idsAnswered: []
 });
 const finishQuestion = ref(false);
 const showModal = ref(false);
@@ -29,6 +30,10 @@ const showPreviewImage = ref({
   status: false,
   url: ''
 });
+const finalizedBefore = ref(false);
+const wasNotSaved = ref(true);
+const forceNext = ref(false);
+const responsesData = ref<any[]>([]);
 
 let breadcrumbsItem = [
   { name: "Evaluaciones", current: false, url: "/evaluaciones" },
@@ -36,25 +41,42 @@ let breadcrumbsItem = [
 ];
 
 const onResponse = (option: string) => {
-  respuesta.value = true;
+  // console.log('option select', option);
+  // console.log('summaryEvaluation', summaryEvaluation.value);
+  const isRegister = responsesData.value.findIndex((x: any) => x.id === summaryEvaluation.value.currentQuestion);
+  if(isRegister < 0) {
+    responsesData.value = [...responsesData.value, {id: summaryEvaluation.value.currentQuestion, response: option}]
+  }
+  if(isRegister >= 0) {
+    responsesData.value[isRegister] = {...responsesData.value[isRegister], response: option};
+  }
+  savedAnswer.value = true;
   currentSelect.value = option;
+  wasNotSaved.value = true;
 };
 
 const guardarRespuesta = () => {
-  respuesta.value && (preguntaRespondida.value = true);
+  savedAnswer.value && (preguntaRespondida.value = true);
   if (totalQuestions.value === summaryEvaluation.value?.currentQuestion) {
     summaryEvaluation.value = {
       ...summaryEvaluation.value,
-      respondidas: summaryEvaluation.value.respondidas + 1,
+      respondidas: finalizedBefore.value ? summaryEvaluation.value.respondidas : summaryEvaluation.value.respondidas + 1,
     };
     console.log("fin de la evaluacion", { ...summaryEvaluation.value });
     finishQuestion.value = true;
+    finalizedBefore.value = true;
     showModal.value = true;
   }
+  wasNotSaved.value = false;
 };
 
+const onNextFinish = () => {
+  finishQuestion.value = true;
+  showModal.value = true;
+}
+
 const resetRespuesta = () => {
-  respuesta.value = false;
+  savedAnswer.value = false;
   preguntaRespondida.value = false;
   finishQuestion.value = false;
   currentSelect.value = "";
@@ -63,19 +85,40 @@ const resetRespuesta = () => {
 const onActionQuestion = (resumen: ResumenPregunta) => {
   resetRespuesta();
   summaryEvaluation.value = resumen;
-  // console.log('onNextQuestion question', question);
+  forceNext.value = false;
 };
 
+const onBack = (resumen: ResumenPregunta) => {
+  onActionQuestion(resumen);
+}
+
+const onNext = (resumen: ResumenPregunta) => {
+  onActionQuestion(resumen);
+}
+
 const EvaluacionExpirada = () => {
+  wasNotSaved.value = false;
   summaryEvaluation.value.currentQuestion === 1 &&
     (summaryEvaluation.value = {
       currentQuestion: 1,
       pendientes: totalQuestions.value,
       respondidas: 0,
+      idsAnswered: []
     });
   showModal.value = true;
 };
 
+const OnNextNotSave = () => {
+   // console.log('paso sin guardar');
+   forceNext.value = true;
+   wasNotSaved.value = false;
+   showModal.value = false;
+}
+
+const onAskNext = () => {
+  wasNotSaved.value = true;
+  showModal.value = true;
+}
 
 onMounted(() => {
  const content = `
@@ -185,7 +228,7 @@ setTimeout(() => {
           <BaseButton
             :color="BtnColor.blueLight"
             styles="!w-full max-w-[183px] text-white rounded-[6px]"
-            :disabled="!respuesta"
+            :disabled="!savedAnswer"
             @click="guardarRespuesta"
           >
             Guardar respuesta
@@ -195,15 +238,21 @@ setTimeout(() => {
 
       <Preguntas
         :cantidad="totalQuestions"
-        :onBack="onActionQuestion"
-        :onNext="onActionQuestion"
+        :onBack="onBack"
+        :onNext="onNext"
         :preguntaRespondida="preguntaRespondida"
         :finish="finishQuestion"
+        :was-not-saved="wasNotSaved"
+        :force-next="forceNext"
+        :on-ask-next="onAskNext"
+        :on-next-finish="onNextFinish"
       />
       <ModalEstado
         :show="showModal"
         :resumen="summaryEvaluation"
         :success="finishQuestion"
+        :was-not-saved="wasNotSaved"
+        :next-not-save="OnNextNotSave"
         :on-close="
           () => {
             showModal = false;

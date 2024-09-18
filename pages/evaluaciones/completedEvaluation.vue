@@ -31,6 +31,7 @@ const props = withDefaults(
     </div>
     <TiempoEvaluacion
           :stop="true"
+          :init="false"
           :time-defect="time"
         />
   </div>

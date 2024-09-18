@@ -44,10 +44,6 @@ const opciones = [
     }
   }
 
-  onBeforeUpdate(() => {
-    console.log('update')
-  })
-
 </script>
 <template>
 

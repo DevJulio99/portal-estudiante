@@ -9,14 +9,18 @@ const props = withDefaults(
     show: boolean;
     resumen: ResumenPregunta;
     success?: boolean;
+    wasNotSaved: boolean;
     finish?: () => void;
     onClose?: () => void;
+    nextNotSave: () => void;
   }>(),
   {
     show: false,
     success: false,
+    wasNotSaved: false,
     onClose: () => {},
     finish: () => {},
+    nextNotSave: () => {},
   }
 );
 
@@ -27,8 +31,11 @@ const onBack = () => {
 const onNext = () => {
   const finishQuestions = !props.resumen.pendientes;
 
-  if (finishQuestions) {
+  if (finishQuestions && !props.wasNotSaved) {
     props.finish();
+  }
+  if (props.wasNotSaved) {
+    props.nextNotSave();
   }
   props.onClose();
 };
@@ -42,40 +49,60 @@ const onNext = () => {
     <div class="bg-white w-full max-w-[447px] p-6 rounded-lg xl:pt-10">
       <div class="w-full flex justify-center mb-[22px]">
         <img
-          :class="success ? '' : 'spinner'"
-          :src="success ? exclamation : loader"
+          :class="success || wasNotSaved ? '' : 'spinner'"
+          :src="success || wasNotSaved ? exclamation : loader"
           alt="loader"
         />
       </div>
       <span
-        class="block text-xl font-medium mb-[6px] text-center font-telegraf"
+        class="block text-xl font-semibold mb-[6px] text-center font-telegraf"
         >{{
           success
             ? resumen.pendientes > 0
               ? "¡Resumen de la competencia 01: Comprensión lectora!"
               : "¡Resumen de su examen!"
+            : wasNotSaved
+            ? "¡Su respuesta no se guardó!"
             : "¡Se acabo el tiempo!"
         }}</span
       >
-      <div v-if="!success" class="flex justify-center mb-4">
+      <div v-if="!success && !wasNotSaved" class="flex justify-center mb-4">
         <TiempoEvaluacion :init="false" />
       </div>
 
-      <span class="w-full text-center block font-normal text-base text-gray1"
+      <span
+        v-if="!wasNotSaved"
+        class="w-full text-center block font-normal text-base text-gray1"
         >Preguntas respondidas: {{ resumen.respondidas }}
       </span>
       <span
+        v-if="!wasNotSaved"
         class="w-full text-center block font-normal text-base text-gray1 mb-[14px]"
         >Preguntas en blanco: {{ resumen.pendientes }}</span
       >
 
-      <div v-if="success && !resumen.pendientes" class="mb-4 text-gray1 text-sm leading-[21px] font-normal text-center">
+      <div
+        v-if="success && !resumen.pendientes && !wasNotSaved"
+        class="mb-4 text-gray1 text-sm leading-[21px] font-normal text-center"
+      >
         Usted desea pasar a la Competencia 02: Razonamiento Crítico
       </div>
 
-      <div v-if="success && !resumen.pendientes" class="mb-4 text-gray1 text-xs leading-[18px] font-normal text-center">
-        ¿Está seguro
-        que desea avanzar y finalizar la competencia 01: Comprensión lectora?
+      <div
+        v-if="success && !resumen.pendientes && !wasNotSaved"
+        class="mb-4 text-gray1 text-xs leading-[18px] font-normal text-center"
+      >
+        ¿Está seguro que desea avanzar y finalizar la competencia 01:
+        Comprensión lectora?
+      </div>
+
+      <div v-if="wasNotSaved" class="text-center font-normal text-base text-gray1">
+        <p>
+          Si continúa sin guardarla, la respuesta se considerará como no
+          respondida.
+        </p>
+        <br />
+        <p>¿Desea continuar?</p>
       </div>
 
       <div
@@ -88,7 +115,7 @@ const onNext = () => {
       </div>
 
       <div
-        v-if="!success"
+        v-if="!success && !wasNotSaved"
         class="text-center text-neutron80 text-base font-medium mb-[14px]"
       >
         Usted está siendo redirigido automáticamente a la competencia 02:
@@ -96,14 +123,14 @@ const onNext = () => {
       </div>
 
       <div
-        v-if="!success"
+        v-if="!success && !wasNotSaved"
         class="font-normal text-base text-gray1 font-normal text-center"
       >
         Por favor, espere mientras se carga la competencia indicada.
       </div>
 
       <div
-        v-if="success"
+        v-if="success || wasNotSaved"
         class="pt-5 border border-[#E4E4E4] border-x-0 border-b-0 flex flex-wrap justify-center gap-[15px] items-center"
       >
         <BaseButton

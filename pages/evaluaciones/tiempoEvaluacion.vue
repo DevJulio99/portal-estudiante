@@ -8,7 +8,7 @@ export interface timeEvaluation {
 
 const props = withDefaults(
   defineProps<{
-	init: boolean;
+	init?: boolean;
   onExpired: () => void;
   stop?: boolean;
   onfinish?: (time: timeEvaluation) => void;
@@ -85,9 +85,9 @@ var x = setInterval(function() {
 
   if(props.stop){
     clearInterval(x);
-    console.log('distance', distance);
-    console.log('countDownDate', countDownDate);
-    console.log('now', now);
+    // console.log('distance', distance);
+    // console.log('countDownDate', countDownDate);
+    // console.log('now', now);
     stopTime.value = {
       countDownData: countDownDate,
       now
@@ -113,7 +113,6 @@ onMounted(() => {
 });
 
 onBeforeUpdate(() => {
-  // console.log('onBeforeUpdate', props.stop)
   if(wasStopped.value){
     console.log('se detuvo va a volver a empezar');
     wasStopped.value = false;
