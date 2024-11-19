@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { getProfile } from '~/services/profile';
+
+await getProfile(1);
+</script>
 <template>
   <div class="md:grid md:grid-cols-[auto_1fr]">
     <MenuComponent />

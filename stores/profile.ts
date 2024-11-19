@@ -6,7 +6,7 @@ export const useProfileStore = defineStore('profileStore', {
 	state: () => {
 		return {
 			profileData: {
-				data: profileStoreMock as any,
+				data: null,//profileStoreMock as any,
 				pending: false,
 				error: null,
 			} as ProfileDataStore,

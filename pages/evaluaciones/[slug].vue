@@ -68,7 +68,13 @@ const guardarRespuesta = () => {
     showModal.value = true;
   }
   wasNotSaved.value = false;
+  // console.log('responsesData', responsesData.value)
 };
+
+const getValueOption = () => {
+  const question = responsesData.value.find(x => x.id === summaryEvaluation.value.currentQuestion);
+  return  question ?? ""
+}
 
 const onNextFinish = () => {
   finishQuestion.value = true;
@@ -222,7 +228,7 @@ setTimeout(() => {
 
             </div>
           </div>
-          <Opciones :onResponse="onResponse" :checkedOption="currentSelect" />
+          <Opciones :onResponse="onResponse" :checkedOption="getValueOption().response" />
         </div>
         <div class="w-full flex justify-end mt-[11px]">
           <BaseButton

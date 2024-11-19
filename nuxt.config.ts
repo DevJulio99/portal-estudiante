@@ -4,9 +4,17 @@ export default defineNuxtConfig({
   routeRules: {
     '/inicio': { ssr: true, static: true },
   },
+  runtimeConfig: {
+    public: {
+      urlApi: process.env.URL_API_BASE,
+    }
+  },
   devServer: {
     port: 3002
   },
   modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', 'nuxt-icons', '@nuxt/image', '@pinia/nuxt'],
-  devtools: { enabled: true }
+  devtools: { enabled: true },
+  imports: {
+    dirs: ['stores', 'composables/**'],
+  },
 })
