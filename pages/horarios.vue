@@ -1,25 +1,25 @@
 <script lang="ts" setup>
 // @ts-ignore
 // import html2pdf from 'html2pdf.js';
-import { useDateFormat } from '@vueuse/core';
-import { EventStatus } from '~/types/calendar.types';
-import type { HorarioData, CourseExtend } from '~/types/cursos.types';
-import type { RangeWeek, WeekDates } from '~/types/schedule.types';
-import dataHorarioMock from '~/utils/data/dataHorarioMock.json'
+import { useDateFormat } from "@vueuse/core";
+import { EventStatus } from "~/types/calendar.types";
+import type { HorarioData, CourseExtend } from "~/types/cursos.types";
+import type { RangeWeek, WeekDates } from "~/types/schedule.types";
+import dataHorarioMock from "~/utils/data/dataHorarioMock.json";
 
-// const { $api } = useNuxtApp();
+const { $api } = useNuxtApp();
 const { codAlum } = useUserStoreAuth();
 const { profileData } = useProfileStore();
 // const states = scheduleState();
 
 useHead({
-	title: 'Horario',
+  title: "Horario",
 });
 
 const breadcrumbsItem = [
-	{ name: 'Inicio', current: false, url: '/inicio' },
-	{ name: 'Mis Estudios', current: false, url: '' },
-	{ name: 'Horario', current: true, url: '' },
+  { name: "Inicio", current: false, url: "/inicio" },
+  { name: "Mis Estudios", current: false, url: "" },
+  { name: "Horario", current: true, url: "" },
 ];
 
 const states = scheduleState();
@@ -29,116 +29,114 @@ const dataWeek = ref<WeekDates>(weekDate);
 const dataPdf = ref<{ [key: string]: CourseExtend[] }>({});
 const loadingPdf = ref(false);
 const startDate = ref<string>(
-	`${useDateFormat(weekDate.Monday, 'YYYY-MM-DD').value}T00:00:00Z`,
+  `${useDateFormat(weekDate.Monday, "YYYY-MM-DD").value}T00:00:00Z`
 );
 const endDate = ref<string>(
-	`${useDateFormat(weekDate.Sunday, 'YYYY-MM-DD').value}T23:59:00Z`,
+  `${useDateFormat(weekDate.Sunday, "YYYY-MM-DD").value}T23:59:00Z`
 );
-const pending = ref<boolean>(true);
 
-// const callHorarioRango = async () => {
-// 	const { data, error, pending } = await $api.horarioRango.getHorariosRango(
-// 		codAlum,
-// 		startDate.value,
-// 		endDate.value,
-// 		'1',
-// 		{
-// 			lazy: true,
-// 		},
-// 	);
-// 	return { data, error, pending };
-// };
+console.log("startDate", startDate.value);
+console.log("endDate", endDate.value);
+const pendingSchedule = ref<boolean>(true);
 
-// const { data, error, pending } = await callHorarioRango();
+const callHorarioRango = async () =>
+  await $api.horarioRango.getHorariosRango(
+    "1",
+    startDate.value,
+    endDate.value,
+    {
+      lazy: true,
+    }
+  );
+
+const { data, error, pending } = await callHorarioRango();
 
 // const errorService: Ref<{ titulo: string } | null> = ref(null);
-// watch(data, (response) => {
-// 	if (response?.flag && response?.data.length) {
-// 		states.setWeekCourses(response.data);
-// 		states.setFilter(response.data);
-// 		states.setDataStatus(true);
-// 		dataHorario.value = response.data;
-// 	} else if (response?.error) {
-// 		errorService.value = response?.error;
-// 	}
-// });
+watch(data, (response) => {
+  console.log("response rango horario", response);
+  if (response?.data.length) {
+    states.setWeekCourses(response.data);
+    states.setFilter(response.data);
+    states.setDataStatus(true);
+    dataHorario.value = response.data;
+  } else if (response?.error) {
+    // errorService.value = response?.error;
+  }
+});
 // const { data: calendar, pending: pendingCalendar } =
 // 	await $api.calendar.getCalendar(profileData.data?.codNivel ?? '', {
 // 		lazy: true,
 // 	});
 
 const generatePDF = async () => {
-	// loadingPdf.value = true;
-	// const newData = await useGeneratePdf(
-	// 	codAlum,
-	// 	profileData.data?.codNivel || '',
-	// 	profileData.data?.codPeriodoBanner || '',
-	// );
-
-	// dataPdf.value = newData;
-
-	// const content = document.getElementById('pdf-content');
-	// const pdfOptions = {
-	// 	margin: 5,
-	// 	filename: 'horario-semanal.pdf',
-	// 	image: { type: 'jpeg', quality: 0.98 },
-	// 	html2canvas: {
-	// 		scale: 2,
-	// 		dpi: 192,
-	// 		letterRendering: true,
-	// 	},
-	// 	jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-	// 	pagebreak: { mode: 'avoid-all', before: '#newPage' },
-	// };
-
-	// await html2pdf().from(content).set(pdfOptions).outputPdf().save();
-	// loadingPdf.value = false;
+  // loadingPdf.value = true;
+  // const newData = await useGeneratePdf(
+  // 	codAlum,
+  // 	profileData.data?.codNivel || '',
+  // 	profileData.data?.codPeriodoBanner || '',
+  // );
+  // dataPdf.value = newData;
+  // const content = document.getElementById('pdf-content');
+  // const pdfOptions = {
+  // 	margin: 5,
+  // 	filename: 'horario-semanal.pdf',
+  // 	image: { type: 'jpeg', quality: 0.98 },
+  // 	html2canvas: {
+  // 		scale: 2,
+  // 		dpi: 192,
+  // 		letterRendering: true,
+  // 	},
+  // 	jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  // 	pagebreak: { mode: 'avoid-all', before: '#newPage' },
+  // };
+  // await html2pdf().from(content).set(pdfOptions).outputPdf().save();
+  // loadingPdf.value = false;
 };
 
 const actionWeek = (range: RangeWeek) => {
-	console.log('actionWeek', range);
-	startDate.value = range.init;
-	endDate.value = range.end;
-	dataWeek.value = range.weekDates;
-	dataHorario.value = [];
+  console.log("actionWeek", range);
+  startDate.value = range.init;
+  endDate.value = range.end;
+  dataWeek.value = range.weekDates;
+  dataHorario.value = [];
 
-	states.setWeekCourses([]);
-	states.setFilter([]);
-	states.setDataStatus(false);
-	// callHorarioRango();
+  states.setWeekCourses([]);
+  states.setFilter([]);
+  states.setDataStatus(false);
+  // callHorarioRango();
 };
 
 onMounted(() => {
-	states.setWeekCourses(dataHorarioMock);
-	states.setFilter(dataHorarioMock as any);
-	states.setDataStatus(true);
-	dataHorario.value = dataHorarioMock as any;
-	pending.value = false;
-})
+  //states.setWeekCourses(dataHorarioMock);
+  //states.setFilter(dataHorarioMock as any);
+  //states.setDataStatus(true);
+  //dataHorario.value = dataHorarioMock as any;
+  // pending.value = false;
+});
 </script>
 <template>
-	<BaseLayout bgWhite>
-		<BaseBreadcrumbs :items="breadcrumbsItem" />
-		<BaseTabMyStudies activeTab="horario" />
-		<BaseTitle text="Horario Semanal" />
-		<div class="layout-container">
-			<div id="pdf-content" ref="pdfSection" class="mt-[18px]">
-				<SchedulePdf
-					:dataHorario="dataPdf"
-					:dataWeek="dataWeek"
-					:current-cicle="states.currentCicle"
-				/>
-			</div>
-		</div>
-		<Schedule
-			:pending="pending"
-			:errorService="null"
-			:error="null"
-			:on-download="generatePDF"
-			:on-action-week="actionWeek"
-			:loadingPdf="loadingPdf"
-		/>
-		<!-- <template #secondary>
+  <BaseLayout bgWhite>
+    <BaseBreadcrumbs :items="breadcrumbsItem" />
+    <BaseTabMyStudies activeTab="horario" />
+    <BaseTitle text="Horario Semanal" />
+    <div class="layout-container">
+      <div id="pdf-content" ref="pdfSection" class="mt-[18px]">
+        <SchedulePdf
+          :dataHorario="dataPdf"
+          :dataWeek="dataWeek"
+          :current-cicle="states.currentCicle"
+        />
+      </div>
+    </div>
+    <Schedule
+      :pending="pending"
+      :errorService="null"
+      :error="null"
+      :on-download="generatePDF"
+      :on-action-week="actionWeek"
+      :loadingPdf="loadingPdf"
+    />
+    <!-- <template #secondary>
 			<CardHome
 				v-if="!pendingCalendar"
 				icon="calendarIcon"
@@ -158,21 +156,21 @@ onMounted(() => {
 				/>
 			</CardHome>
 		</template> -->
-	</BaseLayout>
+  </BaseLayout>
 </template>
 
 <style scoped>
 .layout-container {
-	position: fixed;
-	width: 100vw;
-	height: 100vh;
-	left: -100vw;
-	top: 0;
-	z-index: -9999;
-	background: rgba(95, 95, 95, 0.8);
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
-	overflow: auto;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: -100vw;
+  top: 0;
+  z-index: -9999;
+  background: rgba(95, 95, 95, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: auto;
 }
 </style>

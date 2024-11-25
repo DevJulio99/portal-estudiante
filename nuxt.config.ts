@@ -9,12 +9,19 @@ export default defineNuxtConfig({
       urlApi: process.env.URL_API_BASE,
     }
   },
-  devServer: {
-    port: 3002
-  },
   modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', 'nuxt-icons', '@nuxt/image', '@pinia/nuxt'],
   devtools: { enabled: true },
   imports: {
     dirs: ['stores', 'composables/**'],
   },
+  vite: {
+    server: {
+      hmr : {
+        protocol: "http",
+        host: 'localhost',
+        clientPort: 3000,
+        port: 3000,
+      }
+    }
+  }
 })

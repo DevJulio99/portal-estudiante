@@ -188,6 +188,7 @@ onBeforeUpdate(() => {
 					:key="i"
 					:course="course"
 					:getTopAndHeight="getTopAndHeight"
+					:pdf="false"
 					mobile
 				/>
 			</div>

@@ -94,15 +94,29 @@ const periodo = ref('');
 const seccion = ref('');
 const modeCard = ref<'card' | 'list'>('card');
 
+const dataCursos = ref<Curso[]>([]);
+
 const servicesError: Ref<ErrorResponse | null> = ref(null);
 
-// const {
-// 	data: CursosData,
-// 	error: errorServices,
-// 	pending: pendingServices,
-// } = await $api.cursos.getCursos(codAlum, codigoNivel, codPeriodo, {
-// 	lazy: true,
-// });
+const {
+	data: CursosData,
+	error: errorServices,
+	pending: pendingServices,
+} = await $api.cursos.getCursos("1" ,{
+	lazy: true,
+});
+
+watch(CursosData, (response) => {
+	if (response?.data.length) {
+		console.log('response cursos', response)
+		dataCursos.value = response.data;
+		initNotasView();
+	}
+
+	if (response?.error) {
+		servicesError.value = response.error;
+	}
+});
 
 // async function callNotas() {
 // 	const { data, error, pending } = await $api.notas.getNotas(
@@ -469,17 +483,17 @@ function onExpansionNota(
 }
 
 const initNotasView = () => {
-	const dataCursos = cursosMock;
-	const cursosIniciados = dataCursos.filter(
+	const dataCursos_ = dataCursos.value;//cursosMock;
+	const cursosIniciados = dataCursos_.filter(
 			(x) => x.statusCurso === 'Iniciado',
 		);
-		const cursosPorIniciar = dataCursos.filter(
+		const cursosPorIniciar = dataCursos_.filter(
 			(x) => x.statusCurso === 'Por iniciar',
 		);
-		const cursosFinalizados = dataCursos.filter(
+		const cursosFinalizados = dataCursos_.filter(
 			(x) => x.statusCurso === 'Finalizado',
 		);
-		const cursosRetirados = dataCursos.filter(
+		const cursosRetirados = dataCursos_.filter(
 			(x) => x.statusCurso === 'Retirado',
 		);
 
@@ -590,7 +604,6 @@ onMounted(() => {
 	window.addEventListener('resize', () => {
 		window.innerWidth < 1024 && (modeCard.value = 'card');
 	});
-	initNotasView();
 });
 </script>
 
