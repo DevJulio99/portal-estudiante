@@ -23,7 +23,7 @@ export const getProfile = async (codAlum: number) => {
 	// });
 	watch(data, (response) => {
         console.log('response profile', response);
-		if (response?.flag) {
+		if (response?.data.length) {
 			profileStore.setProfileData({
 				data: response.data[0] ?? null,
 				pending,
@@ -34,9 +34,9 @@ export const getProfile = async (codAlum: number) => {
 				data: profileStore.profileData.data,
 				pending,
 				error: {
-					icono: data.value?.error.icono || '',
-					titulo: data.value?.error.titulo || '',
-					descripcion: data.value?.error.descripcion || '',
+					icono: '',
+					titulo: '',
+					descripcion: '',
 					default: false,
 				},
 			});

@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   // compatibilityDate: '2024-04-03',
   routeRules: {
-    '/inicio': { ssr: true, static: true },
+    '/inicio': { ssr: false, static: true },
+    '/**': { ssr: false },
   },
   runtimeConfig: {
     public: {

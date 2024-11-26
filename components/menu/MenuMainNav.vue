@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useMediaQuery } from '@vueuse/core';
 import { vOnClickOutside } from '@vueuse/components';
 import { Menu } from '~/types/helper.types';
+import MenuNavItem from './MenuNavItem.vue';
 
 const menuStore = useMenuStore();
 const isMediumScreen = useMediaQuery('(min-width: 768px)');
