@@ -73,13 +73,13 @@ const currentValue = () => {
 	<div class="flex flex-col relative">
 		<div
 			class="relative border-[1px] rounded flex items-center"
-			:class="openSelect ? 'border-primary' : ''"
+			:class="openSelect ? 'border-turquoise' : ''"
 		>
 			<div
 				:class="`${customStyle} flex items-center w-full py-1.5 px-3 md:p-3 rounded`"
 				@click="open"
 			>
-				<span class="text-xs md:text-sm font-telegraf text-neutral">{{
+				<span class="text-xs md:text-sm font-nunito text-neutral">{{
 					currentValue()?.name.trim().length
 						? currentValue()?.name ?? placeholder ?? 'Seleccione'
 						: responsivePlaceholder.trim().length && activeResponsive

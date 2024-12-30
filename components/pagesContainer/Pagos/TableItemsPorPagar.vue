@@ -282,14 +282,14 @@ onMounted(() => {
 		<div class="flex justify-between mt-7 items-center">
 			<p class="mb-0 lg:text-[16px] text-[14px]">Total seleccionado:</p>
 			<span
-				class="bg-[#00B9FF] text-dark_100 font-telegraf py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
+				class="bg-green_40 text-dark_100 font-telegraf py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
 				:class="{ 'bg-white': montoTotalPagar == 0.0 }"
 				>S/{{ montoTotalPagar.toFixed(2) }}</span
 			>
 		</div>
 		<div class="flex mt-5">
 			<button
-				class="w-full rounded-md gap-1 font-extrabold bg-primary py-3 disabled:bg-[#FFE2BE] disabled:text-[#4F6168]"
+				class="w-full rounded-md gap-1 font-extrabold bg-green_40 py-3 disabled:bg-green_10 disabled:text-[#4F6168]"
 				:disabled="montoTotalPagar == 0.0"
 				@click="showPopupMethods"
 			>
@@ -338,14 +338,14 @@ th {
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 	color: white;
-	background-color: #430073;
+	background-color: #031448;
 	font-weight: 600;
 	font-size: 16px;
 }
 
 th:last-child {
-	color: #550091;
-	background-color: #e6c2ff;
+	color: #031448;
+	background-color: lightblue;
 }
 
 td {

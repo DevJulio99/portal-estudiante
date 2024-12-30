@@ -177,7 +177,7 @@ onMounted(() => {
 		title="Notas"
 		url="/notas"
 		width="w-full xl:w-2/3 w-[50%]"
-		icon="book-read-fill"
+		icon="notasIcon"
 		class="overflow-hidden flex flex-col"
 	>
 		<div

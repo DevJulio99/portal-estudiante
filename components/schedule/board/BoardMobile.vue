@@ -150,11 +150,11 @@ onBeforeUpdate(() => {
 			</button>
 		</div>
 		<div class="mb-4">
-			<span class="font-bold text-purple_80">
+			<span class="font-bold text-[#287f6b]">
 				{{ useDateFormat(getSelectedDay, 'DD', { locales: 'es-ES' }).value }}
 				{{ ' ' }}
 			</span>
-			<span class="capitalize font-bold text-xs text-purple_80">
+			<span class="capitalize font-bold text-xs text-[#287f6b]">
 				{{ useDateFormat(getSelectedDay, 'MMM', { locales: 'es-ES' }).value }}.
 			</span>
 			<span
@@ -207,6 +207,6 @@ onBeforeUpdate(() => {
 	@apply flex flex-col text-sm text-center py-1 lg:py-2;
 }
 .isToday {
-	@apply bg-primary w-full h-full rounded-lg;
+	@apply bg-[#5dade2] w-full h-full rounded-lg;
 }
 </style>

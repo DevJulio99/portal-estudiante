@@ -59,6 +59,6 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 }
 
 .submenu-item {
-	@apply leading-[1] font-telegraf font-bold capitalize text-[14px] block px-5 py-[10px] hover:bg-black hover:text-white cursor-pointer;
+	@apply leading-[1] font-nunito font-extrabold capitalize text-[14px] block px-5 py-[10px] hover:bg-black hover:text-white cursor-pointer;
 }
 </style>

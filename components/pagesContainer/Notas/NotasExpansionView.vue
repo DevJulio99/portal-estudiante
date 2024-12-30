@@ -86,13 +86,13 @@ function actionExpansion(option: Option) {
 								disable
 									? 'bg-disable'
 									: item.modalidad == 'Presencial'
-										? 'bg-[#FDBA30]'
+										? 'bg-turquoise text-black'
 										: item.modalidad == 'Remoto'
-											? 'bg-[#6A00B5] text-white'
-											: 'bg-[#0072AB] text-white'
+											? 'bg-violet_100 text-white'
+											: 'bg-blue_link text-white'
 							"
 						>
-							<p class="text-[10px] leading-[11px] uppercase">
+							<p class="text-[10px] leading-[11px] font-extrabold">
 								<b>{{ item.modalidad }}</b>
 							</p>
 						</div>
@@ -176,8 +176,8 @@ function actionExpansion(option: Option) {
 						Inasistencias:
 					</div>
 					<div
-						class="flex justify-center text-xl items-center font-extrabold"
-						:class="disable ? 'text-neutral' : 'text-midnightBlue'"
+						class="flex justify-center text-lg items-center font-bold"
+						:class="disable ? 'text-neutral' : 'text-error-dark'"
 					>
 						{{ item.inasistencias }}
 					</div>
@@ -212,7 +212,7 @@ function actionExpansion(option: Option) {
 				v-for="(option, index) in optionsNotas"
 				:key="index"
 				role="button"
-				:class="currentOption?.id === option.id && '!bg-purple'"
+				:class="currentOption?.id === option.id && '!bg-teal-900'"
 				class="w-full transition-colors bg-white text-black flex justify-center py-2 cursor-pointer"
 				@click="actionExpansion(option)"
 			>

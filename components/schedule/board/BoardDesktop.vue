@@ -183,7 +183,7 @@ onBeforeUnmount(() => {
 	@apply flex flex-col text-sm text-center py-2;
 }
 .isToday {
-	@apply bg-primary w-full h-full rounded-lg;
+	@apply bg-[#5dade2] w-full h-full rounded-lg;
 }
 .calendar-container {
 	@apply relative grid grid-cols-[40px_1fr] w-full;

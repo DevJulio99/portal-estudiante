@@ -34,9 +34,9 @@ withDefaults(
 			styles,
 			{
 				'flex items-center': Boolean(iconName),
-				'bg-primary-disabled':
+				'bg-green_20':
 					color === BtnColor.default && (disabled || disabledStyle),
-				'bg-primary text-black':
+				'bg-green_40 text-black':
 					color === BtnColor.default && (!disabled || !disabledStyle),
 				'bg-extra_gray disabled:text-black':
 					color === BtnColor.black && (disabled || disabledStyle),
@@ -61,9 +61,9 @@ withDefaults(
 			styles,
 			{
 				'flex items-center': Boolean(iconName),
-				'bg-primary-disabled':
+				'bg-green_20':
 					color === BtnColor.default && (disabled || disabledStyle),
-				'bg-primary text-black':
+				'bg-green_40 text-black':
 					color === BtnColor.default && (!disabled || !disabledStyle),
 				'bg-extra_gray disabled:text-black':
 					color === BtnColor.black && (disabled || disabledStyle),
@@ -86,9 +86,9 @@ withDefaults(
 			styles,
 			{
 				'flex items-center': Boolean(iconName),
-				'bg-primary-disabled':
+				'bg-green_20':
 					color === BtnColor.default && (disabled || disabledStyle),
-				'bg-primary text-black':
+				'bg-green_40 text-black':
 					color === BtnColor.default && (!disabled || !disabledStyle),
 				'bg-extra_gray disabled:text-black':
 					color === BtnColor.black && (disabled || disabledStyle),

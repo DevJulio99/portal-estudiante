@@ -33,9 +33,9 @@ function actionExpansion(title: string) {
 					:class="
 						item.modalidad !== 'Presencial'
 							? item.modalidad == 'Remoto'
-								? 'bg-[#6A00B5] text-white'
-								: 'bg-[#0072AB] text-white'
-							: 'bg-primary'
+								? 'bg-violet_100 text-white'
+								: 'bg-blue_link text-white'
+							: 'bg-turquoise text-black'
 					"
 				>
 					<p class="text-[10px]">

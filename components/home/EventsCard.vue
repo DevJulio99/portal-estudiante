@@ -74,7 +74,7 @@ onMounted(() => {
 		title="Eventos"
 		url="/eventos"
 		width="w-full xl:w-2/3"
-		icon="iconEvents"
+		icon="eventIcon"
 	>
 		<div v-if="pending" class="text-xs text-black mt-6 mb-4">
 			<BaseStatusLoading />

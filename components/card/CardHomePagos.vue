@@ -55,9 +55,9 @@ onMounted(() => {
 				:icono="'https://adminmi.upn.edu.pe/assets/7679a111-0454-4766-a8d0-6082c9d81347.svg'"
 			/>
 		</div>
-		<div v-else class="font-telegraf">
+		<div v-else class="font-nunito">
 			<p class="text-sm text-center">Pendientes del mes</p>
-			<p class="text-[21px] text-center font-bold mb-1">
+			<p class="text-[21px] text-center font-extrabold mb-1">
 				S/ {{ servicesData?.total.toFixed(2) }}
 			</p>
 			<div class="flex flex-wrap justify-center">
@@ -67,7 +67,7 @@ onMounted(() => {
 						servicesData?.countPV == 0 &&
 						servicesData?.countV == 0
 					"
-					class="flex items-center text-[13px] text-[#1762CA] font-bold"
+					class="flex items-center text-[13px] text-[#1762CA] font-extrabold"
 				>
 					<nuxt-icon class="text-[18px]" filled name="payHomeTime" />
 					<span
@@ -76,7 +76,7 @@ onMounted(() => {
 				</div>
 				<div
 					v-if="(servicesData?.countV || 0) > 0"
-					class="flex items-center text-[13px] text-[#DC3545] font-bold gap-1"
+					class="flex items-center text-[13px] text-[#DC3545] font-extrabold gap-1"
 				>
 					<nuxt-icon class="text-[18px]" filled name="payHomeWarning" />
 					<span
@@ -86,7 +86,7 @@ onMounted(() => {
 				</div>
 				<div
 					v-if="(servicesData?.countPV || 0) > 0"
-					class="flex items-center text-[13px] text-[#985108] font-bold"
+					class="flex items-center text-[13px] text-[#985108] font-extrabold"
 				>
 					<span
 						v-if="!(servicesData?.countV === 0)"

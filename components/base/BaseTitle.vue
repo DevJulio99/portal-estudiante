@@ -4,5 +4,5 @@ defineProps<{
 }>();
 </script>
 <template>
-	<h1 class="my-4 font-grotesk font-bold text-2xl uppercase">{{ text }}</h1>
+	<h1 class="my-4 font-robotoCondensed font-bold text-2xl uppercase">{{ text }}</h1>
 </template>

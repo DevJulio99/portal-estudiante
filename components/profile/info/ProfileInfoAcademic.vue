@@ -53,7 +53,7 @@ const copy = (text: string, name: string, title: string) => {
 			/>
 			<ProfileSectionItem
 				:data="data.usuarioEmail"
-				subtitle="Correo UPN"
+				subtitle="Correo Estudiante"
 				:msgCopy="msgCopy"
 				:copy="copy"
 			/>

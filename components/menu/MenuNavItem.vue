@@ -20,6 +20,6 @@ defineProps<{
 
 <style lang="postcss" scoped>
 .text-styles {
-	@apply leading-[1] font-telegraf font-bold capitalize text-[14px];
+	@apply leading-[1] font-nunito font-extrabold capitalize text-[14px];
 }
 </style>

@@ -59,7 +59,7 @@ const eventClick = () => {
 			/>
 			<span
 				v-if="!isLargeScreen && !profileStore.profileData.pending"
-				class="text-sm font-extrabold cursos-pointer leading-[18px] inline-block self-end capitalize font-telegraf text-black"
+				class="text-sm font-extrabold cursos-pointer leading-[18px] inline-block self-end capitalize font-nunito text-black"
 			>
 				{{
 					authInfo.user.name?.toLowerCase() ||
@@ -67,7 +67,7 @@ const eventClick = () => {
 				}}
 			</span>
 			<span
-				class="text-sm font-telegraf leading-[18px] underline lg:no-underline lg:text-black lg:font-bold text-blue_light md:group-hover:text-white"
+				class="text-sm font-nunito leading-[18px] underline lg:no-underline lg:text-black lg:font-extrabold text-blue_light md:group-hover:text-white"
 			>
 				Ver mi perfil
 			</span>

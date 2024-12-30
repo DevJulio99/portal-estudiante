@@ -369,18 +369,18 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 				>
 					<div class="mb-10 lg:w-[66.2%]">
 						<div
-							class="font-bold text-black font-grotesk text-xl leading-6 mb-4"
+							class="font-bold text-black font-robotoCondensed text-xl leading-6 mb-4"
 						>
 							ACERCA DEL EVENTO
 						</div>
 						<div
-							class="text-sm font-telegraf mb-4 lg:w-[93%]"
+							class="text-sm font-nunito mb-4 lg:w-[93%]"
 							v-html="eventData.descripcion"
 						></div>
 						<BaseButton
 							v-if="eventData.url && eventData.nombre_boton.trim().length"
 							:url="eventData?.url"
-							styles="!w-auto !inline-block !min-w-auto !min-h-[38px] !h-auto !font-extrabold font-telegraf !text-sm !px-4 !py-2.5"
+							styles="!w-auto !inline-block !min-w-auto !min-h-[38px] !h-auto !font-extrabold font-nunito !text-sm !px-4 !py-2.5"
 							@click="eventClick(eventData?.url, eventData?.titulo)"
 						>
 							{{ eventData.nombre_boton }}
@@ -388,26 +388,26 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 					</div>
 					<div class="mb-10 lg:flex-1">
 						<div
-							class="font-bold text-black font-grotesk text-xl leading-6 mb-4"
+							class="font-bold text-black font-robotoCondensed text-xl leading-6 mb-4"
 						>
 							MÁS DETALLES
 						</div>
-						<div class="font-telegraf font-extrabold text-sm text-black mb-1">
+						<div class="font-nunito font-extrabold text-sm text-black mb-1">
 							Vacantes
 						</div>
-						<div class="flex gap-[3px] items-center font-telegraf text-sm mb-4">
+						<div class="flex gap-[3px] items-center font-nunito text-sm mb-4">
 							<nuxt-icon name="upn-icon-team-yellow" class="text-base" filled />
 							{{ eventData.capacidad }}
 						</div>
 						<div v-if="eventData.ubicacion.length" class="mb-4">
-							<div class="font-telegraf font-extrabold text-sm text-black mb-1">
+							<div class="font-nunito font-extrabold text-sm text-black mb-1">
 								Ubicación
 							</div>
 							<div class="flex flex-wrap flex-col gap-1">
 								<span
 									v-for="(ubicacion, index) in eventData.ubicacion"
 									:key="index"
-									class="font-telegraf flex gap-1 text-sm"
+									class="font-nunito flex gap-1 text-sm"
 								>
 									<nuxt-icon
 										name="upn-icon-map-pin2-yellow"
@@ -450,7 +450,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 								</span>
 							</div>
 						</div>
-						<div class="font-telegraf font-extrabold text-sm text-black mb-2">
+						<div class="font-nunito font-extrabold text-sm text-black mb-2">
 							Comparte con tus amigos
 						</div>
 						<div class="flex gap-4">

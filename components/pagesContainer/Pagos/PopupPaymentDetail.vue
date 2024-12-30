@@ -140,7 +140,7 @@ onMounted(() => {
 					</div>
 					<div class="col-span-1 flex items-center">
 						<span
-							class="bg-primary text-dark_100 font-telegraf p-1 font-extrabold lg:text-[16px] text-[14px]"
+							class="bg-turquoise text-dark_100 font-telegraf p-1 font-extrabold lg:text-[16px] text-[14px]"
 							>S/{{ data?.arrearsTotal }}</span
 						>
 					</div>

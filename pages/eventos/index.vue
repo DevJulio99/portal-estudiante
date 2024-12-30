@@ -229,7 +229,7 @@ const isLargeScreen = useMediaQuery("(min-width: 1200px)");
       <div class="w-full flex gap-2 items-center lg:w-auto">
         <span
           v-if="isLargeScreen"
-          class="font-telegraf font-extrabold text-sm text-black"
+          class="font-nunito font-extrabold text-sm text-black"
           >Tipo:</span
         >
         <BaseVeeSelectV2
@@ -251,7 +251,7 @@ const isLargeScreen = useMediaQuery("(min-width: 1200px)");
       v-if="currentEvent.trim().length"
       class="flex flex-wrap gap-2 mb-6 lg:mb-5"
     >
-      <div class="font-extrabold font-telegraf text-sm text-black">
+      <div class="font-extrabold font-nunito text-sm text-black">
         RESULTADOS DE:
       </div>
       <div

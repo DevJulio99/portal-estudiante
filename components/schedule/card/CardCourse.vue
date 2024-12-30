@@ -25,8 +25,8 @@ const getDiff = (init: string, fin: string) => {
 		:class="[
 			pdf ? 'pb-2' : 'py-2',
 			{
-				'before:bg-primary': course.descripMetodoEducativo === 'Presencial',
-				'before:bg-[#D191FF]': course.descripMetodoEducativo === 'Remoto',
+				'before:bg-turquoise': course.descripMetodoEducativo === 'Presencial',
+				'before:bg-violet_100': course.descripMetodoEducativo === 'Remoto',
 			},
 		]"
 	>
@@ -66,9 +66,9 @@ const getDiff = (init: string, fin: string) => {
 			<div
 				class="text-[0.725rem] text-center px-1 font-telegraf color-black font-extrabold rounded min-w-[48px]"
 				:class="{
-					'bg-[#FDC979] text-[#523C0F]':
+					'bg-turquoise text-neutron80':
 						course.descripMetodoEducativo === 'Presencial',
-					'bg-[#E6C2FF] text-[#430073]':
+					'bg-violet_20 text-violet_100':
 						course.descripMetodoEducativo === 'Remoto',
 					'pb-2 leading-[1]': pdf,
 				}"
@@ -83,10 +83,10 @@ const getDiff = (init: string, fin: string) => {
 		<div
 			v-if="!pdf"
 			class="absolute right-0 bottom-0"
-			:class="{ 'bg-purple_80 rounded-[4px]': popupIsVisible }"
+			:class="{ 'bg-cyan_40 rounded-[4px]': popupIsVisible }"
 		>
 			<nuxt-icon
-				class="text-purple_80 text-xl"
+				class="text-darkBlue text-xl"
 				:class="{ 'text-white': popupIsVisible }"
 				name="defaultDia"
 			/>

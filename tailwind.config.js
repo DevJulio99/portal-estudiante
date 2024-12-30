@@ -11,6 +11,8 @@ export default {
         grotesk: ['grotesk'],
 		telegraf: ['telegraf'],
 		whitney: ['whitney'],
+		nunito: ['nunito'],
+		robotoCondensed: ['robotoCondensed'],
       },
       colors: {
         primary: '#FDBA30',
@@ -32,7 +34,10 @@ export default {
 				gray_40: '#D9D9D9',
 				dark_100: '#191919',
 				extra_gray: '#F6F6F6',
+				green_10: '#E4F1E5',
+				green_20: '#D1E8D3',
 				green_30: '#BCE4C5',
+				green_40: '#98FB98',
 				green_60: '#28A745',
 				green_70: '#1E7D34',
 				yellow_30: '#FEE5C7',
@@ -61,7 +66,9 @@ export default {
 				gray_60: "#C2CAD4",
 				cyan_5: "#F3F9FF",
 				neutron80: "#262626",
-				gray1: "#697074"
+				gray1: "#697074",
+				turquoise: "#40E0D0",
+				darkBlue: "#00008B"
       },
       boxShadow: {
         bgBox: "0px 4px 6px 0px rgba(25, 25, 25, 0.15)",

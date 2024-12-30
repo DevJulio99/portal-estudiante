@@ -137,11 +137,11 @@ onUnmounted(() => {
 });
 </script>
 <template>
-	<CardHome title="Mis Horarios" url="/horarios" width="w-full" icon="myPagos">
+	<CardHome title="Mis Horarios" url="/horarios" width="w-full" icon="horarioIcon">
 		<div class="flex gap-2 mb-2">
 			<button
-				class="border border-purple text-purple py-2 px-2 lg:px-4 text-xs font-extrabold rounded hover:bg-purple hover:text-white"
-				:class="selectDay == 0 && 'bg-purple text-white'"
+				class="border border-[#287f6b] text-[#287f6b] py-2 px-2 lg:px-4 text-xs font-extrabold rounded hover:bg-[#287f6b] hover:text-white"
+				:class="selectDay == 0 && 'bg-[#287f6b] text-white'"
 				@click="callCurrentDayClass"
 			>
 				HOY {{ Days[currentDay.getDay() - 1] }}
@@ -154,8 +154,8 @@ onUnmounted(() => {
 				}}/{{ currentDay.getMonth() + 1 }}
 			</button>
 			<button
-				class="border border-purple py-2 px-2 lg:px-4 text-xs text-purple font-extrabold rounded hover:bg-purple hover:text-white"
-				:class="selectDay == 1 && 'bg-purple text-white'"
+				class="border border-[#287f6b] py-2 px-2 lg:px-4 text-xs text-[#287f6b] font-extrabold rounded hover:bg-[#287f6b] hover:text-white"
+				:class="selectDay == 1 && 'bg-[#287f6b] text-white'"
 				@click="callNextDayClass"
 			>
 				Mañana {{ Days[nextDay.getDay() - 1] }}

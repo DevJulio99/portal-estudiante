@@ -56,7 +56,7 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 				<li
 					v-if="!item.submenu.length"
 					class="pl-4 pr-2"
-					:class="{ 'md:hover:bg-primary': item.etiqueta !== Menu.RADIO }"
+					:class="{ 'md:hover:bg-[#85c1e9]': item.etiqueta !== Menu.RADIO }"
 				>
 					<NuxtLink
 						v-if="item.etiqueta !== Menu.RADIO"
@@ -92,7 +92,7 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 				<!-- Opción con submenu -->
 				<li
 					v-else
-					class="relative flex flex-col md:flex-row items-center mb-4 md:py-1 md:pl-4 md:pr-2 md:hover:bg-primary group"
+					class="relative flex flex-col md:flex-row items-center mb-4 md:py-1 md:pl-4 md:pr-2 md:hover:bg-[#85c1e9] group"
 					:class="{
 						'submenu-style': openedSubmenu === item.id && !isMediumScreen,
 					}"
@@ -101,7 +101,7 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 					<button
 						v-if="!isMediumScreen"
 						class="w-full flex items-center text-left pl-4 pr-2 py-1"
-						:class="{ 'bg-primary': openedSubmenu === item.id }"
+						:class="{ 'bg-[#85c1e9]': openedSubmenu === item.id }"
 						@click="handleSubmenu(item.id, item.nombre)"
 					>
 						<MenuNavItem
@@ -139,7 +139,7 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 }
 
 .text-styles {
-	@apply leading-[1] font-telegraf font-bold capitalize text-[14px];
+	@apply leading-[1] font-nunito font-extrabold capitalize text-[14px];
 }
 
 .submenu-style:not(:last-child) {

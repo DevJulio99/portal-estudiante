@@ -27,7 +27,7 @@ const imageLoadError = () => {
 	<div class="container-gray min-h-[calc(100vh-64px)]">
 		<div class="px-6 md:px-0">
 			<BaseBreadcrumbs :items="breadcrumbsItem" />
-			<h1 class="my-4 font-grotesk font-bold text-2xl uppercase">Mi Perfil</h1>
+			<h1 class="my-4 font-robotoCondensed font-bold text-2xl uppercase">Mi Perfil</h1>
 		</div>
 		<!-- <div v-if="profileStore.profileData.error" class="pt-20 md:pt-40">
 			<BaseStatusError

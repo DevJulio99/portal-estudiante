@@ -47,7 +47,7 @@ const positionFromTop = computed(() =>
 			v-if="Number(hour) === currentHour && !pdf"
 			class="absolute top-[10px] h-[1px] w-full z-[15]"
 			:class="{
-				'bg-magenta_30': columnNumber !== currentDay,
+				'bg-[#d0ece7]': columnNumber !== currentDay,
 				'mark-today': columnNumber === currentDay,
 			}"
 			:style="{
@@ -63,11 +63,11 @@ const positionFromTop = computed(() =>
 }
 
 .hour-mark {
-	@apply absolute right-[calc(100%_+_1px)] z-20 translate-y-[-50%] bg-magenta_30 text-magenta_70 rounded-sm px-1 py-[1px] text-xs font-bold;
+	@apply absolute right-[calc(100%_+_1px)] z-20 translate-y-[-50%] bg-[#d0ece7] text-[#287f6b] rounded-sm px-1 py-[1px] text-xs font-bold;
 }
 
 .mark-today {
-	@apply bg-magenta_70 after:content-[''] after:absolute after:h-[5px] after:w-[5px]
-	after:rounded after:bg-magenta_70 after:top-0 after:translate-y-[-2px];
+	@apply bg-[#287f6b] after:content-[''] after:absolute after:h-[5px] after:w-[5px]
+	after:rounded after:bg-[#287f6b] after:top-0 after:translate-y-[-2px];
 }
 </style>

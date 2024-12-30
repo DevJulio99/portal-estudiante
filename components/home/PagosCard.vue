@@ -18,7 +18,7 @@ const handleVisibility = () => {
 		title="Mis pagos"
 		url="/obligaciones-por-pagar"
 		width="w-full"
-		icon="myPagos"
+		icon="paymentIcon"
 	>
 		<button
 			v-if="hidePayment"

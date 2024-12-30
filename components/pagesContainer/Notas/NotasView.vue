@@ -614,8 +614,8 @@ onMounted(() => {
 		<div class="flex justify-between items-center">
 			<div>
 				<BaseTitle text="CURSOS Y NOTAS" />
-				<div class="font-telegraf mb-4 text-sm leading-[22px]">
-					Nota minima aprobatoria: 12
+				<div class="font-nunito mb-4 text-sm leading-[22px]">
+					Nota mínima aprobatoria: 12
 				</div>
 			</div>
 

@@ -83,18 +83,18 @@ const getWeekData = (range: RangeWeek) => {
 		/>
 		<div class="lg:pt-5 text-sm">
 			<div class="flex">
-				<p class="mr-[13px] before:bg-primary disclaimer">Curso Presencial</p>
-				<p class="mb-4 before:bg-[#D191FF] disclaimer">Curso Remoto</p>
+				<p class="mr-[20px] before:bg-midnightBlue disclaimer"> Curso Presencial</p>
+				<p class="mb-4 before:bg-violet_100 disclaimer"> Curso Remoto</p>
 			</div>
 			<p class="leading-[1]">
 				*Para dudas con los horarios, consúltalo en
 				<a
 					class="text-blue_link underline"
-					href="https://contacto.upn.edu.pe/"
+					href="https://www.google.com/"
 					target="_blank"
 					@click="eventClick"
 				>
-					Contacto UPN</a
+					Contacto Estudiante</a
 				>, con nuestros “accesos rápidos”, o comunícate con nosotros en los
 				medios de contacto ubicados en el botón del menú “¿Necesitas ayuda?”.
 			</p>
@@ -104,7 +104,7 @@ const getWeekData = (range: RangeWeek) => {
 
 <style lang="postcss" scoped>
 .controls-container {
-	@apply bg-purple_80 gap-x-3 gap-y-4 flex xl:flex-row justify-between px-3 py-4 lg:px-6 lg:py-5 -mx-[12px] lg:mx-0 flex-row;
+	@apply bg-[#031448] gap-x-3 gap-y-4 flex xl:flex-row justify-between px-3 py-4 lg:px-6 lg:py-5 -mx-[12px] lg:mx-0 flex-row;
 }
 
 .disclaimer {

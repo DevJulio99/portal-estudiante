@@ -100,10 +100,10 @@ onMounted(() => {
 
 			<div class="px-[32px] pb-[65px] lg:pb-[40px]">
 				<span
-					class="fon-telegraf text-[#000] text-[0.625rem] font-bold px-[8px] py-[4px] rounded-[16px]"
+					class="font-nunito text-[#000] text-[0.625rem] font-extrabold px-[8px] py-[4px] rounded-[16px]"
 					:class="{
-						'bg-primary': course.descripMetodoEducativo === 'Presencial',
-						'bg-[#D191FF]': course.descripMetodoEducativo === 'Remoto',
+						'bg-turquoise': course.descripMetodoEducativo === 'Presencial',
+						'bg-violet_100': course.descripMetodoEducativo === 'Remoto',
 					}"
 				>
 					{{ course.descripMetodoEducativo }}
@@ -112,7 +112,7 @@ onMounted(() => {
 					{{ course.descripMateria }}
 				</h4>
 				<div
-					class="font-telegraf text-[#4F6168] text-sm mb-4 flex items-center gap-1"
+					class="font-nunito text-[#4F6168] text-sm mb-4 flex items-center gap-1"
 				>
 					<span>{{ course.codSeccion }}</span>
 					<div v-if="showTooptipWarn" class="relative icon-warn">
@@ -137,11 +137,11 @@ onMounted(() => {
 				<div class="grid grid-cols-2 gap-y-[10px] gap-x-[16px]">
 					<div>
 						<p
-							class="font-telegraf text-secondary leading-[1] text-xs pb-[2px]"
+							class="font-nunito text-secondary leading-[1] text-xs pb-[2px]"
 						>
 							Horario
 						</p>
-						<div class="font-telegraf font-bold text-[#000]">
+						<div class="font-nunito font-extrabold text-[#000]">
 							<span class="text-[16px]">{{
 								course.horaInicio.slice(0, 5)
 							}}</span>
@@ -151,17 +151,17 @@ onMounted(() => {
 					</div>
 					<div>
 						<p
-							class="font-telegraf text-secondary leading-[1] text-xs pb-[2px]"
+							class="font-nunito text-secondary leading-[1] text-xs pb-[2px]"
 						>
 							Salón
 						</p>
 						<p
 							v-if="course.descripMetodoEducativo !== 'Remoto'"
-							class="font-telegraf font-bold text-[#000] text-sm"
+							class="font-nunito font-extrabold text-[#000] text-sm"
 						>
 							{{ course.codAula || '-' }}
 						</p>
-						<p v-else class="font-telegraf text-blue_light text-sm">
+						<p v-else class="font-nunito text-blue_light text-sm">
 							<a
 								href="https://upn.blackboard.com/auth-saml/saml/login?apId=_111_1&redirectUrl=https%3A%2F%2Fupn.blackboard.com%2Fultra"
 								class="underline"
@@ -178,34 +178,34 @@ onMounted(() => {
 					</div>
 					<div v-if="course.descripMetodoEducativo == 'Presencial'">
 						<p
-							class="font-telegraf text-secondary leading-[1] text-xs pb-[2px]"
+							class="font-nunito text-secondary leading-[1] text-xs pb-[2px]"
 						>
 							Campus
 						</p>
-						<p class="font-telegraf font-bold text-[#000] text-sm">
+						<p class="font-nunito font-extrabold text-[#000] text-sm">
 							{{ course.descripCampus || '-' }}
 						</p>
 					</div>
 					<div v-if="course.descripMetodoEducativo == 'Presencial'">
 						<p
-							class="font-telegraf text-secondary leading-[1] text-xs pb-[2px]"
+							class="font-nunito text-secondary leading-[1] text-xs pb-[2px]"
 						>
 							Referencia
 						</p>
-						<p class="font-telegraf font-bold text-[#000] text-sm">
+						<p class="font-nunito font-extrabold text-[#000] text-sm">
 							{{ course.descripAula || '-' }}
 						</p>
 					</div>
 					<div v-if="course.profesor.length" class="col-span-2 lg:col-span-1">
 						<label
 							for="docentes"
-							class="font-telegraf text-secondary leading-[1] text-xs pb-[6px] h-full"
+							class="font-nunito text-secondary leading-[1] text-xs pb-[6px] h-full"
 						>
 							Docente
 						</label>
 						<select
 							id="docentes"
-							class="font-telegraf font-bold capitalize w-full border border-black rounded p-2 outline-none text-sm"
+							class="font-nunito font-extrabold capitalize w-full border border-black rounded p-2 outline-none text-sm"
 							name="docentes"
 							@click="eventClick"
 							@change="handleChange"
@@ -226,14 +226,14 @@ onMounted(() => {
 						class="flex flex-col justify-start col-span-2 lg:col-span-1 mt-3 lg:mt-0"
 					>
 						<p
-							class="font-telegraf text-secondary leading-[1] text-xs pb-[6px] mt-auto"
+							class="font-nunito text-secondary leading-[1] text-xs pb-2 mt-auto"
 						>
 							Correo del docente
 						</p>
-						<div class="relative flex items-center lg:h-[31.2px] max-w-min">
+						<div class="relative flex items-center lg:h-[36px] max-w-min">
 							<a
 								href="mailto:ernesto.castillo@upn.pe"
-								class="font-telegraf text-blue_light text-sm pr-2 underline"
+								class="font-nunito text-blue_light text-sm pr-2 underline"
 								@click="eventClickCorreo"
 							>
 								{{ selectedProfessor.correo }}
@@ -314,7 +314,7 @@ onMounted(() => {
 	@apply right-4 top-4 text-[16px];
 }
 .card-title-popup {
-	@apply font-grotesk font-bold uppercase text-lg lg:text-[20px] text-[#000] mt-2 leading-[1] break-words col-span-2;
+	@apply font-robotoCondensed font-bold uppercase text-lg lg:text-[20px] text-[#000] mt-2 leading-[1] break-words col-span-2;
 }
 .iconCopy {
 	@apply text-[#1938A6] cursor-pointer;

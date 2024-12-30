@@ -190,7 +190,7 @@ const eventClick = (url: string, title: string) => {
 }
 
 .text-styles {
-	@apply leading-[18px] font-telegraf font-extrabold text-[14px];
+	@apply leading-[18px] font-nunito font-extrabold text-[14px];
 }
 .submenu-item {
 	@apply relative flex flex-col lg:flex-row items-center mb-4 lg:py-1 lg:pl-4 lg:pr-2 md:hover:bg-primary;

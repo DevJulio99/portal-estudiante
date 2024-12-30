@@ -23,7 +23,7 @@ withDefaults(defineProps<Props>(), {
 		<div class="card-title" :class="marginTitle">
 			<div class="flex justify-between items-start mb-1">
 				<nuxt-icon class="text-[24px]" filled :name="icon" />
-				<h2 class="font-grotesk font-bold ml-2 text-xl">{{ title }}</h2>
+				<h2 class="font-robotoCondensed font-bold ml-2 text-xl">{{ title }}</h2>
 			</div>
 			<nuxt-link
 				class="flex items-center"
