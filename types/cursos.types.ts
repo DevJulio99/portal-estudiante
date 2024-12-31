@@ -27,6 +27,7 @@ export interface Curso {
 	statusCurso: string;
 	tieneHorario: boolean;
 	notaFinal: number;
+	nivel?: string;
 }
 
 export interface CourseExtend extends Curso {

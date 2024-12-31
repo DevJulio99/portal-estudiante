@@ -27,6 +27,24 @@ class CursosModule extends FetchFactory<DataResponse<Curso[]>> {
 			);
 		}, asyncDataOptions);
 	}
+
+	async getCursosColegio(
+		CodAlumno: number,
+		anio: number,
+		asyncDataOptions?: AsyncDataOptions<DataResponse<Curso[]>>,
+	) {
+		return await useAsyncData(() => {
+			const fetchOptions: FetchOptions<'json'> = {
+				headers: {},
+			};
+			return this.call(
+				'GET',
+				`/api/v1/CursosColegioxId/${CodAlumno}/${anio}`,
+				undefined,
+				fetchOptions,
+			);
+		}, asyncDataOptions);
+	}
 }
 
 export default CursosModule;
