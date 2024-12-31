@@ -4,6 +4,10 @@ import type { ObligationPaid } from '~/types/obligations.types';
 
 import obligacionesPagadasMock from "~/utils/data/dataObligacionesPagadas.json";
 
+definePageMeta({
+  middleware: "auth",
+});
+
 useHead({
 	title: 'Obligaciones pagadas',
 });

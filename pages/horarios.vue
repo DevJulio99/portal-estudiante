@@ -16,6 +16,10 @@ useHead({
   title: "Horario",
 });
 
+definePageMeta({
+  middleware: "auth",
+});
+
 const breadcrumbsItem = [
   { name: "Inicio", current: false, url: "/inicio" },
   { name: "Mis Estudios", current: false, url: "" },

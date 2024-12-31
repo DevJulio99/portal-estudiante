@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import Notas from "~/components/pagesContainer/Notas/Notas.vue";
 import BaseLayout from "../components/base/BaseLayout.vue";
+definePageMeta({
+  middleware: "auth",
+});
+
 </script>
 <template>
   <BaseLayout :pageHome="true">

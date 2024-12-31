@@ -3,6 +3,10 @@ useHead({
 	title: 'Obligaciones por pagar',
 });
 
+definePageMeta({
+  middleware: "auth",
+});
+
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
 	{ name: 'Pagos', current: false, url: '' },

@@ -8,6 +8,10 @@ useHead({
 	title: 'Consolidados de Matrícula',
 });
 
+definePageMeta({
+  middleware: "auth",
+});
+
 // const { handleRoute } = useBreadcrumb();
 
 // const breadcrumb = [

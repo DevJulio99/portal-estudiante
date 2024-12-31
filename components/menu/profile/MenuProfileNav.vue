@@ -6,6 +6,8 @@ import { useMenuStore } from '~/stores/menu';
 
 const { $msal } = useNuxtApp();
 const menuStore = useMenuStore();
+const tokenStore = useTokenStore();
+const router = useRouter();
 const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 const openedSubmenu = ref<null | number>(null);
 const needHelp = ref();
@@ -32,6 +34,8 @@ const imageLoadError = () => {
 async function signOut() {
 	const userDev = JSON.parse(localStorage.getItem('userDev')!);
 	menuStore.closeMenuProfile();
+	tokenStore.clearTokens();
+	router.push('/login');
 	// if (window.dataLayer) {
 	// 	window.dataLayer.push({
 	// 		event: 'Click-MenuHeader',

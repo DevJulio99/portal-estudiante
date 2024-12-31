@@ -8,6 +8,10 @@ useHead({
 	title: 'Mis documentos',
 });
 
+definePageMeta({
+  middleware: "auth",
+});
+
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
 	{ name: 'Documentos', current: true, url: '/documentos' },
