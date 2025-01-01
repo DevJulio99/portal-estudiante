@@ -102,7 +102,7 @@ const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursos("1" ,{
+} = await $api.cursos.getCursosColegio(1, 2024 ,{
 	lazy: true,
 });
 
@@ -246,10 +246,14 @@ async function initCallAsistencias(
 	// const { data: AsistenciasData, error: errorServicesAsistencia } =
 	// 	await callAsistencias();
 
+	const copiaMock = {...asistenciasMock};
+	const soloAsistencias = asistenciasMock.inasistencias.filter(x => x.status.toLocaleLowerCase() === 'a');
+	copiaMock.inasistencias = soloAsistencias;
+
 	CallAsistencias(
 		status,
 		indexCurso,
-		asistenciasMock,
+		copiaMock,
 		// AsistenciasData,
 		// errorServicesAsistencia,
 		totalData,

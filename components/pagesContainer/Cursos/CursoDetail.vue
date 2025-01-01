@@ -182,14 +182,21 @@ function formatCantidadVeces(veces: string | number): string {
 			/>
 		</div>
 
-		<div class="w-[77px] md:w-[187px]">
+		<div class="w-[77px] md:w-[187px]" v-if="item.ciclo.trim().length">
 			<span class="block text-xs text-secondary">Ciclo</span>
 			<span class="block text-sm text-black font-extrabold">{{
 				getOrdinalWithLabel(item.ciclo)
 			}}</span>
 		</div>
 
-		<div class="w-[77px] md:w-[187px]">
+		<div class="w-[77px] md:w-[187px]" v-if="item.nivel?.trim().length">
+			<span class="block text-xs text-secondary">Grado</span>
+			<span class="block text-sm text-black font-extrabold">1° {{
+				item.nivel
+			}}</span>
+		</div>
+
+		<div class="w-[77px] md:w-[187px]" v-if="item.creditos.trim().length">
 			<span class="block text-xs text-secondary">Créditos</span>
 			<span class="block text-sm text-black font-extrabold">{{
 				formatCredits(item.creditos)
