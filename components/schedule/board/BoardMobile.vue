@@ -143,7 +143,7 @@ onBeforeUpdate(() => {
 					<p class="mb-1 capitalize text-xs">
 						{{ useDateFormat(item, 'ddd', { locales: 'es-ES' }).value }}
 					</p>
-					<p class="font-grotesk font-bold text-[1.25rem] leading-[1]">
+					<p class="font-robotoCondensed font-extrabold text-[1.25rem] leading-[1]">
 						{{ useDateFormat(item, 'DD', { locales: 'es-ES' }).value }}
 					</p>
 				</div>

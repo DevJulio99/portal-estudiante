@@ -63,11 +63,11 @@ const formatDate = (inputDate: string | null): string => {
 			<div class="w-full">
 				<div class="hidden xl:flex">
 					<span
-						class="w-full pl-4 font-telegraf text-sm font-extrabold mb-2 block leading-[18px] max-w-[588px]"
+						class="w-full pl-4 font-nunito text-sm font-extrabold mb-2 block leading-[18px] max-w-[588px]"
 						>Nombre</span
 					>
 					<span
-						class="flex-1 font-telegraf text-sm font-extrabold block leading-[18px] mb-2 mr-[270px] min-[1330px]:mr-[328px] text-end"
+						class="flex-1 font-nunito text-sm font-extrabold block leading-[18px] mb-2 mr-[270px] min-[1330px]:mr-[328px] text-end"
 						><p class="relative left-[20px]">Fecha de modificación</p></span
 					>
 				</div>
@@ -91,7 +91,7 @@ const formatDate = (inputDate: string | null): string => {
 						class="flex flex-wrap gap-[24px] xl:gap-[40px] items-center pl-0 flex-1 justify-end"
 					>
 						<div
-							class="ml-[42px] w-[152px] text-left xl:text-center w-full xl:ml-0 min-[1330px]:w-[200px] min-[1280px]:w-auto text-sm font-telegraf text-secondary"
+							class="ml-[42px] w-[152px] text-left xl:text-center w-full xl:ml-0 min-[1330px]:w-[200px] min-[1280px]:w-auto text-sm font-nunito text-secondary"
 						>
 							{{ item.date_created ? formatDate(item.date_created) : '' }}
 						</div>
@@ -107,7 +107,7 @@ const formatDate = (inputDate: string | null): string => {
 								@click="handleButtonClick(item)"
 							>
 								<div
-									class="dtooltip font-telegraf font-normal rounded text-center absolute text-[12px] w-max left-[-20px] top-auto bottom-[50px] z-10 bg-black text-white py-2 px-[16px]"
+									class="dtooltip font-nunito font-normal rounded text-center absolute text-[12px] w-max left-[-20px] top-auto bottom-[50px] z-10 bg-black text-white py-2 px-[16px]"
 								>
 									Vista previa
 								</div>

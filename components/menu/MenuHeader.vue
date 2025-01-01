@@ -73,7 +73,7 @@ const eventClick = () => {
         />
       </div>
       <div v-if="!viewAccessDenied" class="flex items-center cursor-pointer" :class="{
-						'lg:shadow-[_0_0_0_1px_#FDBA30] lg:bg-[#FFECD5] lg:rounded':
+						'lg:shadow-[_0_0_0_1px_#A1D7FF] lg:bg-cyan_10 lg:rounded':
 							menuStore.menuProfile,
 					}"
         @click.stop="eventClick">
@@ -92,7 +92,7 @@ const eventClick = () => {
             :src="
               profileStore.profileData.data?.fotoUrlLow && validImg
                 ? profileStore.profileData.data?.fotoUrlLow
-                : '/images/profileManDefxl.png'
+                : '/images/userProfile.png'
             "
             class="h-auto max-w-[40px] lg:mr-1 rounded-full"
             loading="lazy"

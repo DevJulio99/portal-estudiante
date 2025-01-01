@@ -13,13 +13,13 @@ function textLine(text: string) {
 </script>
 <template>
 	<p
-		class="leading-[18px] mb-1 text-black font-extrabold text-sm font-telegraf text-reponsive"
+		class="leading-[18px] mb-1 text-black font-extrabold text-sm font-nunito text-reponsive"
 		:class="textLine(title) ? 'text-line-two' : 'text-line-one'"
 	>
 		{{ title }}
 	</p>
 	<p
-		class="leading-[22px] text-sm text-secondary font-telegraf text-reponsive"
+		class="leading-[22px] text-sm text-secondary font-nunito text-reponsive"
 		:class="
 			!textLine(description) && !activeTexLine
 				? 'text-line-two'

@@ -55,7 +55,7 @@ const imageLoadError = () => {
 						:src="
 							profileStore.profileData.data?.fotoUrlLow && validImg
 								? profileStore.profileData.data?.fotoUrlLow
-								: '/images/profileManDefxl.png'
+								: '/images/userProfile.png'
 						"
 						class="w-full h-full rounded-full object-cover"
 						@error="imageLoadError"

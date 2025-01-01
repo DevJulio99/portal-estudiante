@@ -431,7 +431,7 @@ const onActionInputSearch = () => {
 					class="flex-wrap gap-[4px] lg:gap-[23px] flex mb-6 min-[1366px]:mb-0"
 				>
 					<div class="flex flex-wrap items-center gap-2 w-max">
-						<span class="hidden md:block font-telegraf text-sm font-extrabold"
+						<span class="hidden md:block font-nunito text-sm font-extrabold"
 							>Filtrar:</span
 						>
 						<BaseVeeSelectV2
@@ -448,7 +448,7 @@ const onActionInputSearch = () => {
 					</div>
 
 					<div class="flex flex-wrap items-center gap-2 w-max">
-						<span class="hidden md:block font-telegraf text-sm font-extrabold"
+						<span class="hidden md:block font-nunito text-sm font-extrabold"
 							>Ordenar:</span
 						>
 						<BaseVeeSelectV2
@@ -467,7 +467,7 @@ const onActionInputSearch = () => {
 
 			<div
 				v-if="searchVal.trim().length >= 3 || searchActive"
-				class="font-telegraf text-black mb-4 text-xs md:text-sm"
+				class="font-nunito text-black mb-4 text-xs md:text-sm"
 			>
 				{{ filterListSearch.length }} resultados con: <b>{{ searchVal }}</b>
 			</div>

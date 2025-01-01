@@ -10,7 +10,7 @@ defineProps<{
 		aria-label="Notificaciones"
 		class="btn-notifications"
 		:class="{
-			'border-primary bg-white': !isActive,
+			'border-cyan_40 bg-white': !isActive,
 			'border-black bg-black': isActive,
 		}"
 		@click.stop="clickToggle"
