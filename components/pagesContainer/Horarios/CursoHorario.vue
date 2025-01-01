@@ -34,7 +34,7 @@ const hidePopup = () => {
 		:class="{
 			'border-primary':
 				item.detalleHorario[0].descripMetodoEducativo === 'Presencial',
-			'border-midnightBlue':
+			'border-skyBlue':
 				item.detalleHorario[0].descripMetodoEducativo === 'Virtual',
 			'border-[#D191FF]':
 				item.detalleHorario[0].descripMetodoEducativo === 'Remoto',

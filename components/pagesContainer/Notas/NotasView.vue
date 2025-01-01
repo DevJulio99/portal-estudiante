@@ -754,10 +754,10 @@ onMounted(() => {
 			<div class="text-sm text-black leading-[18px]">
 				*Para dudas con tus cursos, consúltalo en
 				<a
-					href="https://contacto.upn.edu.pe/"
+					href="https://www.google.com/"
 					target="_blank"
 					class="text-blue_link underline decoration-solid decoration-blue_link"
-					>Contacto UPN</a
+					>Contacto Estudiante</a
 				>
 				con nuestros “accesos rápidos”, o comunícate con nosotros en los medios
 				de contacto ubicados en el botón del menú “¿Necesitas ayuda?”.

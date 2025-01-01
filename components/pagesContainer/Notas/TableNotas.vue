@@ -251,7 +251,7 @@ onMounted(() => {
 
 		<button
 			v-if="!simulateNote"
-			class="w-full cursor-pointer rounded bg-yellow py-[6px] justify-center items-center px-4 flex gap-[11px] lg:w-max"
+			class="w-full cursor-pointer rounded bg-green_40 py-[6px] justify-center items-center px-4 flex gap-[11px] lg:w-max"
 			@click="simulateAverage"
 		>
 			<nuxt-icon name="calculator-icon" filled />
