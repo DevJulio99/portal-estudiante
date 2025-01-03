@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 								: useDateFormat(day, 'ddd', { locales: 'es-ES' }).value
 						}}
 					</p>
-					<p v-if="!pdf" class="font-grotesk font-bold text-[2rem] leading-[1]">
+					<p v-if="!pdf" class="font-robotoCondensed font-extrabold text-[2rem] leading-[1]">
 						{{ useDateFormat(day, 'DD', { locales: 'es-ES' }).value }}
 					</p>
 				</div>

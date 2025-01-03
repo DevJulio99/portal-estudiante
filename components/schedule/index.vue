@@ -83,7 +83,7 @@ const getWeekData = (range: RangeWeek) => {
 		/>
 		<div class="lg:pt-5 text-sm">
 			<div class="flex">
-				<p class="mr-[20px] before:bg-midnightBlue disclaimer"> Curso Presencial</p>
+				<p class="mr-[20px] before:bg-skyBlue disclaimer"> Curso Presencial</p>
 				<p class="mb-4 before:bg-violet_100 disclaimer"> Curso Remoto</p>
 			</div>
 			<p class="leading-[1]">

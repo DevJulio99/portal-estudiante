@@ -19,7 +19,7 @@ export default {
 				'primary-disabled': '#FFE2BE',
 				secondary: '#333333',
 				url: '#3817FF',
-				midnightBlue: '#00B9FF',
+				skyBlue: '#00B9FF',
 				yellow: '#FDBF3F',
 				disable: '#C2D1D9',
 				purple: '#AD29FF',
@@ -68,7 +68,8 @@ export default {
 				neutron80: "#262626",
 				gray1: "#697074",
 				turquoise: "#40E0D0",
-				darkBlue: "#00008B"
+				darkBlue: "#00008B",
+				midnightBlue: "#191970",
       },
       boxShadow: {
         bgBox: "0px 4px 6px 0px rgba(25, 25, 25, 0.15)",

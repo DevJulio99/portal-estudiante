@@ -54,7 +54,7 @@ const handleBlur = () => {
 
 <style lang="postcss" scoped>
 .searchInput {
-	@apply relative before:absolute before:w-[calc(100%_-_16px)] before:h-[8px] before:left-[8px] before:top-[-8px] before:bg-primary;
+	@apply relative before:absolute before:w-[calc(100%_-_16px)] before:h-[8px] before:left-[8px] before:top-[-8px] before:bg-midnightBlue;
 }
 
 .searchInput input {

@@ -62,7 +62,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 			<label class="text-sm text-white" for="filter">Filtrar por:</label>
 			<select
 				id="filter"
-				class="base-select-purple text-dark-600 pl-3 pr-5 py-2 font-grotesk font-bold rounded bg-white w-full lg:w-[200px] lg:ml-4 mt-2 lg:mt-0"
+				class="base-select-purple text-dark-600 pl-3 pr-5 py-2 font-robotoCondensed font-bold rounded bg-white w-full lg:w-[200px] lg:ml-4 mt-2 lg:mt-0"
 				:value="selectedCourseWeek"
 				@focus="
 					() =>
