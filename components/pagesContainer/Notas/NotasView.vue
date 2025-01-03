@@ -102,7 +102,7 @@ const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(1, 2024 ,{
+} = await $api.cursos.getCursosColegio(2, 2024 ,{
 	lazy: true,
 });
 
@@ -625,10 +625,10 @@ onMounted(() => {
 
 		</div>
 		<div class="flex flex-wrap px-3 md:px-0 gap-7">
-			<!--<div v-if="pendingServices" class="w-full h-[240px] flex justify-center">
+			<div v-if="pendingServices" class="w-full h-[240px] flex justify-center">
 				<BaseStatusLoading />
 			</div>
-			<ScheduleStatusError
+			<!--<ScheduleStatusError
 				v-else-if="errorServices || servicesError"
 				class="w-full"
 				:text="`${

@@ -2,9 +2,9 @@
 import { ref } from 'vue';
 import TableNotas from './TableNotas.vue';
 import type { DataAsistencia } from '~/types/asistencia.types';
-import type { Curso, HorarioData, Nota } from '~/types/cursos.types';
-import type { ErrorResponse } from '~/types/services.types';
+import type { Curso, CursoAsistencia, HorarioData, Nota } from '~/types/cursos.types';
 import CursoDetail from '../Cursos/CursoDetail.vue';
+import type { ErrorResponse, DataResponse } from '~/types/services.types';
 
 interface Option {
 	id: number;
@@ -30,6 +30,16 @@ const props = defineProps<{
 const openExpansion = ref(false);
 const currentOption = ref<Option | null>();
 const showTooptipWarn = ref(true);
+const pendingAsistencia = ref<boolean>(true);
+const serviceAsistencia = ref<DataResponse<CursoAsistencia[]> | null>();
+const dataAsistencia = ref<CursoAsistencia[]>([]);
+const { $api } = useNuxtApp();
+
+
+const callAsistencias = async (idAlum: number, bimestre: string, anio: number) =>
+  await $api.asistencia.getCursoAsistencia(idAlum, bimestre,anio ,{
+    lazy: true,
+});
 
 const optionsNotas = [
 	{
@@ -50,16 +60,35 @@ if (props.item.modalidad === 'Virtual') {
 	optionsNotas.splice(1, 1);
 }
 
-function actionExpansion(option: Option) {
+async function actionExpansion(option: Option) {
 	if (option.id !== currentOption.value?.id) {
 		currentOption.value = option;
 		openExpansion.value = true;
 	} else {
 		currentOption.value = null;
 		openExpansion.value = !openExpansion.value;
+		pendingAsistencia.value = true;
+		serviceAsistencia.value = null;
 	}
 
-	console.log('currentOption', currentOption);
+	if(option.id == 2 && currentOption.value){
+		const { data, error, pending } = await callAsistencias(2, 'Bimestre 3 - 2024'/*props.item.periodo*/, 2024);
+		setTimeout(() => {
+			serviceAsistencia.value = data.value;
+		}, 0);
+		pendingAsistencia.value = pending.value;
+
+		const unWatch = watch(serviceAsistencia, (response) => {
+             if (response) {
+				console.log('response asistencia', response);
+				 dataAsistencia.value = response.data;
+             }
+             if (!response) {
+               unWatch();
+             }
+        });
+	}
+
 	props.onExpansion(
 		props.item,
 		openExpansion.value,
@@ -246,9 +275,9 @@ function actionExpansion(option: Option) {
 			/>
 			<span v-if="currentOption?.id === 2">
 				<PagesContainerNotasAsistencias
-					:data="dataAsistencias"
+					:data="dataAsistencia"
 					:curso="item.descCurso"
-					:loading="loading"
+					:loading="pendingAsistencia"
 					:error="error"
 					:error-response="errorResponse"
 					:modalidad="props.item.modalidad"

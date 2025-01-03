@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useDateFormat } from '@vueuse/core';
 import type { DataAsistencia } from '~/types/asistencia.types';
+import type { CursoAsistencia } from '~/types/cursos.types';
 import type { ErrorResponse } from '~/types/services.types';
 
 const StatusAsistencia = {
-	asistido: 'A',
+	asistido: 'Presente',
 	tardanza: 'T',
-	falta: 'F',
+	falta: 'Ausente',
 };
 
 const props = defineProps<{
-	data?: DataAsistencia;
+	data?: CursoAsistencia[];
 	curso: string;
 	loading: boolean;
 	error: Error | null;
@@ -30,24 +31,24 @@ const TotalAssists = ref<number[]>([]);
 
 
 const calculateAssistance = () => {
-	if (props.data) {
-		const total = props.data.inasistencias.length;
-		const assistance_ = props.data.inasistencias.filter(
-			(x) => x.status === 'A',
-		);
-		const tardiness_ = props.data.inasistencias.filter((x) => x.status === 'T');
-		const faults_ = props.data.inasistencias.filter((x) => x.status === 'F');
-		totalFaults.value = faults_.length;
-		TotalAssists.value = [
-			assistance_.length,
-			tardiness_.length,
-			faults_.length,
-		];
+	// if (props.data) {
+	// 	const total = props.data.inasistencias.length;
+	// 	const assistance_ = props.data.inasistencias.filter(
+	// 		(x) => x.status === 'A',
+	// 	);
+	// 	const tardiness_ = props.data.inasistencias.filter((x) => x.status === 'T');
+	// 	const faults_ = props.data.inasistencias.filter((x) => x.status === 'F');
+	// 	totalFaults.value = faults_.length;
+	// 	TotalAssists.value = [
+	// 		assistance_.length,
+	// 		tardiness_.length,
+	// 		faults_.length,
+	// 	];
 
-		assistance = Math.round((assistance_.length / total) * 100);
-		tardiness = Math.round((tardiness_.length / total) * 100);
-		faults = Math.round((faults_.length / total) * 100);
-	}
+	// 	assistance = Math.round((assistance_.length / total) * 100);
+	// 	tardiness = Math.round((tardiness_.length / total) * 100);
+	// 	faults = Math.round((faults_.length / total) * 100);
+	// }
 };
 
 const getStringAssists = (indexAssist: number) => {
@@ -260,11 +261,11 @@ onUpdated(() => {
 		:icono="errorResponse?.icono"
 	/>
 	<ScheduleStatusNoData
-		v-else-if="!data?.inasistencias.length"
+		v-else-if="!data?.length"
 		class="w-full !h-[100px] md:!h-[280px]"
 		text="No encontramos información de asistencias para este curso"
 	/>
-	<div v-else-if="data?.inasistencias.length">
+	<div v-else-if="data?.length">
 		<div ref="element" class="costum-scroll w-full overflow-auto max-h-[338px]">
 			<table class="border border-x-0 border-b-disable border-t-0">
 				<tr class="border border-b-disable border-x-0 border-t-0">
@@ -272,12 +273,13 @@ onUpdated(() => {
 					<th class="font-robotoCondensed w-1/3">HORA</th>
 					<th class="font-robotoCondensed w-1/3">ESTADO</th>
 				</tr>
-				<tr v-for="(item, index) in data.inasistencias" :key="index">
-					<td class="text-black text-xs md:text-sm font-nunito capitalize">
+				<tr v-for="(item, index) in data" :key="index">
+					<td class="text-black text-xs md:text-sm font-telegraf capitalize">
 						{{ item.dia }}
 					</td>
-					<td class="text-black text-xs md:text-sm font-nunito">
-						{{ item.inicio }} - {{ item.fin }}
+					<td class="text-black text-xs md:text-sm font-telegraf">
+						no se encontro
+						<!-- {{ item.inicio }} - {{ item.fin }} -->
 					</td>
 					<td class="text-xs md:text-sm flex justify-center">
 						<div
@@ -292,7 +294,7 @@ onUpdated(() => {
 						</div>
 						<div
 							v-if="
-								StatusAsistencia.asistido === item.status &&
+								StatusAsistencia.asistido === item.estadoAsistencia &&
 								props.modalidad !== 'Virtual'
 							"
 							class="rounded-2xl py-1 px-2 bg-green_30 w-min flex items-center"
@@ -305,7 +307,7 @@ onUpdated(() => {
 						</div>
 						<div
 							v-if="
-								StatusAsistencia.tardanza === item.status &&
+								StatusAsistencia.tardanza === item.estadoAsistencia &&
 								props.modalidad !== 'Virtual'
 							"
 							class="rounded-2xl py-1 px-2 bg-yellow_30 w-min flex items-center"
@@ -318,7 +320,7 @@ onUpdated(() => {
 						</div>
 						<div
 							v-if="
-								StatusAsistencia.falta === item.status &&
+								StatusAsistencia.falta === item.estadoAsistencia &&
 								props.modalidad !== 'Virtual'
 							"
 							class="rounded-2xl py-1 px-2 bg-red_30 w-min flex items-center"
@@ -331,7 +333,7 @@ onUpdated(() => {
 						</div>
 
 						<div
-							v-if="!Object.values(StatusAsistencia).includes(item.status)"
+							v-if="!Object.values(StatusAsistencia).includes(item.estadoAsistencia)"
 							class="min-w-[29px] md:min-w-[99px] rounded-2xl py-1 px-2 bg-disable w-min"
 						>
 							<span class="w-full text-center text-xs">-</span>
