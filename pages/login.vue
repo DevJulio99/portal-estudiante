@@ -11,6 +11,7 @@ const { $api } = useNuxtApp();
 const dataLog = ref<ResponseLogin | null>();
 const errorLog = ref<boolean>(false);
 const errorMsg = ref<string>("");
+const pendingLogin = ref<boolean>(false);
 
 const callLogin = async () =>
   await $api.login.login(userLogin.value.email, userLogin.value.password, {
@@ -31,6 +32,7 @@ async function handleFormSubmit() {
     console.log("error", error.value);
     setTimeout(() => {
       data.value && (dataLog.value = data.value);
+      pendingLogin.value = pending.value;
     }, 0);
   }
 
@@ -56,6 +58,7 @@ function changeEl(ev: any) {
 function setError(msg = "Correo o contraseña incorrecta") {
   errorLog.value = true;
   errorMsg.value = msg;
+  dataLog.value = null;
   (document.getElementById('popuperr') as HTMLDivElement).classList.add('show');
   setTimeout(() => {
    (document.getElementById('popuperr') as HTMLDivElement).classList.remove('show');
@@ -93,7 +96,7 @@ function setError(msg = "Correo o contraseña incorrecta") {
           class="bg-green_40 text-black py-3.5 px-4 text-base rounded-md font-nunito shadow-2xl font-semibold"
           @click="handleFormSubmit"
         >
-          Ingresar
+          {{pendingLogin ? 'Ingresando...' : 'Ingresar'}}
         </button>
       </div>
     </div>

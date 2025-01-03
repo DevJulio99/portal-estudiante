@@ -15,7 +15,7 @@ export default {
 		robotoCondensed: ['robotoCondensed'],
       },
       colors: {
-        primary: '#FDBA30',
+        primary: '#287f6b',
 				'primary-disabled': '#FFE2BE',
 				secondary: '#333333',
 				url: '#3817FF',

@@ -191,7 +191,7 @@ function formatCantidadVeces(veces: string | number): string {
 
 		<div class="w-[77px] md:w-[187px]" v-if="item.nivel?.trim().length">
 			<span class="block text-xs text-secondary">Grado</span>
-			<span class="block text-sm text-black font-extrabold">1° {{
+			<span class="block text-sm text-black font-extrabold">{{item.grado}}° {{
 				item.nivel
 			}}</span>
 		</div>

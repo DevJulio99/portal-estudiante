@@ -28,7 +28,16 @@ export interface Curso {
 	tieneHorario: boolean;
 	notaFinal: number;
 	nivel?: string;
+	grado?:string;
 }
+
+export interface CursoAsistencia {
+	idAsistencia: number;
+	dia: string;
+	estadoAsistencia: string;
+	descripcionCurso: string;
+	modalidad: string;
+  }
 
 export interface CourseExtend extends Curso {
 	horario: {
