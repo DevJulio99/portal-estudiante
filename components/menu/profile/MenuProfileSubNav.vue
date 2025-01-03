@@ -47,11 +47,11 @@ const eventClick = (url: string, title: string) => {
 						class="w-[20px] mb-4 row-span-2"
 					/>
 					<span
-						class="text-sm inline-block leading-[18px] font-extrabold capitalize font-telegraf"
+						class="text-sm inline-block leading-[18px] font-extrabold capitalize font-nunito"
 					>
 						{{ it.titulo }}
 					</span>
-					<span class="text-sm leading-[22px] font-normal font-telegraf">{{
+					<span class="text-sm leading-[22px] font-normal font-nunito">{{
 						it.descripcion
 					}}</span>
 				</a>
@@ -66,6 +66,6 @@ const eventClick = (url: string, title: string) => {
 }
 
 .submenu-item {
-	@apply leading-[1] font-telegraf text-xs grid grid-cols-[20px_1fr] grid-rows-2 gap-x-2 items-center px-4 py-2;
+	@apply leading-[1] font-nunito text-xs grid grid-cols-[20px_1fr] grid-rows-2 gap-x-2 items-center px-4 py-2;
 }
 </style>

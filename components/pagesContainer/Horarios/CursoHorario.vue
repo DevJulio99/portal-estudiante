@@ -41,20 +41,20 @@ const hidePopup = () => {
 		}"
 	>
 		<div class="text-center">
-			<div class="text-base font-telegraf color-black font-extrabold">
+			<div class="text-base font-nunito color-black font-extrabold">
 				{{ formatHora(item.detalleHorario[0].horaInicio) }}
 			</div>
-			<div class="font-telegraf colo-neutral text-sm">
+			<div class="font-nunito colo-neutral text-sm">
 				{{ formatHora(item.detalleHorario[0].horaFin) }}
 			</div>
 		</div>
 		<div
 			class="relative before:absolute before:left-[-9px] before:w-[1px] before:h-full before:bg-disable ml-[18px]"
 		>
-			<div class="text-sm font-extrabold color-black font-telegraf text-cut">
+			<div class="text-sm font-extrabold color-black font-nunito text-cut">
 				{{ conditionedString(item.detalleHorario[0].descripMateria) }}
 			</div>
-			<div class="font-telegraf colo-neutral text-xs">
+			<div class="font-nunito colo-neutral text-xs">
 				{{ conditionedString(item.detalleHorario[0].codSeccion) }}
 			</div>
 			<div
@@ -66,7 +66,7 @@ const hidePopup = () => {
 			>
 				<span>Salón:</span>
 				<div
-					class="text-center px-1 pt-1 font-telegraf text-[0.78rem] color-black font-extrabold rounded-md min-w-[48px]"
+					class="text-center px-1 pt-1 font-nunito text-[0.78rem] color-black font-extrabold rounded-md min-w-[48px]"
 					:class="{
 						'bg-[#FDC979] text-[#523C0F]':
 							item.detalleHorario[0].descripMetodoEducativo === 'Presencial',

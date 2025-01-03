@@ -108,40 +108,40 @@ onMounted(() => {
 								</th>
 							</tr>
 							<tr v-for="(payment, index) in obligation.payments" :key="index">
-								<td class="font-telegraf text-xs leading-5 md:text-sm">
+								<td class="font-nunito text-xs leading-5 md:text-sm">
 									<div class="w-full flex justify-center">
 										<span class="w-[144px] text-limit">{{
 											payment.paidDate
 										}}</span>
 									</div>
 								</td>
-								<td class="font-telegraf text-xs md:text-sm leading-5">
+								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center items-center h-[40px]">
 										<span class="w-[164px] !flex justify-center text-limit">
 											{{ payment.concept }}
 										</span>
 									</div>
 								</td>
-								<td class="font-telegraf text-xs md:text-sm leading-5">
+								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center items-center h-[40px]">
 										<span class="w-[144px] !flex justify-center text-limit">
 											{{ payment.documentNumber }}
 										</span>
 									</div>
 								</td>
-								<td class="font-telegraf text-xs md:text-sm leading-5">
+								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center">
 										<span class="w-[77px] text-limit">{{ payment.fee }}</span>
 									</div>
 								</td>
-								<td class="font-telegraf text-xs md:text-sm leading-5">
+								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center">
 										<span class="w-[144px] text-limit">{{
 											payment.import
 										}}</span>
 									</div>
 								</td>
-								<td class="font-telegraf text-xs md:text-sm leading-5">
+								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center">
 										<span class="w-[144px] text-limit">{{ payment.paid }}</span>
 									</div>

@@ -282,7 +282,7 @@ onMounted(() => {
 		<div class="flex justify-between mt-7 items-center">
 			<p class="mb-0 lg:text-[16px] text-[14px]">Total seleccionado:</p>
 			<span
-				class="bg-green_40 text-dark_100 font-telegraf py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
+				class="bg-green_40 text-dark_100 font-nunito py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
 				:class="{ 'bg-white': montoTotalPagar == 0.0 }"
 				>S/{{ montoTotalPagar.toFixed(2) }}</span
 			>
@@ -349,7 +349,7 @@ th:last-child {
 }
 
 td {
-	@apply lg:py-6 py-4 px-2 text-center font-telegraf text-sm;
+	@apply lg:py-6 py-4 px-2 text-center font-nunito text-sm;
 }
 
 .box-table::-webkit-scrollbar {

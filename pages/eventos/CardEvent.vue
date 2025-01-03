@@ -116,7 +116,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 				@click="eventClick(`eventos/${id}`, title, tag)"
 			>
 				<h2
-					class="mb-3 h-[36px] group-hover:underline text-sm leading-[1.2] font-telegraf font-bold transition-all duration-300 text-truncate-title"
+					class="mb-3 h-[36px] group-hover:underline text-sm leading-[1.2] font-nunito font-extrabold transition-all duration-300 text-truncate-title"
 				>
 					{{ title }}
 				</h2>
@@ -131,7 +131,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 					</div>
 
 					<div
-						class="text-xs text-gray_80 font-telegraf font-bold uppercase whitespace-nowrap leading-none"
+						class="text-xs text-gray_80 font-nunito font-extrabold uppercase whitespace-nowrap leading-none"
 					>
 						<time
 							v-if="dateStart && (!dateEnd || dateStart === dateEnd)"
@@ -167,7 +167,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 					<div>
 						<time
 							:datetime="time"
-							class="text-xs text-gray_80 font-telegraf font-bold uppercase"
+							class="text-xs text-gray_80 font-nunito font-extrabold uppercase"
 						>
 							{{
 								useDateFormat(dateStart + time, 'hh:mm A', { locales: 'es-ES' })

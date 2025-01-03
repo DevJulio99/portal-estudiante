@@ -268,15 +268,15 @@ onUpdated(() => {
 		<div ref="element" class="costum-scroll w-full overflow-auto max-h-[338px]">
 			<table class="border border-x-0 border-b-disable border-t-0">
 				<tr class="border border-b-disable border-x-0 border-t-0">
-					<th class="font-grotesk w-1/3">FECHA</th>
-					<th class="font-grotesk w-1/3">HORA</th>
-					<th class="font-grotesk w-1/3">ESTADO</th>
+					<th class="font-robotoCondensed w-1/3">FECHA</th>
+					<th class="font-robotoCondensed w-1/3">HORA</th>
+					<th class="font-robotoCondensed w-1/3">ESTADO</th>
 				</tr>
 				<tr v-for="(item, index) in data.inasistencias" :key="index">
-					<td class="text-black text-xs md:text-sm font-telegraf capitalize">
+					<td class="text-black text-xs md:text-sm font-nunito capitalize">
 						{{ item.dia }}
 					</td>
-					<td class="text-black text-xs md:text-sm font-telegraf">
+					<td class="text-black text-xs md:text-sm font-nunito">
 						{{ item.inicio }} - {{ item.fin }}
 					</td>
 					<td class="text-xs md:text-sm flex justify-center">
@@ -286,7 +286,7 @@ onUpdated(() => {
 						>
 							<nuxt-icon name="iconNoAplica" class="mr-[1.33px]" filled />
 							<span
-								class="font-telegraf flex justify-center min-w-[67px] text-[#333333] font-extrabold text-xs hidden md:flex"
+								class="font-nunito flex justify-center min-w-[67px] text-[#333333] font-extrabold text-xs hidden md:flex"
 								>No aplica</span
 							>
 						</div>
@@ -299,7 +299,7 @@ onUpdated(() => {
 						>
 							<nuxt-icon name="CheckboxCircle" class="mr-[1.33px]" filled />
 							<span
-								class="font-telegraf flex justify-center min-w-[67px] text-green_70 font-extrabold text-xs hidden md:flex"
+								class="font-nunito flex justify-center min-w-[67px] text-green_70 font-extrabold text-xs hidden md:flex"
 								>Asistencia</span
 							>
 						</div>
@@ -312,7 +312,7 @@ onUpdated(() => {
 						>
 							<nuxt-icon name="Alarm" class="mr-[1.33px]" filled />
 							<span
-								class="font-telegraf flex justify-center min-w-[67px] text-yellow_90 font-extrabold text-xs hidden md:flex"
+								class="font-nunito flex justify-center min-w-[67px] text-yellow_90 font-extrabold text-xs hidden md:flex"
 								>Tardanza</span
 							>
 						</div>
@@ -325,7 +325,7 @@ onUpdated(() => {
 						>
 							<nuxt-icon name="CloseCircle" class="mr-[1.33px]" filled />
 							<span
-								class="font-telegraf flex justify-center min-w-[67px] text-error font-extrabold text-xs hidden md:flex"
+								class="font-nunito flex justify-center min-w-[67px] text-error font-extrabold text-xs hidden md:flex"
 								>Falta</span
 							>
 						</div>

@@ -104,25 +104,25 @@ listPayDocuments.value = props.dataPayment?.concept
 		<div class="card-content pt-2">
 			<div class="my-4">
 				<span
-					class="bg-dark_100 text-white font-grotesk py-2 px-2 font-semibold text-md"
+					class="bg-dark_100 text-white font-robotoCondensed py-2 px-2 font-semibold text-md"
 					>RESUMEN DEL PAGO SELECCIONADO</span
 				>
 			</div>
 			<div
-				class="bg-[#F6F6F6] font-telegraf font-bold px-2 py-1 my-3 capitalize text-sm"
+				class="bg-[#F6F6F6] font-nunito font-extrabold px-2 py-1 my-3 capitalize text-sm"
 			>
 				Concepto: Pago de obligaciones
 			</div>
 			<div class="grid grid-cols-2 gap-y-[10px] gap-x-[8px] mt-3">
 				<div>
-					<p class="font-telegraf text-[#333333] text-[12px]">Documentos</p>
-					<div class="font-telegraf font-bold text-[#000]">
+					<p class="font-nunito text-[#333333] text-[12px]">Documentos</p>
+					<div class="font-nunito font-extrabold text-[#000]">
 						<div class="text-[14px]">{{ listPayDocuments }}</div>
 					</div>
 				</div>
 				<div>
-					<p class="font-telegraf text-[#333333] text-[12px]">Cantidad</p>
-					<div class="font-telegraf font-bold text-[#000]">
+					<p class="font-nunito text-[#333333] text-[12px]">Cantidad</p>
+					<div class="font-nunito font-extrabold text-[#000]">
 						<span class="text-[14px]">{{ dataPayment?.concept.length }}</span>
 					</div>
 				</div>
@@ -131,7 +131,7 @@ listPayDocuments.value = props.dataPayment?.concept
 			<div class="flex justify-between items-center mb-7">
 				<p class="mb-0 lg:text-[16px] text-[14px] font-bold">Total a pagar</p>
 				<span
-					class="bg-[#00B9FF] text-dark_100 font-telegraf py-1 px-3 font-extrabold text-[17px]"
+					class="bg-[#00B9FF] text-dark_100 font-nunito py-1 px-3 font-extrabold text-[17px]"
 					>S/{{
 						dataPayment?.totalAmount ? dataPayment?.totalAmount.toFixed(2) : 0.0
 					}}</span
@@ -139,7 +139,7 @@ listPayDocuments.value = props.dataPayment?.concept
 			</div>
 			<div>
 				<span
-					class="bg-dark_100 text-white font-grotesk py-2 px-2 font-semibold text-md"
+					class="bg-dark_100 text-white font-robotoCondensed py-2 px-2 font-semibold text-md"
 					>MÉTODOS DE PAGO</span
 				>
 			</div>

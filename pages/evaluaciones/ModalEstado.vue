@@ -55,7 +55,7 @@ const onNext = () => {
         />
       </div>
       <span
-        class="block text-xl font-semibold mb-[6px] text-center font-telegraf"
+        class="block text-xl font-semibold mb-[6px] text-center font-nunito"
         >{{
           success
             ? resumen.pendientes > 0

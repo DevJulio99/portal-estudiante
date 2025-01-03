@@ -60,7 +60,7 @@ function isValidUrlFormat(url: string) {
 			class="z-10 rounded-lg w-full max-w-[1245px] min-h-[70%] lg:min-h-[613px] overflow-hidden"
 		>
 			<div class="py-4 px-8 bg-white flex justify-between">
-				<span class="text-sm md:text-base font-telegraf">
+				<span class="text-sm md:text-base font-nunito">
 					{{ nameDoc ?? 'Documento' }}
 				</span>
 				<span @click="outsideModal">

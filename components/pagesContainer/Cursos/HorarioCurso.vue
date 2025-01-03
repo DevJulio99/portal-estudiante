@@ -37,10 +37,10 @@ const convertirHora24 = (hora12: string) => {
 	<div class="flex flex-wrap gap-4">
 		<div class="w-full">
 			<span class="block text-xs text-secondary">Horario</span>
-			<div v-if="error" class="text-xs text-black font-telegraf">
+			<div v-if="error" class="text-xs text-black font-nunito">
 				{{ errorResponse?.titulo ?? message }}
 			</div>
-			<div v-else-if="errorResponse" class="text-xs text-black font-telegraf">
+			<div v-else-if="errorResponse" class="text-xs text-black font-nunito">
 				<span v-if="modalidad == 'Remoto'"
 					>No encontramos información del horario. Para ver el contenido del
 					curso, ingresa en cualquier momento al
@@ -57,12 +57,12 @@ const convertirHora24 = (hora12: string) => {
 				<div
 					v-for="(data, index) of dataHorario"
 					:key="index"
-					class="w-full flex flex-wrap items-center font-telegraf"
+					class="w-full flex flex-wrap items-center font-nunito"
 				>
 					<div
 						v-for="(el, i) of data.detalleHorario"
 						:key="i"
-						class="w-full flex flex-wrap items-center font-telegraf"
+						class="w-full flex flex-wrap items-center font-nunito"
 					>
 						<p class="text-sm font-extrabold mr-[5px] capitalize">
 							{{

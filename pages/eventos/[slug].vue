@@ -265,7 +265,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 								</div>
 								<time
 									:datetime="eventData?.fecha_inicio_evento"
-									class="text-sm text-black font-telegraf capitalize"
+									class="text-sm text-black font-nunito capitalize"
 								>
 									<span
 										v-if="
@@ -315,7 +315,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 							</div>
 							<time
 								:datetime="eventData.hora_inicio_evento"
-								class="text-sm text-black font-telegraf"
+								class="text-sm text-black font-nunito"
 							>
 								{{
 									useDateFormat(
@@ -330,7 +330,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 							</time>
 						</div>
 						<span
-							class="flex gap-1 items-center text-sm text-black font-telegraf lg:w-fit lg:px-4 lg:py-2 lg:bg-white capitalize"
+							class="flex gap-1 items-center text-sm text-black font-nunito lg:w-fit lg:px-4 lg:py-2 lg:bg-white capitalize"
 						>
 							<div v-if="eventData.tipo_de_evento === 'virtual'">
 								<nuxt-icon

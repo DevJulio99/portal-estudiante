@@ -29,7 +29,7 @@ const goDetail = (name: string) => {
     >
     <div class="relative w-full mb-[12px]">
       <div
-        class="w-full py-[5px] text-xs text-white font-telegraf rounded-[16px] absolute top-[-6px] left-[-5px] text-center lg:max-w-[201px]"
+        class="w-full py-[5px] text-xs text-white font-nunito rounded-[16px] absolute top-[-6px] left-[-5px] text-center lg:max-w-[201px]"
         :class="status()"
         >
         {{data.textStatus}}
@@ -41,7 +41,7 @@ const goDetail = (name: string) => {
     <span class="text-base font-bold text-blue_link pb-[9px] mb-[7px] block border border-gray_50 border-x-0 border-t-0">{{ data.title }}</span>
     <span class="text-xs mb-[90px] block">
       <p>{{ data.description }}</p>
-      <a v-if="data.link.trim().length" class="underline text-url font-telegraf" :href="data.link" target="_blank">{{ data.nameLink }}</a>
+      <a v-if="data.link.trim().length" class="underline text-url font-nunito" :href="data.link" target="_blank">{{ data.nameLink }}</a>
     </span>
     <div class="w-full absolute bottom-[15px] left-0 pr-[13px] pl-[10px]">
       <BaseButton

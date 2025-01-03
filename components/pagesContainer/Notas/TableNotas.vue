@@ -184,23 +184,23 @@ onMounted(() => {
 	<div class="w-full overflow-auto">
 		<table class="border border-x-0 border-b-disable border-t-0">
 			<tr class="border border-b-disable border-x-0 border-t-0">
-				<th class="font-grotesk uppercase">Tipo</th>
-				<th class="font-grotesk uppercase">Evaluación</th>
-				<th class="font-grotesk uppercase">Peso</th>
-				<th class="font-grotesk uppercase">Nota</th>
+				<th class="font-robotoCondensed uppercase">Tipo</th>
+				<th class="font-robotoCondensed uppercase">Evaluación</th>
+				<th class="font-robotoCondensed uppercase">Peso</th>
+				<th class="font-robotoCondensed uppercase">Nota</th>
 			</tr>
 			<tr v-for="(data, index) in itemsNota" :key="index">
-				<td class="font-extrabold text-xs md:text-sm font-telegraf">
+				<td class="font-extrabold text-xs md:text-sm font-nunito">
 					{{ data.codTipoPrueba }}
 				</td>
-				<td class="text-xs md:text-sm font-telegraf">
+				<td class="text-xs md:text-sm font-nunito">
 					{{ data.desTipoPrueba }}
 				</td>
-				<td class="text-xs md:text-sm font-telegraf">
+				<td class="text-xs md:text-sm font-nunito">
 					{{ data.pesoPonderado }}
 				</td>
 				<td
-					class="font-extrabold text-sm md:text-base font-telegraf flex justify-center"
+					class="font-extrabold text-sm md:text-base font-nunito flex justify-center"
 				>
 					<p v-if="!simulateNote">{{ data.nota }}</p>
 					<InputNota

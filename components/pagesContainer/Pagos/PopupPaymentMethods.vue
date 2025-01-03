@@ -104,20 +104,20 @@ onMounted(() => {
 					>
 				</div>
 				<div
-					class="bg-[#F6F6F6] font-telegraf font-bold px-2 py-1 my-3 capitalize text-sm"
+					class="bg-[#F6F6F6] font-nunito font-extrabold px-2 py-1 my-3 capitalize text-sm"
 				>
 					Concepto: Pago de obligaciones
 				</div>
 				<div class="grid grid-cols-3 gap-y-[10px] gap-x-[8px] mt-3">
 					<div class="col-span-2">
-						<p class="font-telegraf text-[#333333] text-[12px]">Documentos</p>
-						<div class="font-telegraf font-bold text-[#000]">
+						<p class="font-nunito text-[#333333] text-[12px]">Documentos</p>
+						<div class="font-nunito font-extrabold text-[#000]">
 							<span class="text-[14px]">{{ listPayDocuments }}</span>
 						</div>
 					</div>
 					<div>
-						<p class="font-telegraf text-[#333333] text-[12px]">Cantidad</p>
-						<div class="font-telegraf font-bold text-[#000]">
+						<p class="font-nunito text-[#333333] text-[12px]">Cantidad</p>
+						<div class="font-nunito font-extrabold text-[#000]">
 							<span class="text-[14px]">{{ dataPayment?.concept.length }}</span>
 						</div>
 					</div>
@@ -126,7 +126,7 @@ onMounted(() => {
 				<div class="flex justify-between items-center mb-5">
 					<p class="mb-0 lg:text-[16px] text-[14px] font-bold">Total a pagar</p>
 					<span
-						class="bg-[#00B9FF] text-dark_100 font-telegraf py-1 px-4 font-extrabold text-[17px]"
+						class="bg-[#00B9FF] text-dark_100 font-nunito py-1 px-4 font-extrabold text-[17px]"
 						>S/{{
 							dataPayment?.totalAmount
 								? dataPayment?.totalAmount.toFixed(2)

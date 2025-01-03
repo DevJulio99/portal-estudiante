@@ -58,18 +58,18 @@ onMounted(() => {
 					:class="!smallerThanLg ? 'grid-cols-3' : 'grid-cols-2'"
 				>
 					<div>
-						<p class="font-telegraf text-[#333333] text-[12px]">N° Documento</p>
-						<div class="font-telegraf font-bold text-[#000]">
+						<p class="font-nunito text-[#333333] text-[12px]">N° Documento</p>
+						<div class="font-nunito font-extrabold text-[#000]">
 							<span class="text-[14px]">{{
 								data?.numDoc != '' ? data?.numDoc : '-'
 							}}</span>
 						</div>
 					</div>
 					<div>
-						<p class="font-telegraf text-[#333333] text-[12px]">
+						<p class="font-nunito text-[#333333] text-[12px]">
 							Fecha de vencimiento
 						</p>
-						<div class="font-telegraf font-bold text-[#000]">
+						<div class="font-nunito font-extrabold text-[#000]">
 							<span
 								class="text-[14px]"
 								:class="{
@@ -97,35 +97,35 @@ onMounted(() => {
 				<hr class="mb-3 text-[#D9D9D9]" />
 				<div v-for="(item, index) in data?.amountDetail" :key="index">
 					<div
-						class="bg-[#F6F6F6] font-telegraf font-bold px-2 py-1 capitalize"
+						class="bg-[#F6F6F6] font-nunito font-extrabold px-2 py-1 capitalize"
 						:class="!smallerThanLg ? 'text-[16px]' : 'text-[14px]'"
 					>
 						{{ item.description }}
 					</div>
 					<div class="grid grid-cols-4 gap-y-[10px] gap-x-[8px] my-3 px-2">
 						<div>
-							<p class="font-telegraf text-[#333333] text-[12px]">Cuota</p>
-							<div class="font-telegraf font-bold text-[#000]">
+							<p class="font-nunito text-[#333333] text-[12px]">Cuota</p>
+							<div class="font-nunito font-extrabold text-[#000]">
 								<span class="text-[14px]">{{ item.fee }}</span>
 							</div>
 						</div>
 						<div>
-							<p class="font-telegraf text-[#333333] text-[12px]">Cantidad</p>
-							<div class="font-telegraf font-bold text-[#000]">
+							<p class="font-nunito text-[#333333] text-[12px]">Cantidad</p>
+							<div class="font-nunito font-extrabold text-[#000]">
 								<span class="text-[14px]">{{ parseInt(item.amount) }}</span>
 							</div>
 						</div>
 						<div>
-							<p class="font-telegraf text-[#333333] text-[12px]">
+							<p class="font-nunito text-[#333333] text-[12px]">
 								Precio Unitario
 							</p>
-							<div class="font-telegraf font-bold text-[#000]">
+							<div class="font-nunito font-extrabold text-[#000]">
 								<span class="text-[14px]">S/{{ item.price }}</span>
 							</div>
 						</div>
 						<div>
-							<p class="font-telegraf text-[#333333] text-[12px]">Subtotal</p>
-							<div class="font-telegraf font-bold text-[#000]">
+							<p class="font-nunito text-[#333333] text-[12px]">Subtotal</p>
+							<div class="font-nunito font-extrabold text-[#000]">
 								<span class="text-[14px]">S/{{ item.subtotal }}</span>
 							</div>
 						</div>
@@ -134,13 +134,13 @@ onMounted(() => {
 				<hr class="mb-4 text-[#D9D9D9]" />
 				<div class="grid grid-cols-4 gap-y-[10px] gap-x-[8px] mt-3">
 					<div
-						class="col-span-3 flex items-center font-telegraf font-bold text-[#000]"
+						class="col-span-3 flex items-center font-nunito font-extrabold text-[#000]"
 					>
 						<span class="text-sm">Total a pagar</span>
 					</div>
 					<div class="col-span-1 flex items-center">
 						<span
-							class="bg-turquoise text-dark_100 font-telegraf p-1 font-extrabold lg:text-[16px] text-[14px]"
+							class="bg-turquoise text-dark_100 font-nunito p-1 font-extrabold lg:text-[16px] text-[14px]"
 							>S/{{ data?.arrearsTotal }}</span
 						>
 					</div>

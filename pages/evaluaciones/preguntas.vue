@@ -154,7 +154,7 @@ onBeforeUpdate(() => {
           }`"
         ></div>
         <p
-          class="w-full text-center font-telegraf text-black font-medium font-xs"
+          class="w-full text-center font-nunito text-black font-medium font-xs"
         >
           {{ NumeroPregunta(i + 1) }}
         </p>

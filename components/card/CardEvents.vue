@@ -62,7 +62,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 			</div>
 
 			<h2
-				class="mb-2 leading-4 group-hover:underline cursor-pointer font-telegraf font-bold transition-all duration-300 text-truncate-title"
+				class="mb-2 leading-4 group-hover:underline cursor-pointer font-nunito font-extrabold transition-all duration-300 text-truncate-title"
 				:class="{
 					'default lg:leading-5 ': !secondary,
 					'secondary text-xs leading-[1.2]': secondary,
@@ -81,7 +81,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 					</div>
 
 					<div
-						class="text-xs text-gray_80 font-telegraf font-bold uppercase whitespace-nowrap leading-none"
+						class="text-xs text-gray_80 font-nunito font-extrabold uppercase whitespace-nowrap leading-none"
 					>
 						<time
 							v-if="dateStart && (!dateEnd || dateStart === dateEnd)"
@@ -117,7 +117,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 					<div>
 						<time
 							:datetime="time"
-							class="text-xs text-gray_80 font-telegraf font-bold uppercase whitespace-nowrap"
+							class="text-xs text-gray_80 font-nunito font-extrabold uppercase whitespace-nowrap"
 						>
 							{{
 								useDateFormat(dateStart + time, 'hh:mm A', { locales: 'es-ES' })
