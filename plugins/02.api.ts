@@ -1,5 +1,6 @@
 import { $fetch, type FetchOptions } from 'ofetch';
 import AsistenciaModule from '~/repository/modules/Asistencia';
+import NotasModule from '~/repository/modules/Notas';
 import CursosModule from '~/repository/modules/cursos';
 import HorarioRangoModule from '~/repository/modules/horarioRango';
 import LoginModule from '~/repository/modules/login';
@@ -12,6 +13,7 @@ interface IApiInstance {
 	cursos: CursosModule;
 	login: LoginModule;
 	asistencia: AsistenciaModule;
+	notas: NotasModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -27,7 +29,8 @@ export default defineNuxtPlugin(() => {
 		horarioRango: new HorarioRangoModule(apiFecther),
 		cursos: new CursosModule(apiFecther),
 		login: new LoginModule(apiFecther),
-		asistencia : new AsistenciaModule(apiFecther)
+		asistencia : new AsistenciaModule(apiFecther),
+		notas: new NotasModule(apiFecther)
 	};
 
 	return {

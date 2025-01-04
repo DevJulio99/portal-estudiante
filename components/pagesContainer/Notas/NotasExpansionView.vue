@@ -3,8 +3,9 @@ import { ref } from 'vue';
 import TableNotas from './TableNotas.vue';
 import type { DataAsistencia } from '~/types/asistencia.types';
 import type { Curso, CursoAsistencia, HorarioData, Nota } from '~/types/cursos.types';
-import CursoDetail from '../Cursos/CursoDetail.vue';
 import type { ErrorResponse, DataResponse } from '~/types/services.types';
+import type { NotaBimestre } from '~/types/notas.types';
+import type { NuxtError } from '#app';
 
 interface Option {
 	id: number;
@@ -32,12 +33,21 @@ const currentOption = ref<Option | null>();
 const showTooptipWarn = ref(true);
 const pendingAsistencia = ref<boolean>(true);
 const serviceAsistencia = ref<DataResponse<CursoAsistencia[]> | null>();
+const serviceNotas = ref<DataResponse<NotaBimestre[]> | null>();
+const pendingNotas = ref<boolean>(true);
+const errorNotas = ref<NuxtError<unknown> | null>();
 const dataAsistencia = ref<CursoAsistencia[]>([]);
+const dataNotasBimestre = ref<NotaBimestre[]>([]);
 const { $api } = useNuxtApp();
 
 
 const callAsistencias = async (idAlum: number, bimestre: string, anio: number) =>
   await $api.asistencia.getCursoAsistencia(idAlum, bimestre,anio ,{
+    lazy: true,
+});
+
+const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number) =>
+  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio ,{
     lazy: true,
 });
 
@@ -67,8 +77,11 @@ async function actionExpansion(option: Option) {
 	} else {
 		currentOption.value = null;
 		openExpansion.value = !openExpansion.value;
+
 		pendingAsistencia.value = true;
 		serviceAsistencia.value = null;
+		serviceNotas.value = null;
+		pendingNotas.value = true;
 	}
 
 	if(option.id == 2 && currentOption.value){
@@ -82,6 +95,26 @@ async function actionExpansion(option: Option) {
              if (response) {
 				console.log('response asistencia', response);
 				 dataAsistencia.value = response.data;
+             }
+             if (!response) {
+               unWatch();
+             }
+        });
+	}
+
+	if(option.id == 3 && currentOption.value){
+		const { data, error, pending } = await callNotas(2, 'Bimestre'/*props.item.periodo*/, 2025);
+		setTimeout(() => {
+			serviceNotas.value = data.value;
+			errorNotas.value = error.value;
+		}, 0);
+		pendingNotas.value = pending.value;
+
+		const unWatch = watch(serviceNotas, (response) => {
+             if (response) {
+				const notasCurso = response.data.filter(x => x.descripcionCurso == props.item.descCurso && x.descripcionPeriodo == props.item.periodo);
+				console.log('notasCurso', notasCurso);
+				dataNotasBimestre.value = notasCurso;
              }
              if (!response) {
                unWatch();
@@ -284,30 +317,29 @@ async function actionExpansion(option: Option) {
 				/>
 			</span>
 			<div v-if="currentOption?.id === 3">
-				<!-- <div
-					v-if="loading"
+				<div
+					v-if="pendingNotas"
 					class="w-full h-[80px] md:h-[240px] flex justify-center"
 				>
 					<BaseStatusLoading />
 				</div>
 				<ScheduleStatusError
-					v-else-if="error || errorResponse"
+					v-else-if="errorNotas"
 					class="w-full h-[113px] md:h-[280px]"
 					:text="
-						errorResponse?.titulo ?? 'Lo sentimos, no pudimos cargar tus notas.'
+						'Lo sentimos, no pudimos cargar tus notas.'
 					"
-					:description="errorResponse?.descripcion"
-					:icono="errorResponse?.icono"
+					description=""
 				/>
 				<ScheduleStatusNoData
-					v-else-if="!dataNotas.length"
+					v-else-if="!dataNotasBimestre.length"
 					class="w-full !h-[100px] md:!h-[280px]"
 					text="Estamos trabajando en el detalle de este contenido"
-				/> -->
+				/>
 				<TableNotas
-					v-if="dataNotas.length"
+					v-if="dataNotasBimestre.length"
 					:id-table="id"
-					:item="dataNotas"
+					:item="dataNotasBimestre"
 					:curso="item.descCurso"
 					:modalidad="item.statusCurso"
 				/>

@@ -102,7 +102,7 @@ const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(2, 2024 ,{
+} = await $api.cursos.getCursosColegio(2, 2025 ,{
 	lazy: true,
 });
 

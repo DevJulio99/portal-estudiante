@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InputNota from './inputNota.vue';
+import type { NotaBimestre } from '~/types/notas.types';
 
 interface Notas {
 	codTipoPrueba: string;
@@ -11,7 +12,7 @@ interface Notas {
 
 const props = defineProps<{
 	idTable: string;
-	item: Notas[];
+	item: NotaBimestre[];
 	curso: string;
 	modalidad: string;
 }>();
@@ -19,8 +20,8 @@ const props = defineProps<{
 const simulateNote = ref(false);
 const average = ref<number>(0);
 
-const itemsNota = props.item.filter((x) => x.codTipoPrueba !== 'PF');
-const notaSusti = props.item.find((x) => x.codTipoPrueba === 'RE');
+//const itemsNota = props.item.filter((x) => x.codTipoPrueba !== 'PF');
+//const notaSusti = props.item.find((x) => x.codTipoPrueba === 'RE');
 
 // itemsNota[0].pesoPonderado = '10%';
 // itemsNota[1].pesoPonderado = '10%';
@@ -30,7 +31,7 @@ const notaSusti = props.item.find((x) => x.codTipoPrueba === 'RE');
 // itemsNota[4].nota = '12';
 
 average.value = Number(
-	props.item.find((x) => x.codTipoPrueba === 'PF')?.nota ?? '0',
+	props.item.find((x) => x.tipoNota === 'Examen Final')?.nota ?? '0',
 );
 
 const averageStyle = ref({
@@ -58,7 +59,7 @@ function simulateAverage() {
 
 function handleSimulate() {
 	resetSimulateNote();
-	handleNotaSusti();
+	//handleNotaSusti();
 	simulateNote.value = !simulateNote.value;
 
 }
@@ -90,12 +91,12 @@ function changeInput(e: any) {
 }
 
 function handleNotaSusti() {
-	const indexRe = itemsNota.findIndex((x) => x.codTipoPrueba === 'RE');
-	if (indexRe >= 0) {
-		itemsNota.splice(indexRe, 1);
-	} else {
-		notaSusti && itemsNota.splice(itemsNota.length, 0, notaSusti);
-	}
+	// const indexRe = itemsNota.findIndex((x) => x.codTipoPrueba === 'RE');
+	// if (indexRe >= 0) {
+	// 	itemsNota.splice(indexRe, 1);
+	// } else {
+	// 	notaSusti && itemsNota.splice(itemsNota.length, 0, notaSusti);
+	// }
 }
 
 function changeInp() {
@@ -107,7 +108,7 @@ function changeInp() {
 		if (inpt.name.startsWith(`t-${props.idTable}nota`)) {
 			const code = inpt.name.split('-').pop();
 			const percentage =
-				itemsNota.find((x) => x.codTipoPrueba === code)?.pesoPonderado ?? '0%';
+			props.item.find((x) => x.codigoPeriodo === code)?.peso ?? '0%';
 			const percentageNumber = parseFloat(`0.${percentage.replace(/%/g, '')}`);
 			notas.push(Number(inpt.value) * percentageNumber);
 		}
@@ -170,7 +171,7 @@ function resetSimulateNote() {
 	}
 
 	average.value = Number(
-		props.item.find((x) => x.codTipoPrueba === 'PF')?.nota ?? '0',
+		props.item.find((x) => x.tipoNota === 'Examen Final')?.nota ?? '0',
 	);
 	setAverage(average.value);
 }
@@ -189,24 +190,24 @@ onMounted(() => {
 				<th class="font-robotoCondensed uppercase">Peso</th>
 				<th class="font-robotoCondensed uppercase">Nota</th>
 			</tr>
-			<tr v-for="(data, index) in itemsNota" :key="index">
+			<tr v-for="(data, index) in item" :key="index">
 				<td class="font-extrabold text-xs md:text-sm font-nunito">
-					{{ data.codTipoPrueba }}
+					Nota {{ index + 1 }}
 				</td>
 				<td class="text-xs md:text-sm font-nunito">
-					{{ data.desTipoPrueba }}
+					{{ data.tipoNota }}
 				</td>
 				<td class="text-xs md:text-sm font-nunito">
-					{{ data.pesoPonderado }}
+					{{ data.peso }}
 				</td>
 				<td
 					class="font-extrabold text-sm md:text-base font-nunito flex justify-center"
 				>
 					<p v-if="!simulateNote">{{ data.nota }}</p>
 					<InputNota
-						v-if="simulateNote && data.codTipoPrueba !== 'RE'"
+						v-if="simulateNote"
 						:id="`t-${idTable}nt${index}`"
-						:name="`t-${idTable}nota${index}-${data.codTipoPrueba}`"
+						:name="`t-${idTable}nota${index}-${data.codigoPeriodo}`"
 						:nota="data.nota"
 						:on-change-nota="changeInp"
 					/>
