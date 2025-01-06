@@ -2,18 +2,16 @@
 import { getProfile } from '~/services/profile';
 const router = useRouter();
 const tokenStore = useTokenStore();
-const isLogin = ref(router.currentRoute.value.name == 'login');
 const pendingLog = ref(false);
-//const isLogin = router.currentRoute.value.name == 'login';
 
 onMounted(() => {
   const unWatch = watch(
     () => [
       tokenStore.logued,
-      tokenStore.pending
+      tokenStore.pending,
+      tokenStore.accessToken
     ],
-    async ([logueado, pendingLogued]) => {
-      isLogin.value = !logueado;
+    async ([logueado, pendingLogued, accessToken]) => {
       pendingLog.value = pendingLogued;
       if (!logueado ) {
         unWatch();
@@ -22,7 +20,11 @@ onMounted(() => {
   );
 });
 
-await getProfile(1);
+if(tokenStore.getDataToken && tokenStore.getDataToken.Id){
+  await getProfile(parseInt(tokenStore.getDataToken.Id));
+}
+
+
 </script>
 <template>
   <div class="fixed w-full h-full top-0 bg-green_60 flex justify-center items-center" v-if="pendingLog">

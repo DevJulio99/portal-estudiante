@@ -32,9 +32,10 @@ const imageLoadError = () => {
 };
 
 async function signOut() {
+	profileStore.clearPorfileData();
+	tokenStore.clearTokens();
 	const userDev = JSON.parse(localStorage.getItem('userDev')!);
 	menuStore.closeMenuProfile();
-	tokenStore.clearTokens();
 	router.push('/login');
 	// if (window.dataLayer) {
 	// 	window.dataLayer.push({

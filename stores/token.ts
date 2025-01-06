@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia';
+import { decryptJWT } from '~/utils/functions';
+
 export const useTokenStore = defineStore('tokenStore', {
 	state: () => ({
         logued: false,
@@ -6,6 +8,12 @@ export const useTokenStore = defineStore('tokenStore', {
 		accessToken: localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as any).accessToken : '',
 		refreshToken: localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as any).refreshToken : ''
 	}),
+	getters:{
+        getDataToken() {
+			const jtw = decryptJWT(this.accessToken)
+			return jtw
+		}
+	},
 	actions: {
 		setToken(accessToken: string, refreshToken: string) {
 			this.accessToken = accessToken;
@@ -21,6 +29,7 @@ export const useTokenStore = defineStore('tokenStore', {
 			this.accessToken = '';
             this.refreshToken = '';
             this.logued = false;
+			this.pending = false;
 		}
 	},
 });

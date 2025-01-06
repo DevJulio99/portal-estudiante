@@ -16,5 +16,12 @@ export const useProfileStore = defineStore('profileStore', {
 		setProfileData(payload: ProfileDataStore) {
 			this.profileData = payload;
 		},
+		clearPorfileData(){
+			this.profileData = {
+				data: null,
+				pending: false,
+				error: null,
+			} as ProfileDataStore
+		}
 	},
 });

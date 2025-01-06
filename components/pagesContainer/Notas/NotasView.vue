@@ -97,12 +97,13 @@ const modeCard = ref<'card' | 'list'>('card');
 const dataCursos = ref<Curso[]>([]);
 
 const servicesError: Ref<ErrorResponse | null> = ref(null);
+const tokenStore = useTokenStore();
 
 const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(2, 2025 ,{
+} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id), new Date().getFullYear() ,{
 	lazy: true,
 });
 
@@ -628,8 +629,8 @@ onMounted(() => {
 			<div v-if="pendingServices" class="w-full h-[240px] flex justify-center">
 				<BaseStatusLoading />
 			</div>
-			<!--<ScheduleStatusError
-				v-else-if="errorServices || servicesError"
+			<ScheduleStatusError
+				v-else-if="errorServices"
 				class="w-full"
 				:text="`${
 					servicesError
@@ -653,7 +654,7 @@ onMounted(() => {
 				"
 				class="w-full"
 				text="No tienes cursos asignados"
-			/>-->
+			/>
 
 
 			<NotasExpansionView

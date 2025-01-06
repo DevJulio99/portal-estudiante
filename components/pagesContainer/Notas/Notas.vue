@@ -39,6 +39,7 @@ const seccion = ref('');
 const requestQueueNota = ref<VoidFunction[]>([]);
 
 const servicesError: Ref<unknown> = ref(null);
+const tokenStore = useTokenStore();
 
 const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number) =>
   await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio ,{
@@ -77,7 +78,7 @@ const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(2, 2025 ,{
+} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id), new Date().getFullYear() ,{
 	lazy: true,
 });
 
@@ -112,7 +113,7 @@ async function initCallNotas(curso: Curso, status: boolean) {
 	if (status) {
 		// handlerScrollMove(curso.codCurso);
 		// const { data: NotasData, error: errorServicesNotas } = await callNotas();
-		const { data, error, pending } = await callNotas(2, 'Bimestre', 2025);
+		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id), 'Bimestre', new Date().getFullYear());
 		onExpansionNota(indexCurso, data);
 	} else {
 		const dataNota = {
@@ -207,7 +208,7 @@ watch(CursosData, (response) => {
 				'min-h-[268px]': !(false || servicesError),
 			}"
 		>
-			<!-- <div
+			<div
 				v-if="pendingServices"
 				class="w-full text-xs text-black pt-15 flex justify-center items-center"
 			>
@@ -218,13 +219,9 @@ watch(CursosData, (response) => {
 				class="flex items-center justify-center w-full h-[85%]"
 			>
 				<BaseStatusError
-					:text="
-						servicesError?.titulo ?? 'Lo sentimos, no pudimos cargar tus notas'
-					"
-					:description="servicesError?.descripcion"
-					:icono="servicesError?.icono"
+					text="Lo sentimos, no pudimos cargar tus notas"
 				/>
-			</div> -->
+			</div>
 			<div v-if="cursosTotalData.length" class="w-full pr-4">
 				<ExpansionNotas
 					v-for="item in cursosTotalData"
