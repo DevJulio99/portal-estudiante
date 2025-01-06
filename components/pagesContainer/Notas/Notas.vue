@@ -5,13 +5,14 @@ import ExpansionNotas from './ExpansionNotas.vue';
 import dataNotasMock from "~/utils/data/dataNotasMock.json";
 import dataCursosMock from "~/utils/data/dataCursosMock.json";
 import type { Curso, Nota } from '~/types/cursos.types';
+import type { NotaBimestre } from '~/types/notas.types';
 
-// const { $api } = useNuxtApp();
+const { $api } = useNuxtApp();
 
 interface CursoDetails {
 	codCurso: string;
 	dataCurso: Curso;
-	dataNotas: Nota[];
+	dataNotas: NotaBimestre[];
 	loading: boolean;
 	error: Error | null;
 	openCard: boolean;
@@ -39,6 +40,14 @@ const requestQueueNota = ref<VoidFunction[]>([]);
 
 const servicesError: Ref<unknown> = ref(null);
 
+const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number) =>
+  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio ,{
+    lazy: true,
+});
+
+const serviceNotas = ref<any>(null);
+const errorNotas = ref<any>(null);
+const pendingNotas = ref<boolean>(false);
 // async function callNotas() {
 // 	const { data, error, pending } = await $api.notas.getNotas(
 // 		codAlum,
@@ -52,8 +61,8 @@ const servicesError: Ref<unknown> = ref(null);
 // 	return { data, error, pending };
 // }
 
-function getFinalAverage(notas: Nota[]) {
-	return notas.find((x) => x.codTipoPrueba === 'PF') ?? ({} as Nota);
+function getFinalAverage(notas: NotaBimestre[]) {
+	return ({} as NotaBimestre);
 }
 
 // const {
@@ -63,6 +72,14 @@ function getFinalAverage(notas: Nota[]) {
 // } = await $api.cursos.getCursos(codAlum, codigoNivel, codPeriodo, {
 // 	lazy: true,
 // });
+
+const {
+	data: CursosData,
+	error: errorServices,
+	pending: pendingServices,
+} = await $api.cursos.getCursosColegio(2, 2025 ,{
+	lazy: true,
+});
 
 // function handlerScrollMove(curso: string) {
 // 	if (elementNotas.value) {
@@ -86,16 +103,17 @@ function getFinalAverage(notas: Nota[]) {
 // }
 
 async function initCallNotas(curso: Curso, status: boolean) {
-	codCurso.value = curso.codCurso;
-	periodo.value = curso.periodo;
-	seccion.value = curso.seccion;
+	// codCurso.value = curso.codCurso;
+	// periodo.value = curso.periodo;
+	// seccion.value = curso.seccion;
 	const indexCurso = cursosTotalData.value.findIndex(
 		(x) => x.codCurso === curso.codCurso,
 	);
 	if (status) {
 		// handlerScrollMove(curso.codCurso);
 		// const { data: NotasData, error: errorServicesNotas } = await callNotas();
-		onExpansionNota(indexCurso, dataNotasMock);
+		const { data, error, pending } = await callNotas(2, 'Bimestre', 2025);
+		onExpansionNota(indexCurso, data);
 	} else {
 		const dataNota = {
 			...cursosTotalData.value[indexCurso],
@@ -133,9 +151,10 @@ function onExpansionNota(
 	indexCurso: number,
 	responseData: any,
 ) {
+	console.log("Datos notas:", responseData);
 				const dataNota = {
 					...cursosTotalData.value[indexCurso],
-					dataNotas: responseData.notas,
+					dataNotas: responseData.value.data.filter(x => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso && x.descripcionPeriodo == cursosTotalData.value[indexCurso].dataCurso.periodo),
 					loading: false,
 					error: null,
 				};
@@ -143,32 +162,33 @@ function onExpansionNota(
 			
 }
 
-// watch(CursosData, (response) => {
-// 	if (response?.flag) {
-// 		cursosTotalData.value = response.data.map((x) => ({
-// 			codCurso: x.codCurso,
-// 			dataCurso: x,
-// 			dataNotas: [],
-// 			loading: true,
-// 			openCard: false,
-// 			error: null,
-// 		}));
-// 	}
-// 	if (response?.error) {
-// 		servicesError.value = response.error;
-// 	}
-// });
-
-onMounted(() => {
-    cursosTotalData.value = dataCursosMock.map((x) => ({
+watch(CursosData, (response) => {
+	if (response?.data.length) {
+		console.log('response cursos home', response)
+		cursosTotalData.value = response.data.map((x) => ({
 			codCurso: x.codCurso,
 			dataCurso: x,
 			dataNotas: [],
 			loading: true,
 			openCard: false,
 			error: null,
-	}));
-})
+		}));
+	}
+	if (response?.error) {
+		servicesError.value = response.error;
+	}
+});
+
+// onMounted(() => {
+//     cursosTotalData.value = dataCursosMock.map((x) => ({
+// 			codCurso: x.codCurso,
+// 			dataCurso: x,
+// 			dataNotas: [],
+// 			loading: true,
+// 			openCard: false,
+// 			error: null,
+// 	}));
+// })
 
 </script>
 

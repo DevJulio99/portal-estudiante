@@ -3,15 +3,16 @@ import { ref } from 'vue';
 import TicketNota from './TicketNota.vue';
 import type { Curso, Nota } from '~/types/cursos.types';
 import { useMediaQuery } from '@vueuse/core';
+import type { NotaBimestre } from '~/types/notas.types';
 
 const isMediumScreen = useMediaQuery('(max-width: 700px)');
 
 const props = defineProps<{
 	item: Curso;
-	dataNotas: Nota[];
+	dataNotas: NotaBimestre[];
 	loading: boolean;
 	error: Error | null;
-	finalAverage: Nota;
+	finalAverage?: NotaBimestre;
 	openCard: boolean;
 	onExpansion: (curso: Curso, status: boolean) => void;
 }>();
@@ -38,7 +39,7 @@ function actionExpansion(title: string) {
 							: 'bg-turquoise text-black'
 					"
 				>
-					<p class="text-[10px]">
+					<p class="text-[10px] font-extrabold">
 						<b>{{ item.modalidad }}</b>
 					</p>
 				</div>
@@ -88,7 +89,7 @@ function actionExpansion(title: string) {
 					<div class="grid grid-cols-3 2xl:grid-cols-4 gap-5 mb-6 pt-3">
 						<TicketNota
 							v-for="nota in dataNotas"
-							:key="nota.codTipoPrueba"
+							:key="nota.tipoNota"
 							:item="nota"
 						/>
 					</div>

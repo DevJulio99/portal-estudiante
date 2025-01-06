@@ -117,14 +117,14 @@ function setError(msg = "Correo o contraseña incorrecta") {
           <div class="title-container">
             <h2>Bienvenidos</h2>
           </div>
-          <div class="login-social-container">
+          <!-- <div class="login-social-container">
             <button class="btn-google">Iniciar sesión con Google</button>
           </div>
           <div class="separator-container">
             <div class="line"></div>
             <span>o inicia sesión con tu correo</span>
             <div class="line"></div>
-          </div>
+          </div> -->
           <div class="inputs-container">
             <label for="email">USUARIO</label>
             <input type="text" name="email" @input="changeEl">
@@ -132,23 +132,23 @@ function setError(msg = "Correo o contraseña incorrecta") {
             <label for="password">CONTRASEÑA</label>
             <input type="password" name="password" @input="changeEl">
 
-            <div class="options-container">
+            <!-- <div class="options-container">
               <div>
                 <input type="checkbox">Mantenerme conectado
               </div>
               <div class="right">
                 <a href="#">Olvidé mi contraseña</a>
               </div>
-            </div>
+            </div> -->
 
             <div class="buttons-container">
               <button class="btn-login" @click="handleFormSubmit">Iniciar sesión</button>
             </div>
           </div>
-          <div class="register-container">
+          <!-- <div class="register-container">
             <span>¿No tienes una cuenta?</span>
             <a href="#">Regístrate</a>
-          </div>
+          </div> -->
 
         </div>
       </div>
@@ -265,6 +265,7 @@ function setError(msg = "Correo o contraseña incorrecta") {
     width: 100%;
     border: solid 2px #ccc;
     border-radius: 4px;
+    margin-bottom: 16px;
   }
 
   .inputs-container input[type=text]:hover,
@@ -297,6 +298,7 @@ function setError(msg = "Correo o contraseña incorrecta") {
   }
 
   .buttons-container {
+    margin-top: 40px; 
     text-align: center;
   }
 

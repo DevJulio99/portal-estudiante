@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import type { Nota } from '~/types/cursos.types';
+import type { NotaBimestre } from '~/types/notas.types';
 
 defineProps<{
-	item: Nota;
+	item: NotaBimestre;
 }>();
 </script>
 
 <template>
 	<div
-		v-if="item.codTipoPrueba !== 'PF'"
+		v-if="item.tipoNota !== 'PF'"
 		aria-label="TicketNotas"
 		class="tckt-nota relative w-full flex justify-center gap-1 py-2 px-1 border border-disable text-sm rounded-sm shadow-sm"
 	>
 		<div
 			class="dtooltip absolute text-[12px] w-max right-[-50px] top-[-50px] z-10 bg-black text-white py-2 px-[16px]"
 		>
-			{{ item.desTipoPrueba }}
+			{{ item.tipoNota }}
 		</div>
-		<p class="uppercase text-[#5E757C]">{{ item.codTipoPrueba }}:</p>
+		<p class="uppercase text-[#5E757C]">{{ item.tipoNota }}:</p>
 		<p
 			class="font-bold"
 			:class="
