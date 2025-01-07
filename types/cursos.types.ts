@@ -37,6 +37,8 @@ export interface CursoAsistencia {
 	estadoAsistencia: string;
 	descripcionCurso: string;
 	modalidad: string;
+	horaInicio: string;
+	horaFin: string;
   }
 
 export interface CourseExtend extends Curso {

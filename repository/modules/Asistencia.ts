@@ -15,6 +15,7 @@ class AsistenciaModule extends FetchFactory<DataResponse<CursoAsistencia[]>> {
 	async getCursoAsistencia(
 		CodAlumno: number,
 		bimestre: string,
+		codCurso: string,
 		anio: number,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<CursoAsistencia[]>>,
 	) {
@@ -24,7 +25,7 @@ class AsistenciaModule extends FetchFactory<DataResponse<CursoAsistencia[]>> {
 			};
 			return this.call(
 				'GET',
-				`${this.RESOURCE}/${CodAlumno}/${bimestre}/${anio}`,
+				`${this.RESOURCE}/${CodAlumno}/${bimestre}/${codCurso}/${anio}`,
 				undefined,
 				fetchOptions,
 			);

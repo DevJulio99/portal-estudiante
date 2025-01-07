@@ -42,8 +42,8 @@ const { $api } = useNuxtApp();
 const tokenStore = useTokenStore();
 
 
-const callAsistencias = async (idAlum: number, bimestre: string, anio: number) =>
-  await $api.asistencia.getCursoAsistencia(idAlum, bimestre,anio ,{
+const callAsistencias = async (idAlum: number, bimestre: string, codCurso: string, anio: number) =>
+  await $api.asistencia.getCursoAsistencia(idAlum, bimestre, codCurso, anio ,{
     lazy: true,
 });
 
@@ -86,7 +86,7 @@ async function actionExpansion(option: Option) {
 	}
 
 	if(option.id == 2 && currentOption.value){
-		const { data, error, pending } = await callAsistencias(parseInt(tokenStore.getDataToken.Id), props.item.periodo, new Date().getFullYear());
+		const { data, error, pending } = await callAsistencias(parseInt(tokenStore.getDataToken.Id), props.item.periodo, props.item.codCurso, new Date().getFullYear());
 		setTimeout(() => {
 			serviceAsistencia.value = data.value;
 		}, 0);

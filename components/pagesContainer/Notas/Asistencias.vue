@@ -278,8 +278,7 @@ onUpdated(() => {
 						{{ item.dia }}
 					</td>
 					<td class="text-black text-xs md:text-sm font-telegraf">
-						no se encontro
-						<!-- {{ item.inicio }} - {{ item.fin }} -->
+						{{ item.horaInicio }} - {{ item.horaFin }} 
 					</td>
 					<td class="text-xs md:text-sm flex justify-center">
 						<div
