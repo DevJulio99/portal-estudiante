@@ -7,7 +7,7 @@ defineProps<{
 }>();
 </script>
 <template>
-	<img :src="icon" alt="" class="pr-1 w-[25px] h-[25px]" />
+	<nuxt-img :src="icon" alt="" class="pr-1 w-[25px] h-[25px]" />
 	<span class="text-styles">
 		{{ name }}
 	</span>
