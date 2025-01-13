@@ -189,17 +189,19 @@ const resetArrowsTooptip = () => {
 	}
 };
 
-const formatDate = (dateString: any) => {
-	const [day, month, year] = dateString.split('/');
+const formatDate = (dateString: string) => {
+  const [datePart, timePart] = dateString.split(' ');
+  const [day, month, year] = datePart.split('/');
 
-	const formattedDay = day.padStart(2, '0');
-	const formattedMonth = month.padStart(2, '0');
+  const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timePart}`;
 
-	return useDateFormat(
-		`${year}-${formattedMonth}-${formattedDay}`,
-		'dddd DD/MM',
-		{ locales: 'es-ES' },
-	).value;
+  const date = new Date(formattedDate);
+
+  if (isNaN(date.getTime())) {
+    return 'Fecha inválida';
+  }
+
+  return useDateFormat(date, 'dddd DD/MM', { locales: 'es-ES' }).value;
 };
 
 const formatTimeRange = (startTime: any, endTime: any) => {
@@ -223,6 +225,12 @@ const formatTimeRange = (startTime: any, endTime: any) => {
 	const formattedEnd = convertTo24HourFormat(endTime);
 
 	return `${formattedStart}-${formattedEnd}h`;
+};
+
+const formatHour = (timeString: string) => {
+  const formattedTime = `1970-01-01T${timeString}`;
+  
+  return useDateFormat(formattedTime, 'HH:mm').value;
 };
 
 onUpdated(() => {
@@ -275,10 +283,10 @@ onUpdated(() => {
 				</tr>
 				<tr v-for="(item, index) in data" :key="index">
 					<td class="text-black text-xs md:text-sm font-telegraf capitalize">
-						{{ item.dia }}
+						{{ formatDate(item.dia) }}
 					</td>
 					<td class="text-black text-xs md:text-sm font-telegraf">
-						{{ item.horaInicio }} - {{ item.horaFin }} 
+						{{ formatHour(item.horaInicio) }} - {{ formatHour(item.horaFin) }} 
 					</td>
 					<td class="text-xs md:text-sm flex justify-center">
 						<div
