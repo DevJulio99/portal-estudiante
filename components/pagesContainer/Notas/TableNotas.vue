@@ -31,7 +31,7 @@ const average = ref<number>(0);
 // itemsNota[4].nota = '12';
 
 average.value = Number(
-	props.item.find((x) => x.tipoNota === 'Examen Final')?.nota ?? '0',
+	props.item.find((x) => x.tipoNota === 'Promedio Final')?.nota ?? '0',
 );
 
 const averageStyle = ref({
@@ -66,7 +66,7 @@ function handleSimulate() {
 
 function backSimulate() {
 	handleSimulate();
-	setAverage(props.modalidad !== 'Finalizado' ? 0 : average.value);
+	setAverage(/*props.modalidad !== 'Finalizado' ? 0 : */average.value || 0);
 }
 
 function changeInput(e: any) {
@@ -101,25 +101,42 @@ function handleNotaSusti() {
 
 function changeInp() {
 	const inputs = document.getElementsByTagName('input');
-
-	const notas = [];
+	const notas: number[] = [];
+	let totalPesos = 0;
 
 	for (const inpt of inputs) {
+
 		if (inpt.name.startsWith(`t-${props.idTable}nota`)) {
-			const code = inpt.name.split('-').pop();
-			const percentage =
-			props.item.find((x) => x.codigoPeriodo === code)?.peso ?? '0%';
-			const percentageNumber = parseFloat(`0.${percentage.replace(/%/g, '')}`);
-			notas.push(Number(inpt.value) * percentageNumber);
+			const code = inpt.name.split('-').slice(-2).join('-');
+
+			const pesoStr = props.item.find((x) => x.codigoPeriodo === code)?.peso || "0";
+			const pesoDecimal = parseFloat(pesoStr);
+
+			if (isNaN(pesoDecimal) || pesoDecimal <= 0) {
+				console.warn(`Peso no válido para código: ${code}, peso recibido: "${pesoStr}"`);
+				continue;
+			}
+
+			const valorNota = parseFloat(inpt.value);
+			if (!isNaN(valorNota)) {
+				notas.push(valorNota * pesoDecimal);
+				totalPesos += pesoDecimal;
+			} else {
+				console.warn(`Nota no válida para código: ${code}, nota recibida: "${inpt.value}"`);
+			}
 		}
 	}
 
-	const suma = notas.reduce((accumulator, currentValue) => {
-		return accumulator + currentValue;
-	}, 0);
-	average.value = Math.round(suma);
-	setAverage(Math.round(suma));
+	const sumaPonderada = notas.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+	const promedioPonderado = sumaPonderada / totalPesos;
+	average.value = parseFloat(promedioPonderado.toFixed(2));
+
+	setAverage((average.value || 0));
 }
+
+const filteredNotas = computed(() => 
+  props.item.filter((x) => x.tipoNota !== 'Promedio Final')
+);
 
 function setAverage(average: number) {
 	removerClass();
@@ -164,20 +181,29 @@ function removerClass() {
 
 function resetSimulateNote() {
 	let numberInput = 0;
-	for (const nota of calculationAverage) {
+
+	const filteredNotas = Array.isArray(calculationAverage) 
+		? calculationAverage.filter(nota => 
+			!props.item.find(item => item.nota === nota && item.tipoNota === 'Promedio Final')
+		)
+		: [];
+
+	for (const nota of filteredNotas) {
 		const input = document.getElementById(`t-${props.idTable}nt${numberInput}`);
-		input && ((input as HTMLInputElement).value = nota);
+		if (input) {
+			(input as HTMLInputElement).value = nota;
+		}
 		numberInput++;
 	}
 
 	average.value = Number(
-		props.item.find((x) => x.tipoNota === 'Examen Final')?.nota ?? '0',
+		props.item.find((x) => x.tipoNota === 'Promedio Final')?.nota ?? '0',
 	);
 	setAverage(average.value);
 }
 
 onMounted(() => {
-	setAverage(props.modalidad !== 'Finalizado' ? 0 : average.value);
+	setAverage(/*props.modalidad !== 'Finalizado' ? 0 : */average.value);
 });
 </script>
 
@@ -190,7 +216,7 @@ onMounted(() => {
 				<th class="font-robotoCondensed uppercase">Peso</th>
 				<th class="font-robotoCondensed uppercase">Nota</th>
 			</tr>
-			<tr v-for="(data, index) in item" :key="index">
+			<tr v-for="(data, index) in filteredNotas" :key="index">
 				<td class="font-extrabold text-xs md:text-sm font-nunito">
 					Nota {{ index + 1 }}
 				</td>
@@ -241,7 +267,7 @@ onMounted(() => {
 			<div
 				:id="`averageBox${idTable}`"
 				class="w-full max-w-[60px] h-[31px] md:max-w-[100px] md:h-[33px] py-2 font-extrabold flex items-center justify-center"
-			></div>
+			>{{ average !== null && average !== undefined ? average : "-" }}</div>
 
 			<!-- <div
 				:id="`averageBox${idTable}`"
