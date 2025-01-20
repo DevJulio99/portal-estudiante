@@ -16,6 +16,7 @@
     "@vee-validate/nuxt": "^4.12.8",
     "@vee-validate/yup": "^4.12.8",
     "@vueuse/components": "^10.11.1",
+    "html2pdf.js": "^0.10.2",
     "nuxt": "3.11.2",
     "nuxt-icons": "^3.2.1",
     "pinia": "^2.2.1",
