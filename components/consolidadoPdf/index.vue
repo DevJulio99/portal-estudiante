@@ -9,6 +9,10 @@ const dataCursos = ref<Curso[]>([]);
 const servicesError: Ref<ErrorResponse | null> = ref(null);
 const tokenStore = useTokenStore();
 
+const props = defineProps<{
+  onLoad: () => void
+}>();
+
 const {
 	data: CursosData,
 	error: errorServices,
@@ -20,6 +24,7 @@ const {
 watch(CursosData, (response) => {
 	if (response?.data.length) {
 		dataCursos.value = response.data;
+    props.onLoad();
 	}
 
 	if (response?.error) {
@@ -46,7 +51,7 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
 </script>
 
 <template>
-  <div id="pdf-content">
+  <div id="pdf-content" v-if="!pendingServices">
     <h1 class="title">CONSOLIDADO DE MATRÍCULA</h1>
     <div class="content">
       <div class="column">

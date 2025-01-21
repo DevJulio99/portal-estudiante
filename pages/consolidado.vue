@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue';
 import type { ErrorResponse } from '~/types/services.types';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
@@ -35,16 +34,14 @@ const docUploaded = ref(false);
 const documentsError: Ref<ErrorResponse | null> = ref(null);
 const loading = ref(true);
 
-// const { data, error, pending } = await $api.consolidado.getConsolidado(
-// 	nameConsolidado,
-// 	{
-// 		lazy: true,
-// 	},
-// );
 
-// watch(data, (response) => {
-// 	if (response?.flag) {
-// 		getDoc(response.data?.[0]?.url);
+// watch(CursosData, (response) => {
+// 	if (response?.success) {
+// 		//getDoc(response.data?.[0]?.url);
+//     console.log('response?.data consolidado pdf', response?.data)
+//     setTimeout(() => {
+//       generatePDF()
+//     }, 0);
 // 	} else if (response?.error) {
 // 		documentsError.value = response.error;
 // 	} else {
@@ -169,10 +166,16 @@ const generatePDF = async () => {
 // 	}
 // }
 
-// onMounted(() => {
-// 	getDoc(dataConsolidado[0]?.url);
-// 	loading.value = false;
-// })
+//onMounted(() => {
+	// getDoc(dataConsolidado[0]?.url);
+	// loading.value = false;
+//})
+
+const loadPdf = () => {
+  setTimeout(() => {
+    generatePDF();
+  }, 0);
+}
 </script>
 
 <template>
@@ -181,7 +184,7 @@ const generatePDF = async () => {
 			<BaseBreadcrumbs :items="breadcrumbsItem" />
 			<BaseTitle text="CONSOLIDADOS DE MATRÍCULA" />
 
-			<!-- <div v-if="loading" class="w-full h-[240px] flex justify-center">
+			<!-- <div v-if="pendingServices" class="w-full h-[240px] flex justify-center">
 				<BaseStatusLoading />
 			</div> -->
 			<!-- <ScheduleStatusError
@@ -209,10 +212,10 @@ const generatePDF = async () => {
 				text="Estamos trabajando en el detalle de este contenido"
 			/> -->
 		</div>
-		<BaseButton class="xl:ml-0 ml-3 mt-2 max-w-[150px] md:!w-[150px]" @click="generatePDF">Generar consolidado</BaseButton>
+		<!-- <BaseButton class="xl:ml-0 ml-3 mt-2 max-w-[150px] md:!w-[150px]" @click="generatePDF">Generar consolidado</BaseButton> -->
 		<div class="layout-container">
 			 <div id="pdf-student">
-				<ConsolidadoPdf />
+				<ConsolidadoPdf :onLoad="loadPdf"/>
 			 </div>
 		</div>
 	</BaseLayout>
