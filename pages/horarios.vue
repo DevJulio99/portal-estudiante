@@ -10,6 +10,7 @@ import dataHorarioMock from "~/utils/data/dataHorarioMock.json";
 const { $api } = useNuxtApp();
 const { codAlum } = useUserStoreAuth();
 const { profileData } = useProfileStore();
+const tokenStore = useTokenStore();
 // const states = scheduleState();
 
 useHead({
@@ -45,7 +46,7 @@ const pendingSchedule = ref<boolean>(true);
 
 const callHorarioRango = async () =>
   await $api.horarioRango.getHorariosRango(
-    "1",
+    tokenStore.getDataToken.Id,
     startDate.value,
     endDate.value,
     {

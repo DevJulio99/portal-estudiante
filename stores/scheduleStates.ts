@@ -16,7 +16,15 @@ export const scheduleState = defineStore('scheduleState', {
 		setWeekCourses(payload: any) {
 			payload.forEach((course: any) => {
 				const index = Number(course.horario.diaNumero);
-				this.fullWeek[index] = course;
+				const isEmpty = this.fullWeek[index] && this.fullWeek[index].empty;
+
+				if(isEmpty){
+					this.fullWeek[index] = course;
+				}else {
+					this.fullWeek[index].detalleHorario = this.fullWeek[index].detalleHorario.concat(course.detalleHorario[0]);
+				}
+				
+				
 			});
 		},
 		setFilter(payload: HorarioData[]) {
