@@ -70,3 +70,16 @@ export interface PendingPaymentsHomeData {
 	countPV: number;
 	countV: number;
 }
+
+export interface PagosPendientesData {
+	idPago: number;
+	documentoPago: string;
+	fechaVencimiento: string;
+	ciclo: string;
+	saldo: number;
+	mora: number;
+	totalAPagar: number;
+	detalle: string;
+	imagen: string;
+	anio: number;
+}

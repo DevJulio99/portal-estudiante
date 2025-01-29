@@ -5,6 +5,7 @@ import CursosModule from '~/repository/modules/cursos';
 import HorarioRangoModule from '~/repository/modules/horarioRango';
 import LoginModule from '~/repository/modules/login';
 import ProfileModule from '~/repository/modules/profile';
+import PagosModule from '~/repository/modules/pagos';
 
 
 interface IApiInstance {
@@ -14,6 +15,7 @@ interface IApiInstance {
 	login: LoginModule;
 	asistencia: AsistenciaModule;
 	notas: NotasModule;
+	pagos: PagosModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -30,7 +32,8 @@ export default defineNuxtPlugin(() => {
 		cursos: new CursosModule(apiFecther),
 		login: new LoginModule(apiFecther),
 		asistencia : new AsistenciaModule(apiFecther),
-		notas: new NotasModule(apiFecther)
+		notas: new NotasModule(apiFecther),
+		pagos: new PagosModule(apiFecther),
 	};
 
 	return {

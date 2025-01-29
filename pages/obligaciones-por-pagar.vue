@@ -22,6 +22,6 @@ const breadcrumbsItem = [
 			<BaseTitle text="Obligaciones por pagar" />
 			<nuxt-icon name="clockPagos" filled class="text-[21px] cursor-pointer" />
 		</div>
-		<PagesContainerPagosTableItemsPorPagar />
+		<PagesContainerPagosItemsPorPagar />
 	</BaseLayout>
 </template>

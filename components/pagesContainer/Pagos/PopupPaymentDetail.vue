@@ -1,15 +1,28 @@
 <script setup lang="ts">
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
-import type { PendingPaymentsData } from '~/types/pagos.types';
+import type { PagosPendientesData } from '~/types/pagos.types';
 
 const props = defineProps<{
-	data: PendingPaymentsData | null;
+	data: PagosPendientesData | null;
 	closePopup: () => void;
 }>();
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const smallerThanLg = breakpoints.smaller('lg');
 const target = ref(null);
+
+const isExpired = computed(() => {
+  if (props.data?.fechaVencimiento) {
+    const fechaVencimiento = new Date(props.data.fechaVencimiento);
+    const today = new Date();
+
+    fechaVencimiento.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    return today > fechaVencimiento;
+  }
+  return false;
+});
 
 onClickOutside(target, () => props.closePopup());
 onMounted(() => {
@@ -27,7 +40,7 @@ onMounted(() => {
 			}"
 		>
 			<button @click.stop="closePopup">
-				<NuxtIcon class="close-schedule-popup" name="navClose" />
+				<NuxtIcon class="close-schedule-popup" name="closeIcon" />
 			</button>
 
 			<div class="card-content">
@@ -42,13 +55,13 @@ onMounted(() => {
 						<div
 							class="w-fit rounded-2xl py-1 px-5"
 							:class="
-								!data?.isExpired
+								!isExpired
 									? 'bg-[#C5E5FF] text-[#00608D]'
 									: 'bg-[#F7D4D7] text-[#DC3545]'
 							"
 						>
 							<p class="text-[12px]">
-								<b>{{ data?.isExpired ? 'Vencido' : 'A tiempo' }}</b>
+								<b>{{ isExpired ? 'Vencido' : 'A tiempo' }}</b>
 							</p>
 						</div>
 					</div>
@@ -61,7 +74,7 @@ onMounted(() => {
 						<p class="font-nunito text-[#333333] text-[12px]">N° Documento</p>
 						<div class="font-nunito font-extrabold text-[#000]">
 							<span class="text-[14px]">{{
-								data?.numDoc != '' ? data?.numDoc : '-'
+								data?.documentoPago != '' ? data?.documentoPago : '-'
 							}}</span>
 						</div>
 					</div>
@@ -73,9 +86,9 @@ onMounted(() => {
 							<span
 								class="text-[14px]"
 								:class="{
-									'text-red-600': data?.isExpired,
+									'text-red-600': isExpired,
 								}"
-								>{{ data?.expirationDate }}</span
+								>{{ useDateFormat(data?.fechaVencimiento, 'DD/MM/YYYY', { locales: 'es-ES' }) }}</span
 							>
 						</div>
 					</div>
@@ -83,19 +96,19 @@ onMounted(() => {
 						<div
 							class="w-fit rounded-2xl py-1 px-5"
 							:class="
-								!data?.isExpired
+								!isExpired
 									? 'bg-[#C5E5FF] text-[#00608D]'
 									: 'bg-[#F7D4D7] text-[#DC3545]'
 							"
 						>
 							<p class="text-[12px]">
-								<b>{{ data?.isExpired ? 'Vencido' : 'A tiempo' }}</b>
+								<b>{{ isExpired ? 'Vencido' : 'A tiempo' }}</b>
 							</p>
 						</div>
 					</div>
 				</div>
 				<hr class="mb-3 text-[#D9D9D9]" />
-				<div v-for="(item, index) in data?.amountDetail" :key="index">
+				<!-- <div v-for="(item, index) in data?.amountDetail" :key="index">
 					<div
 						class="bg-[#F6F6F6] font-nunito font-extrabold px-2 py-1 capitalize"
 						:class="!smallerThanLg ? 'text-[16px]' : 'text-[14px]'"
@@ -130,8 +143,14 @@ onMounted(() => {
 							</div>
 						</div>
 					</div>
+				</div> -->
+				<div v-if="data?.imagen" class="flex justify-center items-center mx-auto">
+					<div class="max-w-[500px] max-h-[300px] overflow-auto border border-gray">
+						<img :src="data.imagen" alt="Imagen de detalle" class="w-full h-full object-cover" />
+					</div>
 				</div>
-				<hr class="mb-4 text-[#D9D9D9]" />
+
+				<hr class="my-3 text-[#D9D9D9]" />
 				<div class="grid grid-cols-4 gap-y-[10px] gap-x-[8px] mt-3">
 					<div
 						class="col-span-3 flex items-center font-nunito font-extrabold text-[#000]"
@@ -141,7 +160,7 @@ onMounted(() => {
 					<div class="col-span-1 flex items-center">
 						<span
 							class="bg-turquoise text-dark_100 font-nunito p-1 font-extrabold lg:text-[16px] text-[14px]"
-							>S/{{ data?.arrearsTotal }}</span
+							>S/{{ data?.totalAPagar }}</span
 						>
 					</div>
 				</div>
