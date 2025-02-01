@@ -1,14 +1,22 @@
 <script lang="ts" setup>
 import { BtnColor } from "~/types/helper.types";
-import Opciones from "./opciones.vue";
-import Preguntas, { type ResumenPregunta } from "./preguntas.vue";
-import TiempoEvaluacion, { type timeEvaluation } from "./tiempoEvaluacion.vue";
-import ModalEstado from "./ModalEstado.vue";
-import CompletedEvaluation from "./completedEvaluation.vue";
 import imgZoom from "@/assets/icons/Icon-flat-search.svg";
-import PreviewImage from "./PreviewImage.vue";
+import type { ResumenPregunta } from "~/components/pagesContainer/Evaluaciones/preguntas.vue";
+import type { timeEvaluation } from "~/components/pagesContainer/Evaluaciones/tiempoEvaluacion.vue";
+import TiempoEvaluacion from "~/components/pagesContainer/Evaluaciones/tiempoEvaluacion.vue";
+import Preguntas from "~/components/pagesContainer/Evaluaciones/preguntas.vue";
+import ModalEstado from "~/components/pagesContainer/Evaluaciones/ModalEstado.vue";
+import PreviewImage from "~/components/pagesContainer/Evaluaciones/PreviewImage.vue";
+import CompletedEvaluation from "~/components/pagesContainer/Evaluaciones/completedEvaluation.vue";
+import Opciones from "~/components/pagesContainer/Evaluaciones/opciones.vue";
+import { getPostulante } from "~/services/postulante";
+import { getEstados } from "~/services/estadoCompetencia";
 
 const route = useRoute();
+const EstadoCompetenciaStore = useEstadoCompetenciaStore();
+const profileStore = useProfileStore();
+const postulanteStore = usePostulanteStore();
+const competenciaStore = useCompetenciaStore();
 
 const title = `${route.params.slug}`;
 const preguntaRespondida = ref(false);
@@ -39,6 +47,35 @@ let breadcrumbsItem = [
   { name: "Evaluaciones", current: false, url: "/evaluaciones" },
   { name: title, current: true, url: "" },
 ];
+
+watch(() => profileStore.profileData.data, (profile)  => {
+  if(profile){
+    getPostulante();
+  }
+});
+
+watch(() => postulanteStore.data, (postulante)  => {
+  if(postulante){
+    console.log('postulante', postulante);
+    competenciaStore.getLista();
+  }
+});
+
+watch(() => competenciaStore.listaCompetencia, (lista)  => {
+  if(lista.length){
+    console.log('competencias', lista);
+    const primeraCompetencia = lista[0];
+    postulanteStore.data?.idPostulante && getEstados(postulanteStore.data.idPostulante, primeraCompetencia.id_compentencia)//EstadoCompetenciaStore.getEstado(postulanteStore.data.idPostulante);
+  }
+});
+
+watch(() => EstadoCompetenciaStore.lista, (lista)  => {
+  if(lista.length){
+    console.log('estados de la competancia', lista);
+  }
+});
+
+
 
 const onResponse = (option: string) => {
   // console.log('option select', option);
@@ -127,6 +164,7 @@ const onAskNext = () => {
 }
 
 onMounted(() => {
+  profileStore.profileData.data && getPostulante()
  const content = `
 <p>              Había una vez tres cerditos que vivían al aire libre cerca del
               bosque. A menudo se sentían inquietos porque por allí solía pasar

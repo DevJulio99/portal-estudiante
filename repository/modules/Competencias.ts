@@ -1,0 +1,31 @@
+import { type FetchOptions } from 'ofetch';
+import type { AsyncDataOptions } from '#app';
+import FetchFactory from '../factory';
+import type { DataResponse } from '~/types/responses.types';
+import type { Competencia } from '~/types/competencia.types';
+
+class CompetenciaModule extends FetchFactory<DataResponse<Competencia[]>> {
+	private RESOURCE = '/api/v1/competencias-generales/competencias';
+
+	/**
+	 * @param asyncDataOptions options for `useAsyncData`
+	 * @returns
+	 */
+	async listarCompetencias(
+		asyncDataOptions?: AsyncDataOptions<DataResponse<Competencia[]>>,
+	) {
+		return await useAsyncData(() => {
+			const fetchOptions: FetchOptions<'json'> = {
+				headers: {},
+			};
+			return this.call(
+				'GET',
+				`${this.RESOURCE}`,
+				undefined,
+				fetchOptions,
+			);
+		}, asyncDataOptions);
+	}
+}
+
+export default CompetenciaModule;

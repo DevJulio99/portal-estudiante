@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import Lista from './lista.vue';
+import Lista from '~/components/pagesContainer/Evaluaciones/lista.vue';
+
+
 </script>
 
 <template>

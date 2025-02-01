@@ -6,6 +6,10 @@ import HorarioRangoModule from '~/repository/modules/horarioRango';
 import LoginModule from '~/repository/modules/login';
 import ProfileModule from '~/repository/modules/profile';
 import PagosModule from '~/repository/modules/pagos';
+import EstadoCompetenciaModule from '~/repository/modules/EstadoCompetencia';
+import cambiarEstadoCompetenciaModule from '~/repository/modules/CambiarEstadoCompetencia';
+import PostulanteModule from '~/repository/modules/Postulante';
+import CompetenciaModule from '~/repository/modules/Competencias';
 
 
 interface IApiInstance {
@@ -16,6 +20,10 @@ interface IApiInstance {
 	asistencia: AsistenciaModule;
 	notas: NotasModule;
 	pagos: PagosModule;
+	estado: EstadoCompetenciaModule;
+	cambiarEstado: cambiarEstadoCompetenciaModule;
+	postulante: PostulanteModule;
+	competencias: CompetenciaModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -34,6 +42,10 @@ export default defineNuxtPlugin(() => {
 		asistencia : new AsistenciaModule(apiFecther),
 		notas: new NotasModule(apiFecther),
 		pagos: new PagosModule(apiFecther),
+		estado: new EstadoCompetenciaModule(apiFecther),
+		cambiarEstado: new cambiarEstadoCompetenciaModule(apiFecther),
+		postulante: new PostulanteModule(apiFecther),
+		competencias: new CompetenciaModule(apiFecther)
 	};
 
 	return {
