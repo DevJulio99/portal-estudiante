@@ -52,16 +52,13 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
 
 <template>
   <div id="pdf-content" v-if="!pendingServices">
-    <h1 class="title">CONSOLIDADO DE MATRÍCULA</h1>
+    <h1 class="title">FICHA DE MATRÍCULA</h1>
     <div class="content">
-      <div class="column">
+      <div class="single-column">
         <p><strong>Año:</strong> {{ currentDate.getFullYear() }}</p>
         <p><strong>Código del alumno:</strong> {{ dataAlumno?.codAlumno }}</p>
-
-        <p><strong>Nombre del alumno:</strong> {{ dataAlumno?.fullName }}</p>
-      </div>
-      <div class="column">
-        <p><strong>Fecha:</strong> {{ `${formattedDate}, ${formattedTime}` }}</p>
+        <p><strong>Nombres y apellidos:</strong> {{ dataAlumno?.fullName }}</p>
+        <p><strong>Periodo académico:</strong> {{ dataCursos[0]?.periodo }}</p>
         <p><strong>Dirección:</strong> {{ dataAlumno?.direccion }}</p>
         <p><strong>Celular:</strong> {{ dataAlumno?.telefono }}</p>
       </div>
@@ -70,20 +67,27 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
     <table class="courses-table">
       <thead>
         <tr>
-          <th>Código curso</th>
-          <th>Nombre curso</th>
+          <th>Nº</th>
+          <th>Código</th>
+          <th class="curso-col">Asignatura</th>
           <th>Sección</th>
           <th>Nivel</th>
           <th>Modalidad</th>
+          <th>Docente</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(curso, index) in dataCursos" :key="index">
+          <td>{{ index + 1 }}</td>
           <td>{{ curso.codCurso }}</td>
-          <td>{{ curso.descCurso }}</td>
+          <td class="curso-col">{{ curso.descCurso }}</td>
           <td>{{ curso.seccion }}</td>
           <td>{{ curso.nivel }}</td>
           <td>{{ curso.modalidad }}</td>
+          <td>{{ curso.docente[0]?.nombresDocentes}}</td>
+        </tr>
+        <tr class="date-row">
+          <td colspan="7" class="date-cell"><strong>Fecha: </strong>{{ `${formattedDate}` }} - <strong>Hora: </strong>{{ `${formattedTime}` }}</td>
         </tr>
       </tbody>
     </table>
@@ -92,9 +96,15 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
         <p>Total de cursos: {{ dataCursos?.length }}</p>
     </div>
 
-    <div class="signature-section">
-      <p>_______________________________</p>
-      <p>Firma del padre o apoderado</p>
+    <div class="signature-container">
+      <div class="signature-section">
+        <p>_______________________________</p>
+        <p>PADRE O APODERADO</p>
+      </div>
+      <div class="signature-section">
+        <p>_______________________________</p>
+        <p>COORDINADOR ACADÉMICO</p>
+      </div>
     </div>
   </div>
 </template>
@@ -102,16 +112,17 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
 <style scoped>
 #pdf-content {
   font-family: Arial, sans-serif;
-  padding: 20px;
-  margin-top: 40px;
+  padding: 15px;
+  margin-top: 100px;
   box-sizing: border-box;
   background: #fff;
   color: #000;
+  text-transform: uppercase;
 }
 
 .title {
   text-align: center;
-  font-size: 24px;
+  font-size: 22px;
   margin-bottom: 40px;
   font-weight: bold;
 }
@@ -122,13 +133,12 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
   margin-bottom: 40px;
 }
 
-.column {
-  width: 48%;
+.single-column {
+  width: 100%;
 }
 
 p {
   font-size: 14px;
-  margin: 8px 0;
 }
 
 .courses-table {
@@ -136,23 +146,38 @@ p {
   margin-top: 20px;
   margin-bottom: 10px;
   border-collapse: collapse;
+  border: 2px solid #000;
 }
 
 .courses-table th,
 .courses-table td {
   word-break: break-word;
   border: 1px solid #000;
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
   padding: 8px 8px 20px 8px;
-  font-size: 14px;
-  height: 36px;
+  font-size: 12px;
+  height: 18px;
   display: table-cell;
+  border: none;
+}
+
+.courses-table .curso-col {
+  text-align: left;
 }
 
 .courses-table th {
-  background-color: #f2f2f2;
   font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
+.courses-table .date-row .date-cell {
+  text-align: left;
+  border-top: 2px solid #000;
+  font-size: 12px;
+  padding: 0px 8px 12px 8px;
+  vertical-align: middle;
+  height: 30px;
 }
 
 .total-courses {
@@ -164,10 +189,16 @@ p {
   font-weight: bold;
 }
 
-.signature-section {
-  margin-top: 50px;
+.signature-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 80px;
   text-align: center;
   font-size: 14px;
+}
+
+.signature-section {
+  width: 45%;
 }
 </style>
 

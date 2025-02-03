@@ -110,7 +110,7 @@ const generatePDF = async () => {
   await nextTick();
 
   const pdfOptions = {
-    margin: 8,
+    margin: 2,
     filename: 'Consolidado de matrícula.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: {
@@ -130,14 +130,22 @@ const generatePDF = async () => {
       .get('pdf')
       .then((pdf: any) => {
         const totalPages = pdf.internal.getNumberOfPages();
-        const logoWidth = 36.62;
-        const logoHeight = 6.35;
-        const logoX = 13;
+        const logoWidth = 31.13;
+        const logoHeight = 5.40;
+        const logoX = 6.5;
         const logoY = 10;
+
+        const textX = logoX + logoWidth + 5;
+        const textY = logoY + 4;
 
         for (let i = 1; i <= totalPages; i++) {
           pdf.setPage(i);
           pdf.addImage(logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+          pdf.setFontSize(12);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('INSTITUCIÓN EDUCATIVA', textX, textY);
+          pdf.text('"CODESTI"', textX, textY + 6);
         }
 
         return pdf.output('blob');
