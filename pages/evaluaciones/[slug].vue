@@ -11,6 +11,7 @@ import CompletedEvaluation from "~/components/pagesContainer/Evaluaciones/comple
 import Opciones from "~/components/pagesContainer/Evaluaciones/opciones.vue";
 import { getPostulante } from "~/services/postulante";
 import { getEstados } from "~/services/estadoCompetencia";
+import type { Competencia } from "~/types/competencia.types";
 
 const route = useRoute();
 const EstadoCompetenciaStore = useEstadoCompetenciaStore();
@@ -43,6 +44,9 @@ const wasNotSaved = ref(true);
 const forceNext = ref(false);
 const responsesData = ref<any[]>([]);
 
+const competencia = ref<Competencia | null>();
+const tiempoCompetencia = ref<number>(0);
+
 let breadcrumbsItem = [
   { name: "Evaluaciones", current: false, url: "/evaluaciones" },
   { name: title, current: true, url: "" },
@@ -72,6 +76,12 @@ watch(() => competenciaStore.listaCompetencia, (lista)  => {
 watch(() => EstadoCompetenciaStore.lista, (lista)  => {
   if(lista.length){
     console.log('estados de la competancia', lista);
+    //console.log('competenciaActual', competenciaStore.competenciaActual);
+    //console.log('tiempoCompetencia', competenciaStore.tiempoCompetencia);
+    if(competenciaStore.competenciaActual){
+      competencia.value = competenciaStore.competenciaActual;
+      competenciaStore.setTiempoCompetencia(competenciaStore.competenciaActual);
+    }
   }
 });
 
@@ -239,13 +249,14 @@ setTimeout(() => {
         <div
           class="text-xl font-bold pb-2 border border-gray_50 border-x-0 border-t-0 flex items-center"
         >
-          <p>{{ title }}</p>
+          <p>{{ competencia?.descripcion }}</p>
         </div>
 
         <TiempoEvaluacion
           :onExpired="EvaluacionExpirada"
           :stop="finishQuestion"
           :onfinish="(data) => timeData = data"
+          :init="false"
         />
       </div>
 
