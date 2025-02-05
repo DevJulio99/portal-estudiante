@@ -24,6 +24,18 @@ const props = withDefaults(
   }
 );
 
+const examenStore = useExamenStore();
+
+const pendientes = ref<number>(0);
+const respondidas = ref<number>(0);
+
+watch(() => examenStore.preguntasRespondidas, (preguntas)  => {
+  if(preguntas.length){
+    pendientes.value = examenStore.lista.length - preguntas.length;
+    respondidas.value = preguntas.length;
+  }
+});
+
 const onBack = () => {
   props.onClose();
 };
@@ -58,7 +70,7 @@ const onNext = () => {
         class="block text-xl font-semibold mb-[6px] text-center font-nunito"
         >{{
           success
-            ? resumen.pendientes > 0
+            ? pendientes > 0
               ? "¡Resumen de la competencia 01: Comprensión lectora!"
               : "¡Resumen de su examen!"
             : wasNotSaved
@@ -73,23 +85,23 @@ const onNext = () => {
       <span
         v-if="!wasNotSaved"
         class="w-full text-center block font-normal text-base text-gray1"
-        >Preguntas respondidas: {{ resumen.respondidas }}
+        >Preguntas respondidas: {{ respondidas.valueOf() }}
       </span>
       <span
         v-if="!wasNotSaved"
         class="w-full text-center block font-normal text-base text-gray1 mb-[14px]"
-        >Preguntas en blanco: {{ resumen.pendientes }}</span
+        >Preguntas en blanco: {{ pendientes.valueOf() }}</span
       >
 
       <div
-        v-if="success && !resumen.pendientes && !wasNotSaved"
+        v-if="success && !pendientes && !wasNotSaved"
         class="mb-4 text-gray1 text-sm leading-[21px] font-normal text-center"
       >
         Usted desea pasar a la Competencia 02: Razonamiento Crítico
       </div>
 
       <div
-        v-if="success && !resumen.pendientes && !wasNotSaved"
+        v-if="success && !pendientes && !wasNotSaved"
         class="mb-4 text-gray1 text-xs leading-[18px] font-normal text-center"
       >
         ¿Está seguro que desea avanzar y finalizar la competencia 01:
@@ -106,7 +118,7 @@ const onNext = () => {
       </div>
 
       <div
-        v-if="success && resumen.pendientes > 0"
+        v-if="success && pendientes > 0"
         class="mb-4 text-xs leading-[18px] font-normal text-gray1 text-center"
       >
         Por favor, complete las preguntas pendientes antes de que se agote el
@@ -138,7 +150,7 @@ const onNext = () => {
           styles="!w-full max-w-[152px] text-white rounded-[6px]"
           @click="onBack"
         >
-          {{ resumen.pendientes > 0 ? "Volver" : "No" }}
+          {{ pendientes > 0 ? "Volver" : "No" }}
         </BaseButton>
 
         <BaseButton
@@ -146,7 +158,7 @@ const onNext = () => {
           styles="!w-full max-w-[152px] text-white rounded-[6px]"
           @click="onNext"
         >
-          {{ resumen.pendientes > 0 ? "Aceptar" : "Si" }}
+          {{ pendientes > 0 ? "Aceptar" : "Si" }}
         </BaseButton>
       </div>
     </div>

@@ -29,10 +29,19 @@ const stopTime = ref({
   now: 0
 });
 
+const storeCompetencia = useCompetenciaStore();
+
+watch(() => storeCompetencia.tiempo, (tiempo)  => {
+  if(tiempo > 0 ){
+    initTime(tiempo);
+  }
+});
+
 const initTime = (countDownDate_?: number, now_?: number) => {
   var timeEvaluation = 5;
 
   var countDownDate = countDownDate_ ?? new Date(new Date().getTime() + (timeEvaluation * 60 * 1000)).getTime();//new Date("Jan 5, 2030 15:37:25").getTime();
+
   const elememtTime = document.getElementById("time-test");
   const elememtHour = document.getElementById("hour");
   const elememtMin = document.getElementById("min");
