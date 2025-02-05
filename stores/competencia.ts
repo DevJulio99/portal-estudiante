@@ -45,11 +45,11 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
     },
   },
   getters: {
-    competenciaActual(){
+    competenciaActual: (state) => {
       const storeEstado = useEstadoCompetenciaStore();
       const actual = storeEstado.lista.find(x => x.estado.toLocaleLowerCase() == 'i');
       if(actual){
-        const competencia = this.listaCompetencia.find(x => x.id_compentencia = actual.idCompetencia) as Competencia;
+        const competencia = state.listaCompetencia.find(x => x.id_compentencia = actual.idCompetencia) as Competencia;
         return competencia;
       }
       return null

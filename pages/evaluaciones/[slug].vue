@@ -12,18 +12,20 @@ import Opciones from "~/components/pagesContainer/Evaluaciones/opciones.vue";
 import { getPostulante } from "~/services/postulante";
 import { getEstados } from "~/services/estadoCompetencia";
 import type { Competencia } from "~/types/competencia.types";
+import { getExamenes } from "~/services/examen";
 
 const route = useRoute();
 const EstadoCompetenciaStore = useEstadoCompetenciaStore();
 const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
 const competenciaStore = useCompetenciaStore();
+const examenStore = useExamenStore();
 
 const title = `${route.params.slug}`;
 const preguntaRespondida = ref(false);
 const savedAnswer = ref(false);
 const currentSelect = ref("");
-const totalQuestions = ref(20);
+const totalQuestions = ref(0);
 const summaryEvaluation = ref<ResumenPregunta>({
   currentQuestion: 1,
   pendientes: 0,
@@ -46,6 +48,7 @@ const responsesData = ref<any[]>([]);
 
 const competencia = ref<Competencia | null>();
 const tiempoCompetencia = ref<number>(0);
+const opcionSeleccionada = ref<string>('');
 
 let breadcrumbsItem = [
   { name: "Evaluaciones", current: false, url: "/evaluaciones" },
@@ -78,28 +81,56 @@ watch(() => EstadoCompetenciaStore.lista, (lista)  => {
     console.log('estados de la competancia', lista);
     //console.log('competenciaActual', competenciaStore.competenciaActual);
     //console.log('tiempoCompetencia', competenciaStore.tiempoCompetencia);
-    if(competenciaStore.competenciaActual){
-      competencia.value = competenciaStore.competenciaActual;
-      competenciaStore.setTiempoCompetencia(competenciaStore.competenciaActual);
-    }
+    // if(competenciaStore.competenciaActual){
+      
+    // }
   }
 });
 
+const competenciaActual = computed(() => competenciaStore.competenciaActual)
+const preguntaActual = computed(() => examenStore.preguntaActual)
+
+watch(competenciaActual, (competenciaActual)  => {
+  if(competenciaActual){
+    console.log('cambio competencia actual', competenciaActual)
+    competencia.value = competenciaActual;
+    competenciaStore.setTiempoCompetencia(competenciaActual);
+    getExamenes();
+  }
+});
+
+watch(() => examenStore.lista, (examenes)  => {
+  if(examenes.length){
+    console.log('examenes', examenes)
+    totalQuestions.value = examenes.length;
+    examenStore.setpreguntaActual();
+  }
+});
+
+// watch(() => examenStore.preguntaActual, (pregunta)  => {
+//   if(pregunta){
+//     console.log('pregunta actual', pregunta)
+//     preguntaActual.value = pregunta;
+//     //examenStore.setRespuestaRespondida(pregunta.examenGenerado.respuestaSeleccionada);
+//   }
+// });
 
 
-const onResponse = (option: string) => {
+
+const onResponse = (id: string, option: string) => {
   // console.log('option select', option);
   // console.log('summaryEvaluation', summaryEvaluation.value);
-  const isRegister = responsesData.value.findIndex((x: any) => x.id === summaryEvaluation.value.currentQuestion);
-  if(isRegister < 0) {
-    responsesData.value = [...responsesData.value, {id: summaryEvaluation.value.currentQuestion, response: option}]
-  }
-  if(isRegister >= 0) {
-    responsesData.value[isRegister] = {...responsesData.value[isRegister], response: option};
-  }
+  // const isRegister = responsesData.value.findIndex((x: any) => x.id === summaryEvaluation.value.currentQuestion);
+  // if(isRegister < 0) {
+  //   responsesData.value = [...responsesData.value, {id: summaryEvaluation.value.currentQuestion, response: option}]
+  // }
+  // if(isRegister >= 0) {
+  //   responsesData.value[isRegister] = {...responsesData.value[isRegister], response: option};
+  // }
+  opcionSeleccionada.value = option;
   savedAnswer.value = true;
-  currentSelect.value = option;
-  wasNotSaved.value = true;
+  // currentSelect.value = option;
+  // wasNotSaved.value = true;
 };
 
 const guardarRespuesta = () => {
@@ -115,6 +146,11 @@ const guardarRespuesta = () => {
     showModal.value = true;
   }
   wasNotSaved.value = false;
+  const data = {
+    numeroPregunta: preguntaActual.value?.preguntas.numeroPregunta ?? 0,
+    respuestaSeleccionada: opcionSeleccionada.value
+  }
+  examenStore.setBancoRespuesta(data);
   // console.log('responsesData', responsesData.value)
 };
 
@@ -261,6 +297,7 @@ setTimeout(() => {
       </div>
 
       <div
+
         class="bg-white shadow-[0_4px_4px_#8c8c8c40] rounded-[6px] pt-[13px] pr-[29px] pb-[17px] pl-[19px]"
       >
         <div class="w-full flex gap-[25px]">
@@ -268,16 +305,16 @@ setTimeout(() => {
             <div
               class="w-full text-cyan_80 font-base font-semibold mb-5 font-grotesk"
             >
-              TEXTO I:
+              {{ preguntaActual?.preguntas.textoTitulo }}
             </div>
             <div
               class="content-ev overflow-auto h-[425px] pr-[37px] font-sm font-light text-justify"
-              v-html="contentQuestion"
+              v-html="`${preguntaActual?.preguntas.textoSuperior} ${preguntaActual?.preguntas.textoInferior}`"
             >
 
             </div>
           </div>
-          <Opciones :onResponse="onResponse" :checkedOption="getValueOption().response" />
+          <Opciones :onResponse="onResponse" :checkedOption="getValueOption().response" :pregunta="preguntaActual?.preguntas"/>
         </div>
         <div class="w-full flex justify-end mt-[11px]">
           <BaseButton

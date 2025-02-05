@@ -37,15 +37,19 @@ const preguntaActual_ = ref(props.preguntaActual);
 const respuestasRespondidas = ref<number[]>([]);
 const respuestasPendientes = ref<number[]>([]);
 const answeredAll = ref(false);
+const examenStore = useExamenStore();
+const guardadoPendiente = computed(() => examenStore.guardadoPendiente)
+const preguntasRespondidas = computed(() => examenStore.preguntasRespondidas)
 
 const NumeroPregunta = (numero: number) =>
   numero < 10 ? `0${numero}` : numero;
 
 const next = () => {
   // console.log("preguntaRespondida_", props.preguntaRespondida);
-  // console.log("props.wasNotSave", props.wasNotSaved);
+  //console.log("preguntaActual_.value", preguntaActual_.value);
   if (preguntaActual_.value !== props.cantidad) {
     if (props.preguntaRespondida) {
+      console.log("props.preguntaRespondida", props.preguntaRespondida);
       if (
         !respuestasRespondidas.value.includes(preguntaActual_.value) &&
         preguntaActual_.value <= props.cantidad
@@ -54,14 +58,17 @@ const next = () => {
         updatePending(preguntaActual_.value);
       }
       preguntaActual_.value = preguntaActual_.value + 1;
+      examenStore.setpreguntaActual(preguntaActual_.value);
       props.onNext(getResumen());
     }
 
     if (!props.preguntaRespondida) {
-      if(respuestasRespondidas.value.includes(preguntaActual_.value)){
+      if(preguntasRespondidas.value.includes(preguntaActual_.value)){
         preguntaActual_.value = preguntaActual_.value + 1;
+        examenStore.setpreguntaActual(preguntaActual_.value);
         props.onNext(getResumen());
       }else {
+        console.log('ask')
         props.onAskNext();
       }
       
@@ -86,9 +93,10 @@ const registerPending = () => {
     !respuestasPendientes.value.includes(preguntaActual_.value) &&
     respuestasPendientes.value.push(preguntaActual_.value);
   preguntaActual_.value = preguntaActual_.value + 1;
+  examenStore.setpreguntaActual(preguntaActual_.value);
   props.onNext(getResumen());
 };
-
+ 
 const getResumen = () => ({
   respondidas: respuestasRespondidas.value.length,
   pendientes: respuestasPendientes.value.length,
@@ -110,6 +118,7 @@ const updatePending = (questionNumber: number) => {
 const back = () => {
   if (preguntaActual_.value !== 1) {
     preguntaActual_.value = preguntaActual_.value - 1;
+    examenStore.setpreguntaActual(preguntaActual_.value);
     props.onBack(getResumen());
   }
 };
@@ -140,7 +149,7 @@ onBeforeUpdate(() => {
               ? finish
                 ? 'bg-green_60'
                 : 'bg-blue_light'
-              : respuestasRespondidas.includes(i + 1)
+              : preguntasRespondidas.includes(i + 1)
               ? 'bg-green_60'
               : respuestasPendientes.includes(i + 1)
               ? 'bg-gray_60'
@@ -175,7 +184,7 @@ onBeforeUpdate(() => {
         styles="!w-full max-w-[109px] text-white rounded-[6px]"
         :color="BtnColor.blueLight"
         @click="next"
-        :disabled="preguntaActual_ === props.cantidad && !answeredAll"
+        :disabled="(preguntaActual_ === props.cantidad && !answeredAll) || guardadoPendiente.valueOf()"
       >
         Siguiente
       </BaseButton>
