@@ -10,6 +10,7 @@ import EstadoCompetenciaModule from '~/repository/modules/EstadoCompetencia';
 import cambiarEstadoCompetenciaModule from '~/repository/modules/CambiarEstadoCompetencia';
 import PostulanteModule from '~/repository/modules/Postulante';
 import CompetenciaModule from '~/repository/modules/Competencias';
+import DocumentosModule from '~/repository/modules/Documentos';
 
 
 interface IApiInstance {
@@ -24,6 +25,7 @@ interface IApiInstance {
 	cambiarEstado: cambiarEstadoCompetenciaModule;
 	postulante: PostulanteModule;
 	competencias: CompetenciaModule;
+	documentos: DocumentosModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -45,7 +47,8 @@ export default defineNuxtPlugin(() => {
 		estado: new EstadoCompetenciaModule(apiFecther),
 		cambiarEstado: new cambiarEstadoCompetenciaModule(apiFecther),
 		postulante: new PostulanteModule(apiFecther),
-		competencias: new CompetenciaModule(apiFecther)
+		competencias: new CompetenciaModule(apiFecther),
+		documentos: new DocumentosModule(apiFecther,)
 	};
 
 	return {

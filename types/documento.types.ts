@@ -10,7 +10,7 @@ export interface DataDocumento {
 	date_created: string | null;
 	mas_buscados?: boolean;
 	documento?: string;
-	documento_descarga: string;
+	documentoDescarga: string;
 	documentos?: DataDocumento[];
 	type?: string;
 	interno: boolean;

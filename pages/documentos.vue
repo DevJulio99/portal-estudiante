@@ -2,7 +2,6 @@
 import { onMounted } from 'vue';
 import type { DataDocumento } from '~/types/documento.types';
 import type { ErrorResponse } from '~/types/services.types';
-import dataDocumentos from "~/utils/data/dataDocumentos.json";
 
 useHead({
 	title: 'Mis documentos',
@@ -11,6 +10,8 @@ useHead({
 definePageMeta({
   middleware: "auth",
 });
+
+const { $api } = useNuxtApp();
 
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
@@ -33,18 +34,18 @@ const loading: Ref<boolean> = ref(true);
 // 	cod_modalidad: profileData.data?.codNivel,
 // 	status: profileData.data?.status,
 // };
-// const { data, error, pending } = await $api.documentos.getDocumentos(params, {
-// 	lazy: true,
-// });
-// watch(data, (response) => {
-// 	if (response?.flag) {
-// 		documentsData.value = response.data;
-// 		filteredData.value = response.data;
-// 		setFilterDefault();
-// 	} else if (response?.error) {
-// 		documentsError.value = response.error;
-// 	}
-// });
+const { data, error, pending } = await $api.documentos.getDocumentos({
+	lazy: true,
+});
+watch(data, (response) => {
+	if (response?.data.length) {
+		documentsData.value = response.data;
+		filteredData.value = response.data;
+		setFilterDefault();
+	} else if (response?.error) {
+		documentsError.value = response.error;
+	}
+});
 
 const filterMock = [
 	{
@@ -104,8 +105,10 @@ const filterListWithCategories = ref([] as any);
 const filterListSearch = ref<DataDocumento[]>([]);
 
 onMounted(() => {
-	documentsData.value = dataDocumentos as any;
-	filteredData.value = dataDocumentos as any;
+	// documentsData.value = data as any;
+	// console.log("documentsData.value",documentsData.value);
+	// filteredData.value = data as any;
+	// console.log("filteredData.value",filteredData.value);
 	setFilterDefault();
 	loading.value = false;
 });
@@ -351,7 +354,7 @@ const handleAction = (item: DataDocumento, section: string) => {
 
 const downloadDoc = (item: DataDocumento) => {
 	const link = document.createElement('a');
-	link.href = item.documento_descarga;
+	link.href = item.documentoDescarga;
 	document.body.appendChild(link);
 	link.click();
 	document.body.removeChild(link);
