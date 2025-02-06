@@ -13,6 +13,7 @@
     "@nuxt/image": "^1.7.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.5.3",
+    "@samk-dev/nuxt-vcalendar": "^1.0.4",
     "@vee-validate/nuxt": "^4.12.8",
     "@vee-validate/yup": "^4.12.8",
     "@vueuse/components": "^10.11.1",

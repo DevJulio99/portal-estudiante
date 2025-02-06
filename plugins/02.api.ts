@@ -12,6 +12,7 @@ import PostulanteModule from '~/repository/modules/Postulante';
 import CompetenciaModule from '~/repository/modules/Competencias';
 import DocumentosModule from '~/repository/modules/Documentos';
 import ExamenModule from '~/repository/modules/Examen';
+import CalendarModule from '~/repository/modules/Calendario';
 
 
 interface IApiInstance {
@@ -28,6 +29,7 @@ interface IApiInstance {
 	competencias: CompetenciaModule;
 	documentos: DocumentosModule;
 	examen: ExamenModule;
+	calendario: CalendarModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -51,7 +53,8 @@ export default defineNuxtPlugin(() => {
 		postulante: new PostulanteModule(apiFecther),
 		competencias: new CompetenciaModule(apiFecther),
 		documentos: new DocumentosModule(apiFecther),
-		examen: new ExamenModule(apiFecther)
+		examen: new ExamenModule(apiFecther),
+		calendario: new CalendarModule(apiFecther)
 	};
 
 	return {

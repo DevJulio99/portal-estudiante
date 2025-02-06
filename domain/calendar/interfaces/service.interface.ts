@@ -1,9 +1,4 @@
-export enum EventStatus {
-	ACADEMIC = 'PR',
-	HOLIDAY = 'FE',
-	CEREMONY = 'CE',
-	STANDARD = 'ES',
-}
+import type { EventStatus } from '../enums/index';
 
 export interface Calendar {
 	actividad: string;
@@ -12,7 +7,6 @@ export interface Calendar {
 	tipoActividad: EventStatus;
 	fechaInicio: string;
 	now: boolean;
-	// is_start_end_date: boolean;
 }
 
 export interface CalendarPdf {

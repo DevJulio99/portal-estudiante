@@ -152,7 +152,6 @@ function onExpansionNota(
 	indexCurso: number,
 	responseData: any,
 ) {
-	console.log("Datos notas:", responseData);
 				const dataNota = {
 					...cursosTotalData.value[indexCurso],
 					dataNotas: responseData.value.data.filter(x => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso && x.descripcionPeriodo == cursosTotalData.value[indexCurso].dataCurso.periodo),
@@ -165,7 +164,6 @@ function onExpansionNota(
 
 watch(CursosData, (response) => {
 	if (response?.data.length) {
-		console.log('response cursos home', response)
 		cursosTotalData.value = response.data.map((x) => ({
 			codCurso: x.codCurso,
 			dataCurso: x,

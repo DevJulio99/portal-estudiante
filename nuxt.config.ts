@@ -10,7 +10,7 @@ export default defineNuxtConfig({
       urlApi: process.env.URL_API_BASE,
     }
   },
-  modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', 'nuxt-icons', '@nuxt/image', '@pinia/nuxt'],
+  modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', 'nuxt-icons', '@nuxt/image', '@pinia/nuxt', '@samk-dev/nuxt-vcalendar'],
   devtools: { enabled: true },
   imports: {
     dirs: ['stores', 'composables/**'],

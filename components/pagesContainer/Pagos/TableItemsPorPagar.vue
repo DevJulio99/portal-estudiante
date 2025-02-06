@@ -162,7 +162,6 @@ onMounted(() => {
 	listaPagosPendientes.value = pagosPendientesMock as any;
 	listaPagosPendientes.value[0].debtDisabled = false;
 
-	console.log('onMounted tableitmesporpagar');
 	loadingPagos.value = false;
 });
 </script>

@@ -40,8 +40,6 @@ const endDate = ref<string>(
   `${useDateFormat(weekDate.Sunday, "YYYY-MM-DD").value}T23:59:00Z`
 );
 
-console.log("startDate", startDate.value);
-console.log("endDate", endDate.value);
 const pendingSchedule = ref<boolean>(true);
 
 const callHorarioRango = async () =>
@@ -58,7 +56,6 @@ const { data, error, pending } = await callHorarioRango();
 
 // const errorService: Ref<{ titulo: string } | null> = ref(null);
 watch(data, (response) => {
-  console.log("response rango horario", response);
   if (response?.data.length) {
     states.setWeekCourses(response.data);
     states.setFilter(response.data);
@@ -99,7 +96,6 @@ const generatePDF = async () => {
 };
 
 const actionWeek = (range: RangeWeek) => {
-  console.log("actionWeek", range);
   startDate.value = range.init;
   endDate.value = range.end;
   dataWeek.value = range.weekDates;

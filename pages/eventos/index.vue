@@ -105,7 +105,7 @@ const onSelectCategory = (name: string) => {
   let filter = dataEventos.filter(
     (x) => x.categoria_evento.toLocaleLowerCase() === name.toLocaleLowerCase()
   ) as any[];
-  console.log('currentType.value', currentType.value);
+
   const type = currentType.value;
   if(type && filter.length){
     const filtertype = filter.filter(x =>  x.tipo_de_evento.toLocaleLowerCase() === type.toLocaleLowerCase());
@@ -136,7 +136,7 @@ const onSelectType = (val: any) => {
       const filterCategory = filter.filter(
     (x) => x.categoria_evento.toLocaleLowerCase() === category.toLocaleLowerCase()
      ) as any[];
-     console.log('filter', filter);
+     
      if(filterCategory.length) filter = filterCategory;
     }
     typeId.value = val.id;
