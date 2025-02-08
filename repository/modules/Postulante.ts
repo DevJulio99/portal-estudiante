@@ -45,6 +45,23 @@ class PostulanteModule extends FetchFactory<DataResponse<Postulante[]>> {
 			);
 		}, asyncDataOptions);
 	}
+
+	async alumnoHabilitado(
+		dniAlumno: string,
+		asyncDataOptions?: AsyncDataOptions<DataResponse<Postulante[]>>,
+	) {
+		return await useAsyncData(() => {
+			const fetchOptions: FetchOptions<'json'> = {
+				headers: {},
+			};
+			return this.call(
+				'GET',
+				`${this.RESOURCE}/alumno-habilitado?dniAlumno=${dniAlumno}`,
+				undefined,
+				fetchOptions,
+			);
+		}, asyncDataOptions);
+	}
 }
 
 export default PostulanteModule;

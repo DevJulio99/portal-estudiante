@@ -6,12 +6,14 @@ import type { DataResponse } from "~/types/services.types";
 interface stateEstado {
     data: Postulante | null;
     error: "nodata"| "other"| null;
+    habilitado: number;
 }
 
 export const usePostulanteStore = defineStore("postulanteStore", {
   state: (): stateEstado => ({
     data: null,
     error: null,
+    habilitado: 0
   }),
   actions: {
     setPostulante(data: Postulante) {
@@ -20,6 +22,9 @@ export const usePostulanteStore = defineStore("postulanteStore", {
     setError(err: any) {
       this.error = err;
     },
+    setHabilitado(status: number){
+      this.habilitado = status;
+    }
     // async getEstado(idPostulante: number) {
     //   try {
     //     const estado = await useNuxtApp().$api.estado.getListarEstado(idPostulante); 

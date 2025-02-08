@@ -4,6 +4,17 @@ import imgEv1 from '@/assets/images/evaluacion_1.png';
 import imgEv2 from '@/assets/images/evaluacion_2.png';
 import imgEv3 from '@/assets/images/evaluacion_3.png';
 
+interface lista {
+      title: string;
+      description: string;
+      nameButton: string;
+      img: string;
+      alt: string;
+      status: number;
+      textStatus: string;
+      link: string;
+}
+
 
 const listas = [
     {
@@ -41,11 +52,30 @@ const listas = [
     }
   ]
 
+  const competenciaStore = useCompetenciaStore();
+  const dataCompetencia = ref<lista[]>([]);
+
+  watch(() => competenciaStore.listaCompetencia, (competencias)  => {
+  if(competencias.length){
+    console.log('competencias lista', competencias)
+    dataCompetencia.value = competencias.map(x => ({
+      title: x.nombreCompetencia,
+      description: x.descripcion,
+      nameButton: 'Rendir evaluación',
+      img: imgEv2,
+      alt: 'img',
+      status: 1,
+      textStatus: 'Disponible ahora',
+      link: ''
+    }))
+  }
+});
+
 </script>
 
 <template>
 
 <div class="flex flex-wrap mt-[15px] gap-5 lg:gap-[30px]">
-  <Card v-for="lista in listas" :data="lista" />
+  <Card v-for="lista in dataCompetencia" :data="lista" />
 </div>
 </template>

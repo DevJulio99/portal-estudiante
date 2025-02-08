@@ -5,4 +5,5 @@ export type DataResponse<T> = {
 	flag: boolean;
 	error: ErrorResponse;
 	data: T;
+	success: boolean;
 };
