@@ -22,7 +22,7 @@ const respuesta = computed(() => examenStore.respuestaSeleccionada);
 
 watch(preguntas, (lista) => {
   if (lista.length) {
-    console.log("listapreguntas", lista);
+    //console.log("listapreguntas", lista);
     preguntasData.value = lista;
   }
 });
@@ -61,7 +61,7 @@ const onSelect = (id: string, opcion: string) => {
       }`"
     >
       <span class="w-full block text-sm font-semibold mb-[15px]"
-        >Pregunta N° 1: {{ pregunta?.pregunta }}</span
+        >Pregunta N° {{ pregunta?.numeroPregunta }}: {{ pregunta?.pregunta }}</span
       >
       <!-- <p>option {{ checkedOption }}</p> -->
       <div

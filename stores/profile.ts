@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { getPostulante } from '~/services/postulante';
 import type { ProfileDataStore } from '~/types/profile.types';
 
 export const useProfileStore = defineStore('profileStore', {
@@ -14,6 +15,7 @@ export const useProfileStore = defineStore('profileStore', {
 	actions: {
 		setProfileData(payload: ProfileDataStore) {
 			this.profileData = payload;
+			getPostulante();
 		},
 		clearPorfileData(){
 			this.profileData = {

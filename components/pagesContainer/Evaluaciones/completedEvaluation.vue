@@ -11,6 +11,12 @@ const props = withDefaults(
     time: undefined
   }
 );
+
+const competenciaStore = useCompetenciaStore();
+
+const vistaPrincipal = () => {
+  return navigateTo("/evaluaciones", { replace: true });
+}
 </script>
 
 <template>
@@ -21,18 +27,19 @@ const props = withDefaults(
 
     <div class="w-full mb-4 flex flex-wrap justify-center">
       <span class="mb-[13px] text-black font-normal text-[25px] leading-[30px] text-center"
-        >¡Usted ha terminado la evaluación de la competencia 01: Comprensión
-        Lectora!</span
+        >¡Usted ha terminado la evaluación de {{competenciaStore.competenciaSeleccionada?.nombreCompetencia.toLocaleLowerCase()}}!</span
       >
       <p class="w-full max-w-[554px] text-gray1 text-[15px] leading-[18px] text-center">
-        Será redirigido a la competencia 02: Razonamiento Crítico cuando el
-        tiempo restante finalice.
+        Puede regresar a la pantalla principal
       </p>
     </div>
-    <TiempoEvaluacion
+    <!-- <TiempoEvaluacion
           :stop="true"
           :init="false"
           :time-defect="time"
-        />
+        /> -->
+      <div class="flex justify-center items-center">
+           <button class="h-[40px] rounded-lg text-white bg-primary px-4" @click="vistaPrincipal">Regresar a evaluaciones</button>
+      </div>
   </div>
 </template>

@@ -4,16 +4,28 @@ import type { Competencia } from "~/types/competencia.types";
 interface stateEstado {
     listaCompetencia: Competencia[];
     tiempo: number;
+    pending: boolean;
+    competenciaSeleccionada: Competencia | null;
+    llegoAlFinal: boolean;
+    finalizoCompetencia: boolean;
 }
 
 export const useCompetenciaStore = defineStore("competenciaStore", {
   state: (): stateEstado => ({
     listaCompetencia: [],
-    tiempo: 0
+    tiempo: 0,
+    pending: true,
+    competenciaSeleccionada: null,
+    llegoAlFinal: false,
+    finalizoCompetencia: false
   }),
   actions: {
     setLista(data: Competencia[]) {
       this.listaCompetencia = data;
+      this.pending = false;
+    },
+    setCompetenciaSeleccionada(data: Competencia){
+      this.competenciaSeleccionada = data;
     },
     setTiempoCompetencia(data: Competencia) {
       if(data.tiempoLimite){
@@ -26,6 +38,12 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
         this.tiempo = fechaActual.getTime();
       }
     },
+    resetCompetencia() {
+      this.listaCompetencia = [];
+      this.pending = true;
+      this.tiempo = 0;
+      this.competenciaSeleccionada = null;
+    },
     async getLista() {
       try {
         const listaCompetencias = await useNuxtApp().$api.competencias.listarCompetencias(); 
@@ -35,8 +53,8 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
             const bodyError = listaCompetencias.error.value.data;
             throw new Error(bodyError ? "nodata" : "other");
         }
-
-        listaCompetencias.data.value?.data.length && (this.listaCompetencia = listaCompetencias.data.value.data);
+        console.log('listaCompetencias', listaCompetencias);
+        listaCompetencias.data.value?.data.length && this.setLista(listaCompetencias.data.value.data);
 
       } catch (error : any) {
         //console.log('catch', error.message)

@@ -24,3 +24,19 @@ export const getEstados = async (idPostulante: number, idCompetencia: number) =>
 	   }
 	}
 };
+
+export const FinalizarCompetencia = async() => {
+	const { $api } = useNuxtApp();
+	const postulanteStore = usePostulanteStore();
+	const competenciaStore = useCompetenciaStore();
+
+	const request = {
+		idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
+		idPostulante: postulanteStore.data?.idPostulante ?? 0,
+		estado: "f"
+	};
+
+	await $api.cambiarEstado.actualizarEstado(request, {lazy: true,})
+	competenciaStore.llegoAlFinal = true;
+	competenciaStore.finalizoCompetencia = true;
+}

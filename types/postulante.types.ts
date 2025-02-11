@@ -7,6 +7,7 @@ export interface Postulante {
     celular: string;
     codigoPostulante: number;
     estado: boolean;
+    idGrado: number;
 }
 
 export interface RegistrarPostulante {

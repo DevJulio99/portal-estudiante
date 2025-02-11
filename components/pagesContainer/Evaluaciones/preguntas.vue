@@ -20,6 +20,7 @@ const props = withDefaults(
     onNext: (resumen: ResumenPregunta) => void;
     onNextFinish: () => void;
     onAskNext: () => void;
+    onLastQuestion: () => void;
   }>(),
   {
     cantidad: 0,
@@ -38,6 +39,7 @@ const respuestasRespondidas = ref<number[]>([]);
 const respuestasPendientes = ref<number[]>([]);
 const answeredAll = ref(false);
 const examenStore = useExamenStore();
+const competenciaStore = useCompetenciaStore();
 const guardadoPendiente = computed(() => examenStore.guardadoPendiente)
 const preguntasRespondidas = computed(() => examenStore.preguntasRespondidas)
 
@@ -47,6 +49,12 @@ const NumeroPregunta = (numero: number) =>
 const next = () => {
   // console.log("preguntaRespondida_", props.preguntaRespondida);
   //console.log("preguntaActual_.value", preguntaActual_.value);
+    
+  if(preguntaActual_.value === props.cantidad){
+    //console.log('examenStore.preguntaActua', examenStore.preguntaActual)
+    props.onLastQuestion();
+  }
+
   if (preguntaActual_.value !== props.cantidad) {
     if (props.preguntaRespondida) {
       console.log("props.preguntaRespondida", props.preguntaRespondida);
@@ -75,7 +83,7 @@ const next = () => {
     }
   } else {
     if(answeredAll.value && props.cantidad === preguntaActual_.value) {
-    // console.log('ahora redirigir al final')
+    //console.log('ahora redirigir al final')
     props.onNextFinish();
     }
   }
@@ -184,7 +192,7 @@ onBeforeUpdate(() => {
         styles="!w-full max-w-[109px] text-white rounded-[6px]"
         :color="BtnColor.blueLight"
         @click="next"
-        :disabled="(preguntaActual_ === props.cantidad && !answeredAll) || guardadoPendiente.valueOf()"
+        :disabled="guardadoPendiente.valueOf()"
       >
         Siguiente
       </BaseButton>

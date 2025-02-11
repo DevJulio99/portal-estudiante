@@ -9,12 +9,16 @@ import ModalEstado from "~/components/pagesContainer/Evaluaciones/ModalEstado.vu
 import PreviewImage from "~/components/pagesContainer/Evaluaciones/PreviewImage.vue";
 import CompletedEvaluation from "~/components/pagesContainer/Evaluaciones/completedEvaluation.vue";
 import Opciones from "~/components/pagesContainer/Evaluaciones/opciones.vue";
-import { getPostulante } from "~/services/postulante";
-import { getEstados } from "~/services/estadoCompetencia";
+import { FinalizarCompetencia, getEstados } from "~/services/estadoCompetencia";
 import type { Competencia } from "~/types/competencia.types";
-import { getExamenes } from "~/services/examen";
+import { generarExamen } from "~/services/examen";
+
+definePageMeta({
+  middleware: "auth",
+});
 
 const route = useRoute();
+const { $api } = useNuxtApp();
 const EstadoCompetenciaStore = useEstadoCompetenciaStore();
 const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
@@ -55,66 +59,52 @@ let breadcrumbsItem = [
   { name: title, current: true, url: "" },
 ];
 
-watch(() => profileStore.profileData.data, (profile)  => {
-  if(profile){
-    getPostulante();
-  }
-});
-
-watch(() => postulanteStore.data, (postulante)  => {
-  if(postulante){
-    console.log('postulante', postulante);
-    competenciaStore.getLista();
-  }
-});
-
-watch(() => competenciaStore.listaCompetencia, (lista)  => {
-  if(lista.length){
-    console.log('competencias', lista);
-    const primeraCompetencia = lista[0];
-    postulanteStore.data?.idPostulante && getEstados(postulanteStore.data.idPostulante, primeraCompetencia.id_compentencia)//EstadoCompetenciaStore.getEstado(postulanteStore.data.idPostulante);
-  }
-});
-
-watch(() => EstadoCompetenciaStore.lista, (lista)  => {
-  if(lista.length){
-    console.log('estados de la competancia', lista);
-    //console.log('competenciaActual', competenciaStore.competenciaActual);
-    //console.log('tiempoCompetencia', competenciaStore.tiempoCompetencia);
-    // if(competenciaStore.competenciaActual){
-      
-    // }
-  }
-});
-
-const competenciaActual = computed(() => competenciaStore.competenciaActual)
+const competenciaActual = computed(() => competenciaStore.competenciaSeleccionada)
 const preguntaActual = computed(() => examenStore.preguntaActual)
 
-watch(competenciaActual, (competenciaActual)  => {
-  if(competenciaActual){
-    console.log('cambio competencia actual', competenciaActual)
-    competencia.value = competenciaActual;
-    competenciaStore.setTiempoCompetencia(competenciaActual);
-    getExamenes();
-  }
-});
+const {data, error } = await $api.examen.listarExamen(
+        postulanteStore.data?.idPostulante ?? 0,
+        competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
+      { lazy: true }
+    );
 
-watch(() => examenStore.lista, (examenes)  => {
-  if(examenes.length){
+// watch(() => postulanteStore.data, (postulante)  => {
+//   if(postulante){
+//     console.log('postulante', postulante);
+//     competenciaStore.getLista();
+//   }
+// });
+
+watch(data, (examenes)  => {
+  if(examenes?.data.length){
     console.log('examenes', examenes)
-    totalQuestions.value = examenes.length;
+    examenStore.setLista(examenes.data);
+    totalQuestions.value = examenes.data.length;
     examenStore.setpreguntaActual();
   }
 });
 
-// watch(() => examenStore.preguntaActual, (pregunta)  => {
-//   if(pregunta){
-//     console.log('pregunta actual', pregunta)
-//     preguntaActual.value = pregunta;
-//     //examenStore.setRespuestaRespondida(pregunta.examenGenerado.respuestaSeleccionada);
+const unWatch = watch(error, (err: any)  => {
+  console.log('err', err?.data)
+  if(!err?.data?.success){
+    generarExamen();
+    unWatch();
+  }
+});
+
+// watch(() => competenciaStore.listaCompetencia, (lista)  => {
+//   if(lista.length){
+//     console.log('competencias', lista);
+//     const primeraCompetencia = lista[0];
+//     postulanteStore.data?.idPostulante && getEstados(postulanteStore.data.idPostulante, primeraCompetencia.id_compentencia)//EstadoCompetenciaStore.getEstado(postulanteStore.data.idPostulante);
 //   }
 // });
 
+watch(() => EstadoCompetenciaStore.lista, (lista)  => {
+  if(lista.length){
+    console.log('estados de la competancia', lista);
+  }
+});
 
 
 const onResponse = (id: string, option: string) => {
@@ -136,14 +126,7 @@ const onResponse = (id: string, option: string) => {
 const guardarRespuesta = () => {
   savedAnswer.value && (preguntaRespondida.value = true);
   if (totalQuestions.value === summaryEvaluation.value?.currentQuestion) {
-    summaryEvaluation.value = {
-      ...summaryEvaluation.value,
-      respondidas: finalizedBefore.value ? summaryEvaluation.value.respondidas : summaryEvaluation.value.respondidas + 1,
-    };
-    console.log("fin de la evaluacion", { ...summaryEvaluation.value });
-    finishQuestion.value = true;
-    finalizedBefore.value = true;
-    showModal.value = true;
+    ultimaPregunta();
   }
   wasNotSaved.value = false;
   const data = {
@@ -153,6 +136,17 @@ const guardarRespuesta = () => {
   examenStore.setBancoRespuesta(data);
   // console.log('responsesData', responsesData.value)
 };
+
+const ultimaPregunta = () => {
+  summaryEvaluation.value = {
+      ...summaryEvaluation.value,
+      respondidas: finalizedBefore.value ? summaryEvaluation.value.respondidas : summaryEvaluation.value.respondidas + 1,
+    };
+    console.log("fin de la evaluacion", { ...summaryEvaluation.value });
+    finishQuestion.value = true;
+    finalizedBefore.value = true;
+    showModal.value = true;
+}
 
 const getValueOption = () => {
   const question = responsesData.value.find(x => x.id === summaryEvaluation.value.currentQuestion);
@@ -209,8 +203,19 @@ const onAskNext = () => {
   showModal.value = true;
 }
 
+const finalizarCompetencia = () => {
+  //finishAllQuestions = true
+  !competenciaStore.finalizoCompetencia && FinalizarCompetencia();
+  showModal.value = false;
+}
+
 onMounted(() => {
-  profileStore.profileData.data && getPostulante()
+  if(competenciaActual.value){
+    competencia.value = competenciaActual.value;
+    competenciaStore.setTiempoCompetencia(competenciaActual.value);
+    //getExamenes();
+  }
+
  const content = `
 <p>              Había una vez tres cerditos que vivían al aire libre cerca del
               bosque. A menudo se sentían inquietos porque por allí solía pasar
@@ -275,11 +280,16 @@ setTimeout(() => {
   }
 }, 0);
 })
+
+onBeforeUnmount(() => {
+  postulanteStore.setHabilitado(0);
+  competenciaStore.resetCompetencia();
+});
 </script>
 
 <template>
   <BaseLayout :rightAside="false" bgGray>
-    <div v-if="!finishAllQuestions">
+    <div v-if="!competenciaStore.finalizoCompetencia">
       <BaseBreadcrumbs :items="breadcrumbsItem" />
       <div class="flex flex-wrap justify-between my-5">
         <div
@@ -338,6 +348,7 @@ setTimeout(() => {
         :force-next="forceNext"
         :on-ask-next="onAskNext"
         :on-next-finish="onNextFinish"
+        :on-last-question="ultimaPregunta"
       />
       <ModalEstado
         :show="showModal"
@@ -351,14 +362,14 @@ setTimeout(() => {
             finishQuestion = false;
           }
         "
-        :finish="() => finishAllQuestions = true"
+        :finish="finalizarCompetencia"
       />
 
       <PreviewImage :show="showPreviewImage.status" :url="showPreviewImage.url" :on-close="() => showPreviewImage.status = false"/>
     </div>
 
     <div class="flex justify-center">
-      <CompletedEvaluation v-if="finishAllQuestions" :time="timeData"/>
+      <CompletedEvaluation v-if="competenciaStore.finalizoCompetencia" :time="timeData"/>
     </div>
   </BaseLayout>
 </template>

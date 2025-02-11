@@ -20,6 +20,14 @@ export const useExamenStore = defineStore("examen", {
     guardadoPendiente: false
   }),
   actions: {
+    resetExamen() {
+      this.lista = [];
+      this.preguntaActual = null;
+      this.respuestaSeleccionada = null;
+      this.bancoRespuestas = [];
+      this.error = null;
+      this.guardadoPendiente = false;
+    },
     setError(err: any) {
       this.error = err;
     },
@@ -46,7 +54,7 @@ export const useExamenStore = defineStore("examen", {
         this.preguntaActual = pregunta;
       }
       
-
+      //console.log('preguntaActual', this.preguntaActual)
       this.respuestaSeleccionada = null;
       if(this.bancoRespuestas.length){
          const respuesta = this.bancoRespuestas.findIndex(x => x.numeroPregunta === pregunta?.preguntas.numeroPregunta);

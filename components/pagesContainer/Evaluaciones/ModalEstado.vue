@@ -41,13 +41,19 @@ const onBack = () => {
 };
 
 const onNext = () => {
-  const finishQuestions = !props.resumen.pendientes;
+  //const finishQuestions = !props.resumen.pendientes;
 
-  if (finishQuestions && !props.wasNotSaved) {
-    props.finish();
-  }
+  // if (finishQuestions && !props.wasNotSaved) {
+  //   console.log('finishQuestions')
+  //   props.finish();
+  // }
+  //console.log('props.resumen', props)
+  //console.log('examenStore', examenStore.lista.length)
   if (props.wasNotSaved) {
     props.nextNotSave();
+  }
+  if(examenStore.lista.length === props.resumen.currentQuestion){
+    props.finish();
   }
   props.onClose();
 };

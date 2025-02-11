@@ -24,12 +24,11 @@ watch(() => profileStore.profileData.data , (profileData) => {
 
 watch(() => postulanteStore.habilitado , (habilitado) => {
   if(habilitado === 1){
-    //console.log('habilitado', habilitado);
     competenciaStore.getLista();
     noHabilitado.value = false;
   }else {
-    //console.log('deshabilitado', habilitado);
     noHabilitado.value = true;
+    competenciaStore.pending = false;
   }
 })
 
@@ -40,10 +39,6 @@ onMounted(() => {
     profileStore.postulanteHabilitado();
   }
 })
-
-onBeforeUnmount(() => {
-  postulanteStore.setHabilitado(0);
-});
 
 </script>
 
@@ -57,10 +52,14 @@ onBeforeUnmount(() => {
       evaluación.
     </div>
 
-    <div class="w-full py-10 px-3 font-nunito flex justify-center text-xl font-semibold" v-if="noHabilitado">
+    <div v-if="competenciaStore.pending" class="text-xs text-black py-16">
+			<BaseStatusLoading />
+		</div>
+
+    <div class="w-full py-10 px-3 font-nunito flex justify-center text-xl font-semibold" v-else-if="noHabilitado">
       No tiene habilitado dar la prueba
     </div>
 
-    <Lista v-else/>
+    <Lista />
   </BaseLayout>
 </template>
