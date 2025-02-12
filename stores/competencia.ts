@@ -53,7 +53,7 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
             const bodyError = listaCompetencias.error.value.data;
             throw new Error(bodyError ? "nodata" : "other");
         }
-        console.log('listaCompetencias', listaCompetencias);
+        //console.log('listaCompetencias', listaCompetencias);
         listaCompetencias.data.value?.data.length && this.setLista(listaCompetencias.data.value.data);
 
       } catch (error : any) {

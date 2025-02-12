@@ -71,7 +71,13 @@ export const useExamenStore = defineStore("examen", {
       this.respuestaSeleccionada = opcion;
     },
     async setBancoRespuesta(opcion: BancoRespuesta){
-      this.bancoRespuestas = this.bancoRespuestas.concat(opcion);
+      const repeat = this.bancoRespuestas.findIndex(x => x.numeroPregunta == opcion.numeroPregunta);
+      if(repeat >= 0){
+        this.bancoRespuestas.splice(repeat, 1 , opcion);
+      }
+      if(repeat < 0){
+        this.bancoRespuestas = this.bancoRespuestas.concat(opcion);
+      }
       if(this.preguntaActual){
         this.guardadoPendiente = true;
         const request = {

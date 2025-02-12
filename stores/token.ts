@@ -9,8 +9,8 @@ export const useTokenStore = defineStore('tokenStore', {
 		refreshToken: localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as any).refreshToken : ''
 	}),
 	getters:{
-        getDataToken() {
-			const jtw = decryptJWT(this.accessToken)
+        getDataToken: (state) => {
+			const jtw = decryptJWT(state.accessToken)
 			return jtw
 		}
 	},
@@ -29,7 +29,10 @@ export const useTokenStore = defineStore('tokenStore', {
 			this.accessToken = '';
             this.refreshToken = '';
             this.logued = false;
-			this.pending = false;
+			this.pending = true;
+			setTimeout(() => {
+				this.pending = false;
+			}, 1000);
 		}
 	},
 });

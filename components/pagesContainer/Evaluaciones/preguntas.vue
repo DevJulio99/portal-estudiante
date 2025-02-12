@@ -71,14 +71,17 @@ const next = () => {
     }
 
     if (!props.preguntaRespondida) {
-      if(preguntasRespondidas.value.includes(preguntaActual_.value)){
-        preguntaActual_.value = preguntaActual_.value + 1;
-        examenStore.setpreguntaActual(preguntaActual_.value);
-        props.onNext(getResumen());
-      }else {
-        console.log('ask')
-        props.onAskNext();
-      }
+      preguntaActual_.value = preguntaActual_.value + 1;
+      // examenStore.setpreguntaActual(preguntaActual_.value);
+      props.onNext(getResumen());
+      // if(preguntasRespondidas.value.includes(preguntaActual_.value)){
+      //   preguntaActual_.value = preguntaActual_.value + 1;
+      //   examenStore.setpreguntaActual(preguntaActual_.value);
+      //   props.onNext(getResumen());
+      // }else {
+      //   console.log('ask')
+      //   //props.onAskNext();
+      // }
       
     }
   } else {
@@ -146,9 +149,9 @@ onBeforeUpdate(() => {
 
 <template>
   <div
-    class="w-full mt-[32px] flex flex-wrap bg-white pt-[23px] pr-[31px] pb-[25px] pl-[35px] gap-[21px] lg:justify-between items-center"
+    class="absolute bottom-0 left-0 w-full flex flex-wrap bg-white pt-[23px] pr-[31px] pb-[25px] pl-[35px] gap-[21px] lg:justify-between items-center"
   >
-    <div class="w-full flex flex-wrap gap-[5px] xl:w-auto">
+    <div class="w-full flex flex-wrap gap-[5px] xl:w-auto grow">
       <div v-for="(pregunta, i) in cantidad">
         <div
           class="w-[43px] h-[12px] transition-colors"
@@ -178,7 +181,7 @@ onBeforeUpdate(() => {
       </div>
     </div>
 
-    <div class="w-full flex flex-wrap justify-center gap-4 xl:w-auto">
+    <div class="w-full flex max-w-[200px] justify-center gap-4">
       <BaseButton
         styles="!w-full max-w-[109px] text-white rounded-[6px]"
         :color="BtnColor.blueLight"

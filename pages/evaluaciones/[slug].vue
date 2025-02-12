@@ -9,9 +9,9 @@ import ModalEstado from "~/components/pagesContainer/Evaluaciones/ModalEstado.vu
 import PreviewImage from "~/components/pagesContainer/Evaluaciones/PreviewImage.vue";
 import CompletedEvaluation from "~/components/pagesContainer/Evaluaciones/completedEvaluation.vue";
 import Opciones from "~/components/pagesContainer/Evaluaciones/opciones.vue";
-import { FinalizarCompetencia, getEstados } from "~/services/estadoCompetencia";
+import { FinalizarCompetencia, RegistrarEstado } from "~/services/estadoCompetencia";
 import type { Competencia } from "~/types/competencia.types";
-import { generarExamen } from "~/services/examen";
+import { getExamenes } from "~/services/examen";
 
 definePageMeta({
   middleware: "auth",
@@ -46,13 +46,14 @@ const showPreviewImage = ref({
   url: ''
 });
 const finalizedBefore = ref(false);
-const wasNotSaved = ref(true);
+const wasNotSaved = ref(false);
 const forceNext = ref(false);
 const responsesData = ref<any[]>([]);
 
 const competencia = ref<Competencia | null>();
 const tiempoCompetencia = ref<number>(0);
 const opcionSeleccionada = ref<string>('');
+const preguntaActualNumero = ref<number>(1);
 
 let breadcrumbsItem = [
   { name: "Evaluaciones", current: false, url: "/evaluaciones" },
@@ -62,35 +63,40 @@ let breadcrumbsItem = [
 const competenciaActual = computed(() => competenciaStore.competenciaSeleccionada)
 const preguntaActual = computed(() => examenStore.preguntaActual)
 
-const {data, error } = await $api.examen.listarExamen(
-        postulanteStore.data?.idPostulante ?? 0,
-        competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
-      { lazy: true }
-    );
+console.log('postulanteStore.data', postulanteStore.data);
+const {data: dataEstados, error: errorEstados} = await $api.estado.getListarEstado(postulanteStore.data?.idPostulante ?? 0, {lazy: true,})
 
-// watch(() => postulanteStore.data, (postulante)  => {
-//   if(postulante){
-//     console.log('postulante', postulante);
-//     competenciaStore.getLista();
-//   }
-// });
 
-watch(data, (examenes)  => {
-  if(examenes?.data.length){
-    console.log('examenes', examenes)
-    examenStore.setLista(examenes.data);
-    totalQuestions.value = examenes.data.length;
+watch(dataEstados, (estados)  => {
+  if(estados?.data.length){
+    console.log('estados', estados);
+    getExamenes();
+  }
+});
+
+const unWatchEstado = watch(errorEstados, async(err: any)  => {
+  if(err?.data?.success == false){
+    console.log('err', err?.data)
+    await RegistrarEstado(postulanteStore.data?.idPostulante ?? 0, competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0);
+    unWatchEstado();
+  }
+});
+
+watch(() => examenStore.lista, (examenes)  => {
+  if(examenes.length){
+    console.log('examenes', examenes);
+    totalQuestions.value = examenes.length;
     examenStore.setpreguntaActual();
   }
 });
 
-const unWatch = watch(error, (err: any)  => {
-  console.log('err', err?.data)
-  if(!err?.data?.success){
-    generarExamen();
-    unWatch();
-  }
-});
+// const unWatch = watch(error, (err: any)  => {
+//   console.log('err', err?.data)
+//   if(!err?.data?.success){
+//     generarExamen();
+//     unWatch();
+//   }
+// });
 
 // watch(() => competenciaStore.listaCompetencia, (lista)  => {
 //   if(lista.length){
@@ -100,11 +106,11 @@ const unWatch = watch(error, (err: any)  => {
 //   }
 // });
 
-watch(() => EstadoCompetenciaStore.lista, (lista)  => {
-  if(lista.length){
-    console.log('estados de la competancia', lista);
-  }
-});
+// watch(() => EstadoCompetenciaStore.lista, (lista)  => {
+//   if(lista.length){
+//     console.log('estados de la competancia', lista);
+//   }
+// });
 
 
 const onResponse = (id: string, option: string) => {
@@ -133,6 +139,7 @@ const guardarRespuesta = () => {
     numeroPregunta: preguntaActual.value?.preguntas.numeroPregunta ?? 0,
     respuestaSeleccionada: opcionSeleccionada.value
   }
+  console.log('preguntaActual.value', preguntaActual.value);
   examenStore.setBancoRespuesta(data);
   // console.log('responsesData', responsesData.value)
 };
@@ -176,7 +183,10 @@ const onBack = (resumen: ResumenPregunta) => {
 }
 
 const onNext = (resumen: ResumenPregunta) => {
+  opcionSeleccionada.value.trim().length && guardarRespuesta();
   onActionQuestion(resumen);
+  opcionSeleccionada.value = '';
+  examenStore.setpreguntaActual(resumen.currentQuestion);
 }
 
 const EvaluacionExpirada = () => {
@@ -199,8 +209,8 @@ const OnNextNotSave = () => {
 }
 
 const onAskNext = () => {
-  wasNotSaved.value = true;
-  showModal.value = true;
+  //wasNotSaved.value = false;
+  //showModal.value = true;
 }
 
 const finalizarCompetencia = () => {
@@ -295,7 +305,7 @@ onBeforeUnmount(() => {
         <div
           class="text-xl font-bold pb-2 border border-gray_50 border-x-0 border-t-0 flex items-center"
         >
-          <p>{{ competencia?.descripcion }}</p>
+          <p>Evaluación de {{ preguntaActual?.preguntas.tipoEvaluacion }}</p>
         </div>
 
         <TiempoEvaluacion
@@ -308,7 +318,7 @@ onBeforeUnmount(() => {
 
       <div
 
-        class="bg-white shadow-[0_4px_4px_#8c8c8c40] rounded-[6px] pt-[13px] pr-[29px] pb-[17px] pl-[19px]"
+        class="relative bg-white shadow-[0_4px_4px_#8c8c8c40] rounded-[6px] pt-[13px] pr-[29px] pb-[17px] pl-[19px]"
       >
         <div class="w-full flex gap-[25px]">
           <div class="w-full">
@@ -326,19 +336,7 @@ onBeforeUnmount(() => {
           </div>
           <Opciones :onResponse="onResponse" :checkedOption="getValueOption().response" :pregunta="preguntaActual?.preguntas"/>
         </div>
-        <div class="w-full flex justify-end mt-[11px]">
-          <BaseButton
-            :color="BtnColor.blueLight"
-            styles="!w-full max-w-[183px] text-white rounded-[6px]"
-            :disabled="!savedAnswer"
-            @click="guardarRespuesta"
-          >
-            Guardar respuesta
-          </BaseButton>
-        </div>
-      </div>
-
-      <Preguntas
+        <Preguntas
         :cantidad="totalQuestions"
         :onBack="onBack"
         :onNext="onNext"
@@ -349,7 +347,21 @@ onBeforeUnmount(() => {
         :on-ask-next="onAskNext"
         :on-next-finish="onNextFinish"
         :on-last-question="ultimaPregunta"
+
       />
+        <!-- <div class="w-full flex justify-end mt-[11px]">
+          <BaseButton
+            :color="BtnColor.blueLight"
+            styles="!w-full max-w-[183px] text-white rounded-[6px]"
+            :disabled="!savedAnswer"
+            @click="guardarRespuesta"
+          >
+            Guardar respuesta
+          </BaseButton>
+        </div> -->
+      </div>
+
+
       <ModalEstado
         :show="showModal"
         :resumen="summaryEvaluation"

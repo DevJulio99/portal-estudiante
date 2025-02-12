@@ -12,6 +12,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 const openedSubmenu = ref<null | number>(null);
 const needHelp = ref();
 const profileStore = useProfileStore();
+const postulanteStore = usePostulanteStore();
 
 const handleSubmenu = (id: number, title: string) => {
 	if (openedSubmenu.value !== id) {
@@ -33,6 +34,7 @@ const imageLoadError = () => {
 
 async function signOut() {
 	profileStore.clearPorfileData();
+	postulanteStore.limpiarPostulante();
 	tokenStore.clearTokens();
 	const userDev = JSON.parse(localStorage.getItem('userDev')!);
 	menuStore.closeMenuProfile();

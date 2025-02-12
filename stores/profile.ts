@@ -14,8 +14,9 @@ export const useProfileStore = defineStore('profileStore', {
 	},
 	actions: {
 		setProfileData(payload: ProfileDataStore) {
+			console.log('set profile')
 			this.profileData = payload;
-			getPostulante();
+			 getPostulante();
 		},
 		clearPorfileData(){
 			this.profileData = {

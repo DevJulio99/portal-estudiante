@@ -25,6 +25,27 @@ export const getEstados = async (idPostulante: number, idCompetencia: number) =>
 	}
 };
 
+export const ListarEstado = async(idPostulante: number) => {
+	const { $api } = useNuxtApp();
+    const estadoCompetenciaStore = useEstadoCompetenciaStore();
+
+	const listaEstados = await $api.estado.getListarEstado(idPostulante, {lazy: true,})
+	listaEstados.data.value?.data.length && estadoCompetenciaStore.setLista(listaEstados.data.value.data);
+}
+
+export const RegistrarEstado = async(idPostulante: number, idCompetencia: number) => {
+	const { $api } = useNuxtApp();
+	const request = {
+		idCompetencia,
+		idPostulante,
+		estado: "i"
+	};
+
+	await $api.cambiarEstado.registrarEstado(request, {lazy: true});
+	await ListarEstado(idPostulante);
+	console.log('se registro nuevo estado');
+}
+
 export const FinalizarCompetencia = async() => {
 	const { $api } = useNuxtApp();
 	const postulanteStore = usePostulanteStore();

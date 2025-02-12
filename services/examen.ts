@@ -1,5 +1,4 @@
 import type { GenerarExamen } from "~/types/examen.types";
-import { getEstados } from "./estadoCompetencia";
 
 export const listarExamen = async () => {
   const { $api } = useNuxtApp();
@@ -13,12 +12,12 @@ export const listarExamen = async () => {
       { lazy: true }
     );
 
-    console.log('examenService', examenService)
+    //console.log('examenService', examenService)
    
     if (examenService.error.value) {
-      console.log('error listar examen')
-      // const bodyError = examenService.error.value.data;
-      // throw new Error(bodyError ? "nodata" : "other");
+      //console.log('error listar examen')
+      const bodyError = examenService.error.value.data;
+      throw new Error(bodyError ? "nodata" : "other");
     }
 
     examenService.data.value?.data.length && examenStore.setLista(examenService.data.value.data);
@@ -73,14 +72,7 @@ export const generarExamen = async () => {
     { lazy: true }
   );
 
-  console.log('generarExamen', generarExamen.data.value)
-
-  if(generarExamen.data.value){
-    const idPostulante = postulanteStore.data?.idPostulante;
-    const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
-
-    (idPostulante && idCompetencia) && getEstados(idPostulante, idCompetencia);
-  }
+ // console.log('generarExamen', generarExamen.data.value)
 
   if (!generarExamen.error.value) {
     listarExamen();

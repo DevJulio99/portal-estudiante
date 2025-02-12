@@ -5,18 +5,6 @@ import imgEv2 from '@/assets/images/evaluacion_2.png';
 import imgEv3 from '@/assets/images/evaluacion_3.png';
 import type { Competencia } from '~/types/competencia.types';
 
-interface lista {
-      title: string;
-      description: string;
-      nameButton: string;
-      img: string;
-      alt: string;
-      status: number;
-      textStatus: string;
-      link: string;
-}
-
-
 const listas = [
     {
       title: 'Evaluación de competencias generales',
@@ -58,7 +46,6 @@ const listas = [
   const router = useRouter();
 
   watch(() => competenciaStore.listaCompetencia, (competencias)  => {
-    console.log('competencias', competencias)
   if(competencias.length){
     console.log('competencias lista', competencias)
     // dataCompetencia.value = competencias.map(x => ({

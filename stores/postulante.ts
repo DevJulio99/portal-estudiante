@@ -17,6 +17,7 @@ export const usePostulanteStore = defineStore("postulanteStore", {
   }),
   actions: {
     setPostulante(data: Postulante) {
+      console.log('se setea postulante', data)
       this.data = data;
     },
     setError(err: any) {
@@ -24,6 +25,11 @@ export const usePostulanteStore = defineStore("postulanteStore", {
     },
     setHabilitado(status: number){
       this.habilitado = status;
+    },
+    limpiarPostulante() {
+      this.data = null;
+      this.error = null;
+      this.habilitado = 0;
     }
     // async getEstado(idPostulante: number) {
     //   try {
