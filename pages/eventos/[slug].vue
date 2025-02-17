@@ -8,17 +8,18 @@ import type {
 } from '~/types/events.types';
 import { TagStyle } from '~/types/helper.types';
 import BaseBtnTag from '~/components/base/BaseBtnTag.vue';
-import dataEventos from "~/utils/data/dataEventos.json";
-import dataCategoriaEventos from "~/utils/data/dataCategoriaEventos.json";
+import { useEventFilterStore } from '~/stores/filterEventCategories';
 
+const filterStore = useEventFilterStore();
 const { $api } = useNuxtApp();
 const route = useRoute();
+const router = useRouter();
 const isFromSuperapp = Boolean(route?.query?._session === 'app');
 const hasToken = Boolean(route?.query?._tk);
 
-// definePageMeta({
-// 	middleware: 'auth',
-// });
+definePageMeta({
+	middleware: 'auth',
+});
 
 useHead({
 	title: 'Eventos',
@@ -36,16 +37,6 @@ const slug: string = Array.isArray(route.params.slug.length)
 	? route.params.slug.length[0]
 	: route.params.slug;
 
-// const slugConverter = slug.replace(/U0002FSla/g, '/');
-// const slugIdentifier = CryptoJS.AES.decrypt(
-// 	slugConverter,
-// 	config.public.keyCrypto,
-// ).toString(CryptoJS.enc.Utf8);
-
-// const profileData = slugIdentifier
-// 	? JSON.parse(slugIdentifier.toString())
-// 	: null;
-
 const servicesError: Ref<ErrorResponse | null> = ref(null);
 const eventsData = ref<EventData[] | null>(null);
 const eventData = ref<EventData | null>(null);
@@ -53,31 +44,14 @@ const viewModal = ref(false);
 const currentLocation = ref<UbicacionEvento>();
 const categories = ref<EventCategory[] | null>(null);
 const serviceErrorCategory: Ref<any> = ref(null);
-const pending = ref<boolean>(true);
+// const pending = ref<boolean>(true);
 const pendingCategory = ref<boolean>(true);
 
-// const {
-// 	data: dataCategory,
-// 	error: errorCategory,
-// 	pending: pendingCategory,
-// } = await $api.eventsCategory.getCategories({
-// 	lazy: true,
-// });
-
-// const { data, error, pending } = await $api.events.getEvents(
-// 	profileStore.profileData?.data?.codCampus ?? '',
-// 	profileStore.profileData?.data?.codNivel ?? '',
-// 	profileStore.profileData?.data?.facultad ?? '',
-// 	profileStore.profileData?.data?.codProductoActual ?? '',
-// 	profileStore.profileData?.data?.status ?? '',
-// 	'WEB',
-// 	localStorage.getItem('offsetValue') ?? '0',
-// 	'',
-// 	undefined,
-// 	{
-// 		lazy: true,
-// 	},
-// );
+const { data, error, pending } = await $api.eventos.getEventos(
+	{
+		lazy: true,
+	},
+);
 
 const eventClick = (url?: string, title?: string, nameEvent?: string) => {
 	// if (window.dataLayer) {
@@ -90,41 +64,29 @@ const eventClick = (url?: string, title?: string, nameEvent?: string) => {
 	// }
 };
 
-const initDetailEvent = () => {
-	const detail = dataEventos.find((x) => x.id === slug) as any;
-	const copyEventos = [...dataEventos];
-	eventsData.value = copyEventos.splice(0, 3) as any;
-	eventData.value = detail ?? null;
-	breadcrumbsItem.splice(2, 1, {
-		...breadcrumbsItem[2],
-		name: detail?.categoria_evento ?? '',
-	});
-	detail && generateMeta(detail);
-	pending.value = false;
-}
+watch(data, (response) => {
+	if (response?.data?.length) {
+		const detail = response.data.find((x) => String(x.id) === slug);
+		eventsData.value = response?.data.slice(0, 3);
+		eventData.value = detail ?? null;
+		breadcrumbsItem.splice(2, 1, {
+			...breadcrumbsItem[2],
+			name: detail?.categoriaEvento ?? '',
+		});
+		detail && generateMeta(detail);
 
-// watch(data, (response) => {
-// 	if (response?.flag) {
-// 		const detail = response.data.find((x) => x.id === slug);
-// 		eventsData.value = response?.data.splice(0, 3);
-// 		eventData.value = detail ?? null;
-// 		breadcrumbsItem.splice(2, 1, {
-// 			...breadcrumbsItem[2],
-// 			name: detail?.categoria_evento ?? '',
-// 		});
-// 		detail && generateMeta(detail);
-// 	} else if (response?.error) {
-// 		servicesError.value = response.error;
-// 	}
-// });
+		categories.value = Array.from(
+			new Set(response.data?.map((event) => event.categoriaEvento))
+		).map((categoriaEvento) => ({ nombre: categoriaEvento }));
+	} else if (response?.error) {
+		servicesError.value = response.error;
+	}
+});
 
-// watch(dataCategory, (response) => {
-// 	if (response?.flag) {
-// 		categories.value = response.data;
-// 	} else if (response?.error) {
-// 		serviceErrorCategory.value = response.error;
-// 	}
-// });
+const onCategoryClick = (categoryName: string) => {
+  filterStore.setCategory(categoryName);
+  router.push({ path: '/eventos' });
+};
 
 const shared = (url: string, nameEvent: string, title: string) => {
 	const link = url + window.location.href;
@@ -140,15 +102,15 @@ const generateLink = (url: string) => {
 	link.click();
 	document.body.removeChild(link);
 };
-onMounted(() => {
+onMounted(async () => {
 	document.querySelector("[property='og:title']")?.remove();
 	document.querySelector("[property='og:description']")?.remove();
 	document.querySelector("[property='og:image']")?.remove();
 	document.querySelector("[property='og:image:width']")?.remove();
 	document.querySelector("[property='og:image:height']")?.remove();
 	document.querySelector("[property='og:image:type']")?.remove();
-	initDetailEvent();
-	categories.value = dataCategoriaEventos;
+	// initDetailEvent();
+	// await callEvents();
 	pendingCategory.value = false;
 });
 
@@ -169,7 +131,7 @@ const generateMeta = (data: EventData) => {
 
 	metaTitle.content = data.titulo;
 	metaDescription.content = 'descripcion';
-	meta.content = data.imagen_desktop;
+	meta.content = data.imagenDesktop;
 	metawidth.content = '980';
 	metaheight.content = '528';
 	metaType.content = 'image/jpeg';
@@ -201,7 +163,7 @@ const seeLocation = (location: UbicacionEvento) => {
 		handleOpen();
 		currentLocation.value = location;
 	} else {
-		generateLink(location.url_mobile);
+		generateLink(location.urlMobile);
 	}
 	eventClick(undefined, location.nombre, 'Click/Ver-ubicacion');
 };
@@ -242,7 +204,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 			>
 				<div class="lg:pt-4 lg:flex-1">
 					<BaseBtnTag
-						:title="eventData.categoria_evento"
+						:title="eventData.categoriaEvento"
 						:color="TagStyle.violet"
 						class="mb-2"
 					/>
@@ -254,7 +216,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 					</div>
 
 					<div>
-						<div v-if="eventData?.fecha_inicio_evento" class="flex mb-2">
+						<div v-if="eventData?.fechaInicioEvento" class="flex mb-2">
 							<div class="flex gap-1 items-center lg:px-4 lg:py-2 lg:bg-white">
 								<div>
 									<nuxt-icon
@@ -264,20 +226,20 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 									/>
 								</div>
 								<time
-									:datetime="eventData?.fecha_inicio_evento"
+									:datetime="eventData?.fechaInicioEvento"
 									class="text-sm text-black font-nunito capitalize"
 								>
 									<span
 										v-if="
-											eventData.fecha_inicio_evento !==
-												eventData.fecha_fin_evento && eventData.fecha_fin_evento
+											eventData.fechaInicioEvento !==
+												eventData.fechaFinEvento && eventData.fechaFinEvento
 										"
 									>
 										Del
 									</span>
 									{{
 										useDateFormat(
-											eventData?.fecha_inicio_evento,
+											eventData?.fechaInicioEvento,
 											'dddd DD [de] MMMM, YYYY',
 											{
 												locales: 'es-ES',
@@ -286,14 +248,14 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 									}}
 									<template
 										v-if="
-											eventData.fecha_inicio_evento !==
-												eventData.fecha_fin_evento && eventData.fecha_fin_evento
+											eventData.fechaInicioEvento !==
+												eventData.fechaFinEvento && eventData.fechaFinEvento
 										"
 									>
 										<span class="lowercase">al</span>
 										{{
 											useDateFormat(
-												eventData?.fecha_fin_evento,
+												eventData?.fechaFinEvento,
 												'dddd DD [de] MMMM, YYYY',
 												{
 													locales: 'es-ES',
@@ -306,7 +268,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 						</div>
 						<div
 							v-if="
-								eventData?.fecha_inicio_evento && eventData.hora_inicio_evento
+								eventData?.fechaInicioEvento && eventData.horaInicioEvento
 							"
 							class="flex gap-1 items-center mb-2 lg:w-fit lg:px-4 lg:py-2 lg:bg-white"
 						>
@@ -314,13 +276,13 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 								<nuxt-icon name="upn-icon-time" class="text-base" filled />
 							</div>
 							<time
-								:datetime="eventData.hora_inicio_evento"
+								:datetime="eventData.horaInicioEvento"
 								class="text-sm text-black font-nunito"
 							>
 								{{
 									useDateFormat(
-										eventData?.fecha_inicio_evento +
-											eventData.hora_inicio_evento,
+										eventData?.fechaInicioEvento +
+											eventData.horaInicioEvento,
 										'hh:mm A',
 										{
 											locales: 'es-ES',
@@ -332,21 +294,21 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 						<span
 							class="flex gap-1 items-center text-sm text-black font-nunito lg:w-fit lg:px-4 lg:py-2 lg:bg-white capitalize"
 						>
-							<div v-if="eventData.tipo_de_evento === 'virtual'">
+							<div v-if="eventData.tipoDeEvento === 'virtual'">
 								<nuxt-icon
 									name="upn-icon-map-light-blue"
 									class="text-base"
 									filled
 								/>
 							</div>
-							<div v-if="eventData.tipo_de_evento === 'presencial'">
+							<div v-if="eventData.tipoDeEvento === 'presencial'">
 								<nuxt-icon
 									name="upn-icon-map-pin2-yellow"
 									class="text-base"
 									filled
 								/>
 							</div>
-							{{ eventData.tipo_de_evento }}
+							{{ eventData.tipoDeEvento }}
 						</span>
 					</div>
 				</div>
@@ -354,7 +316,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 				<div class="mt-5 lg:w-[66.2%] lg:m-0">
 					<img
 						:src="
-							isLargeScreen ? eventData.imagen_desktop : eventData.imagen_mobile
+							isLargeScreen ? eventData.imagenDesktop : eventData.imagenMobile
 						"
 						class="w-full sm:h-[344px] lg:max-w-[558px] aspect-[16/10] object-cover"
 						:class="{ 'h-[200px]': isLargeScreen }"
@@ -378,12 +340,12 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 							v-html="eventData.descripcion"
 						></div>
 						<BaseButton
-							v-if="eventData.url && eventData.nombre_boton.trim().length"
+							v-if="eventData.url && eventData.nombreBoton.trim().length"
 							:url="eventData?.url"
 							styles="!w-auto !inline-block !min-w-auto !min-h-[38px] !h-auto !font-extrabold font-nunito !text-sm !px-4 !py-2.5"
 							@click="eventClick(eventData?.url, eventData?.titulo)"
 						>
-							{{ eventData.nombre_boton }}
+							{{ eventData.nombreBoton }}
 						</BaseButton>
 					</div>
 					<div class="mb-10 lg:flex-1">
@@ -434,9 +396,9 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 									<p v-else>
 										<template
 											v-if="
-												ubicacion.url_mobile &&
+												ubicacion.urlMobile &&
 												ubicacion.url.trim() &&
-												ubicacion.url_mobile.trim().length > 0
+												ubicacion.urlMobile.trim().length > 0
 											"
 										>
 											<span
@@ -517,17 +479,17 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 							:id="item.id"
 							:key="i"
 							:title="item.titulo"
-							:dateStart="item.fecha_inicio_evento.replaceAll('-', '/')"
-							:dateEnd="item.fecha_fin_evento.replaceAll('-', '/')"
-							:time="item.hora_inicio_evento"
-							:imgDesktop="item.imagen_desktop"
-							:imgMobile="item.imagen_mobile"
+							:dateStart="item.fechaInicioEvento"
+							:dateEnd="item.fechaFinEvento"
+							:time="item.horaInicioEvento"
+							:imgDesktop="item.imagenDesktop"
+							:imgMobile="item.imagenMobile"
 							:url="item.url ?? ''"
 							:description="item.descripcion"
-							:tag="item.categoria_evento"
-							:tagUrl="item.categoria_evento"
+							:tag="item.categoriaEvento"
+							:tagUrl="item.categoriaEvento"
 							:style="TagStyle.violet"
-							:typeEvent="item.tipo_de_evento"
+							:typeEvent="item.tipoDeEvento"
 							alt=""
 							classArticle="!px-0 w-[272px] lg:w-[260px] lg:!px-4"
 							secondary
@@ -614,7 +576,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 					v-for="(category, index) in categories"
 					:key="index"
 					class="uppercase bg-violet_20 px-2 py-1 text-violet_100 text-[10px] font-bold leading-3 font-whitney rounded-2xl cursor-pointer tracking-[0.4px]"
-					@click="() => onSelectCategory(category.nombre)"
+					@click="() => onCategoryClick(category.nombre)"
 				>
 					<NuxtLink :to="`/eventos`">
 						{{ category.nombre }}

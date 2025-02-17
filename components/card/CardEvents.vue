@@ -4,7 +4,7 @@ import { TagStyle } from '~/types/helper.types';
 
 withDefaults(
 	defineProps<{
-		id: string;
+		id: number;
 		title: string;
 		dateStart: string;
 		dateEnd: string;
@@ -42,7 +42,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 				:src="isLargeScreen ? imgDesktop : imgMobile"
 				:alt="alt"
 				class="relative block object-cover rounded-lg w-full cursor-pointer"
-				@click="onGoDetail(id, title, tag)"
+				@click="onGoDetail(`${id}`, title, tag)"
 			/>
 		</div>
 
@@ -67,7 +67,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 					'default lg:leading-5 ': !secondary,
 					'secondary text-xs leading-[1.2]': secondary,
 				}"
-				@click="onGoDetail(id, title, tag)"
+				@click="onGoDetail(`${id}`, title, tag)"
 			>
 				{{ title }}
 			</h2>

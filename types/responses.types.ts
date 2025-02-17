@@ -7,3 +7,11 @@ export type DataResponse<T> = {
 	data: T;
 	success: boolean;
 };
+
+export type DataResponseOffset<T> = {
+	message: string;
+	count: number;
+	flag: boolean;
+	error: ErrorResponse | null;
+	data: T;
+};

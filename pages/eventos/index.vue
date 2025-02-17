@@ -3,15 +3,19 @@ import CardEvent from "./CardEvent.vue";
 import BasePagination from "~/components/base/BasePagination.vue";
 import type { EventCategory, EventData } from "~/types/events.types";
 import { TagStyle } from "~/types/helper.types";
-import dataEventos from "~/utils/data/dataEventos.json";
-import dataCategoriaEventos from "~/utils/data/dataCategoriaEventos.json";
+import { useEventFilterStore } from '~/stores/filterEventCategories';
 
 useHead({
   title: "Eventos",
 });
 
-// const profileStore = useProfileStore();
-// const route = useRoute();
+definePageMeta({
+  middleware: "auth",
+});
+
+const filterStore = useEventFilterStore();
+const { $api } = useNuxtApp();
+
 const isFromSuperapp = false;
 const hasToken = false;
 
@@ -22,13 +26,12 @@ const breadcrumbsItem = [
 ];
 
 const serviceError: Ref<any> = ref(null);
-const serviceErrorCategory: Ref<any> = ref(null);
 const eventsData = ref<EventData[] | null>(null);
+const allEvents = ref<EventData[] | null>(null);
 const currentEvent = ref<string>("");
 const currentType = ref<string | undefined>(undefined);
 const categories = ref<EventCategory[] | null>(null);
 const typeId = ref<number>(1);
-const offset = ref<string>("0");
 const filterTipo = ref([
   {
     id: 1,
@@ -43,175 +46,101 @@ const filterTipo = ref([
     name: "Virtual",
   },
 ]);
-const limitItems = ref<number>(12);
+const limitItems = ref<number>(6);
 const currentPage = ref<number>(1);
 const totalEvents = ref<number>(0);
 const pendingEvnt = ref<boolean>(true);
 const pendingCategory = ref<boolean>(true);
-const pending = ref<boolean>(true);
+// const pending = ref<boolean>(true);
 
 const handlePage = (number: number) => {
   serviceError.value = null;
   pendingEvnt.value = true;
   currentPage.value = number;
-  offset.value = number === 1 ? "0" : `${limitItems.value * (number - 1)}`;
-  callEvents();
-  localStorage.setItem("offsetValue", offset.value);
 };
 
-// const callEvents = async () => {
-// 	return await $api.events.getEvents(
-// 		profileStore.profileData.data?.codCampus ?? '',
-// 		profileStore.profileData.data?.codNivel ?? '',
-// 		profileStore.profileData.data?.facultad ?? '',
-// 		profileStore.profileData.data?.codProductoActual ?? '',
-// 		profileStore.profileData.data?.status ?? '',
-// 		'WEB',
-// 		offset.value,
-// 		currentEvent.value,
-// 		currentType.value,
-// 		{
-// 			lazy: true,
-// 		},
-// 	);
-// };
-
-// const { data, error, pending } = await callEvents();
-const callEvents = () => {
-  eventsData.value = dataEventos as any;
-  totalEvents.value = dataEventos.length;
-  pending.value = false;
-};
-
-// const {
-// 	data: dataCategory,
-// 	error: errorCategory,
-// 	pending: pendingCategory,
-// } = await $api.eventsCategory.getCategories({
-// 	lazy: true,
-// });
-
-const eventClick = (title: string, nameEvent: string) => {
-  // if (window.dataLayer) {
-  // 	window.dataLayer.push({
-  // 		event: nameEvent,
-  // 		page_url: `${window.location.href}`,
-  // 		title,
-  // 	});
-  // }
-};
-
-const onSelectCategory = (name: string) => {
-  let filter = dataEventos.filter(
-    (x) => x.categoria_evento.toLocaleLowerCase() === name.toLocaleLowerCase()
-  ) as any[];
-
-  const type = currentType.value;
-  if(type && filter.length){
-    const filtertype = filter.filter(x =>  x.tipo_de_evento.toLocaleLowerCase() === type.toLocaleLowerCase());
-    if(filtertype.length) filter = filtertype;
-    // console.log('filtertype', filtertype);
-  }
-  currentPage.value = 1;
-  serviceError.value = null;
-  offset.value = "0";
-  currentEvent.value = name;
-  localStorage.setItem("offsetValue", offset.value);
-  // callEvents();
-  eventClick(name, "Click/Select-category");
-  localStorage.removeItem("cat_prev_select");
-
-  eventsData.value = filter;
-  totalEvents.value = filter.length;
-};
-
-const onSelectType = (val: any) => {
-  const category = currentEvent.value;
-  if (val.id !== 1) {
-    let filter = dataEventos.filter(
-      (x) =>
-        x.tipo_de_evento.toLocaleLowerCase() === val.name.toLocaleLowerCase()
-    ) as any[];
-    if(category && filter.length){
-      const filterCategory = filter.filter(
-    (x) => x.categoria_evento.toLocaleLowerCase() === category.toLocaleLowerCase()
-     ) as any[];
-     
-     if(filterCategory.length) filter = filterCategory;
-    }
-    typeId.value = val.id;
-    currentPage.value = 1;
-    serviceError.value = null;
-    offset.value = "0";
-    currentType.value =
-      val.name.toLowerCase() === "todos" ? undefined : val.name.toLowerCase();
-    localStorage.setItem("offsetValue", offset.value);
-    eventClick(val.name, "Click/Select-type");
-
-    eventsData.value = filter;
-    totalEvents.value = filter.length;
-  } else {
-    let allData = dataEventos;
-    if(category && allData.length){
-      const filterCategory = dataEventos.filter(
-    (x) => x.categoria_evento.toLocaleLowerCase() === category.toLocaleLowerCase()
-     ) as any[];
-     if(filterCategory.length) allData = filterCategory;
-    }
-    currentType.value = undefined;
-    typeId.value = val.id;
-	  eventsData.value = allData as any;
-    totalEvents.value = allData.length;
-  }
-};
-
-const resetEvents = (title: string) => {
-  if (title === "Eventos") {
-    currentPage.value = 1;
-    typeId.value = 1;
-    serviceError.value = null;
-    offset.value = "0";
-    currentEvent.value = "";
-    currentType.value = undefined;
-    localStorage.setItem("offsetValue", offset.value);
-    callEvents();
-  }
-};
-
-// watch(data, (response) => {
-// 	if (response?.flag) {
-// 		eventsData.value = response.data;
-// 		totalEvents.value = response.count;
-// 	} else if (response?.error) {
-// 		serviceError.value = response.error;
-// 	}
-// });
-
-// watch(dataCategory, (response) => {
-// 	if (response?.flag) {
-// 		categories.value = response.data;
-// 	} else if (response?.error) {
-// 		serviceErrorCategory.value = response.error;
-// 	}
-// });
-
-function preselectedCategory() {
-  const name = localStorage.getItem("cat_prev_select");
-  name &&
-    setTimeout(() => {
-      onSelectCategory(name);
-    }, 0);
-}
-
-onMounted(() => {
-  localStorage.setItem("offsetValue", offset.value);
-  callEvents();
-  categories.value = dataCategoriaEventos;
-  pendingCategory.value = false;
+const paginatedEvents = computed(() => {
+  if (!eventsData.value || eventsData.value.length === 0) return [];
+  const start = (currentPage.value - 1) * limitItems.value;
+  const end = start + limitItems.value;
+  return eventsData.value.slice(start, end);
 });
 
-onBeforeMount(() => {
-  preselectedCategory();
+const callEvents = async () => {
+	return await $api.eventos.getEventos(
+		{
+			lazy: true,
+		},
+	);
+};
+
+const { data, error, pending } = await callEvents();
+
+watch(() => filterStore.selectedCategory, (newCategory) => {
+  applyFilters(newCategory);
+});
+
+const onSelectCategory = (category: string) => {
+  filterStore.setCategory(category);
+  applyFilters(category);
+};
+
+const onSelectType = (type: any) => {
+  currentType.value = type.name.toLowerCase() === "todos" ? undefined : type.name.toLowerCase();
+  applyFilters(filterStore.selectedCategory); 
+};
+
+const applyFilters = (category: string | null = null) => {
+  if (!allEvents.value) return;
+
+  let filteredEvents = [...allEvents.value];
+
+  if (category) {
+    filteredEvents = filteredEvents.filter(event =>
+      event.categoriaEvento.toLowerCase() === category.toLowerCase()
+    );
+  }
+
+  if (currentType.value) {
+    filteredEvents = filteredEvents.filter(event =>
+      event.tipoDeEvento.toLowerCase() === currentType.value
+    );
+  }
+
+  eventsData.value = filteredEvents;
+  totalEvents.value = filteredEvents.length;
+  currentPage.value = 1;
+};
+
+const resetEvents = () => {
+  filterStore.clearCategory();
+  currentType.value = undefined;
+  callEvents();
+};
+
+watch(data, (response) => {
+	if (response?.data?.length) {
+    allEvents.value = response.data;
+		eventsData.value = response.data;
+		totalEvents.value = response.count;
+	} else if (response?.error) {
+		serviceError.value = response.error;
+	}
+});
+
+onMounted(async() => {
+  await callEvents();
+  categories.value = Array.from(
+    new Set(eventsData.value?.map((event) => event.categoriaEvento))
+  ).map((categoriaEvento) => ({ nombre: categoriaEvento }));
+  pendingCategory.value = false;
+
+  const categoryFromStore = filterStore.selectedCategory;
+  if (categoryFromStore) {
+    applyFilters(categoryFromStore);
+  } else {
+    applyFilters(null);
+  }
 });
 
 const isLargeScreen = useMediaQuery("(min-width: 1200px)");
@@ -296,21 +225,21 @@ const isLargeScreen = useMediaQuery("(min-width: 1200px)");
         class="grid grid-cols-1 lgMobile:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6"
       >
         <CardEvent
-          v-for="(item, i) in eventsData"
+          v-for="(item, i) in paginatedEvents"
           :id="item.id"
           :key="i"
           :title="item.titulo"
-          :dateStart="item.fecha_inicio_evento.replaceAll('-', '/')"
-          :dateEnd="item.fecha_fin_evento.replaceAll('-', '/')"
-          :time="item.hora_inicio_evento"
-          :imgDesktop="item.imagen_desktop"
-          :imgMobile="item.imagen_mobile"
+          :dateStart="item.fechaInicioEvento"
+          :dateEnd="item.fechaFinEvento"
+          :time="item.horaInicioEvento"
+          :imgDesktop="item.imagenDesktop"
+          :imgMobile="item.imagenMobile"
           :url="item.url ?? ''"
           :description="item.descripcion"
-          :tag="item.categoria_evento"
-          :tagUrl="item.categoria_evento"
+          :tag="item.categoriaEvento"
+          :tagUrl="item.categoriaEvento"
           :style="TagStyle.violet"
-          :typeEvent="item.tipo_de_evento"
+          :typeEvent="item.tipoDeEvento"
           :on-category="onSelectCategory"
           :isFromSuperapp="isFromSuperapp"
           :hasToken="hasToken"
@@ -319,13 +248,13 @@ const isLargeScreen = useMediaQuery("(min-width: 1200px)");
         />
       </div>
       <div
-        v-if="eventsData?.length && totalEvents >= 12"
+        v-if="eventsData?.length && totalEvents >= limitItems"
         class="flex justify-center mt-5 mx-auto"
       >
         <BasePagination
-          :totalItems="totalEvents || 1"
+          :totalItems="eventsData.length"
           :currentPage="currentPage"
-          :items-per-page="12"
+          :items-per-page="limitItems"
           @change="handlePage"
         />
       </div>
@@ -338,35 +267,6 @@ const isLargeScreen = useMediaQuery("(min-width: 1200px)");
       <div v-if="pendingCategory" class="w-full h-[240px] flex justify-center">
         <BaseStatusLoading />
       </div>
-      <!-- <div
-				v-else-if="errorCategory || serviceErrorCategory"
-				class="flex flex-col items-center justify-center min-h-[240px] lg:pt-[28px]"
-			>
-				<BaseStatusError
-					:text="
-						serviceErrorCategory?.titulo ||
-						'Lo sentimos, no pudimos cargar las etiquetas relacionadas'
-					"
-					:description="
-						serviceErrorCategory?.descripcion || 'Inténtalo de nuevo más tarde'
-					"
-					:icono="serviceErrorCategory?.icono"
-				/>
-			</div> -->
-
-      <!-- <div
-				v-else-if="!categories?.length"
-				class="flex flex-col items-center justify-center min-h-[240px] lg:pt-[28px]"
-			>
-				<BaseStatusNoDataDirectus
-					:text="
-						serviceErrorCategory?.titulo ??
-						'Estamos trabajando en el detalle de este contenido'
-					"
-					:description="serviceErrorCategory?.descripcion"
-					:icono="serviceErrorCategory?.icono"
-				/>
-			</div> -->
       <div class="flex flex-wrap gap-2 mb-5">
         <div
           v-for="(category, index) in categories"

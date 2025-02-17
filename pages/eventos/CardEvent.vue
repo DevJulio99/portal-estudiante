@@ -4,7 +4,7 @@ import { TagStyle } from '~/types/helper.types';
 
 const props = withDefaults(
 	defineProps<{
-		id: string;
+		id: number;
 		title: string;
 		dateStart: string;
 		dateEnd: string;

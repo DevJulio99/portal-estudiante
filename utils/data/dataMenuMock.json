@@ -169,7 +169,7 @@
     {
         "id": 14,
         "etiqueta": "evento",
-        "nombre": "evento",
+        "nombre": "eventos",
         "url": "/eventos",
         "icono": "../public/images/eventos.svg",
         "es_nuevo": false,
