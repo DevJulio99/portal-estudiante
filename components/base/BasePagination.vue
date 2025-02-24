@@ -175,7 +175,7 @@ const showPage = (val: number) => {
 	@apply flex items-center justify-center;
 }
 .active-page {
-	@apply bg-primary text-black font-bold w-[40px] h-[40px];
+	@apply bg-primary text-black font-bold w-[40px] h-[40px] rounded-md;
 }
 .page {
 	@apply flex items-center justify-center;

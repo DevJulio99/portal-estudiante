@@ -14,3 +14,16 @@ export interface ObligationPaid {
 	debtType: string;
 	payments: Payment[];
 }
+
+export interface Pago {
+	fechaPago: string;
+	concepto: string;
+	numeroDocumentoPago: string;
+	numeroCuota: number;
+	importe: number;
+	montoPagado: number;
+}
+export interface ObligacionPagada {
+	periodo: string;
+	pagos: Pago[];
+}

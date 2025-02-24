@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import type { ObligationPaid } from '~/types/obligations.types';
-
-import obligacionesPagadasMock from "~/utils/data/dataObligacionesPagadas.json";
+import type { ObligacionPagada } from '~/types/obligations.types';
+import type { ErrorResponse } from '~/types/services.types';
 
 definePageMeta({
   middleware: "auth",
@@ -12,6 +11,8 @@ useHead({
 	title: 'Obligaciones pagadas',
 });
 
+const { $api } = useNuxtApp();
+
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
 	{ name: 'Pagos', current: false, url: '' },
@@ -20,32 +21,32 @@ const breadcrumbsItem = [
 
 // const user = useUserStoreAuth();
 // const codAlumno = user.codAlum;
-const dataObligations = ref<ObligationPaid[]>([]);
+const dataObligations = ref<ObligacionPagada[]>([]);
 const loading = ref(true);
-// const obligationError: Ref<ErrorResponse | null> = ref(null);
+const tokenStore = useTokenStore();
+const obligationError: Ref<ErrorResponse | null> = ref(null);
 
-// const { data, error, pending } = await $api.obligationsPaid.getObligations(
-// 	codAlumno,
-// 	{
-// 		lazy: true,
-// 	},
-// );
-// watch(data, (response) => {
-// 	if (response?.flag) {
-// 		dataObligations.value = response.data;
-// 	} else if (response?.error) {
-// 		obligationError.value = response.error;
-// 	} else {
-// 		obligationError.value = {
-// 			descripcion: '',
-// 			icono: '',
-// 			titulo: response?.message ?? '',
-// 		};
-// 	}
-// });
+const { data, error, pending } = await $api.obligacionesPagadas.getObligacionesPagadas(
+	parseInt(tokenStore.getDataToken.Id),
+	{
+		lazy: true,
+	},
+);
+watch(data, (response) => {
+	if (response?.data?.length) {
+		dataObligations.value = response.data;
+	} else if (response?.error) {
+		obligationError.value = response.error;
+	} else {
+		obligationError.value = {
+			descripcion: '',
+			icono: '',
+			titulo: response?.message ?? '',
+		};
+	}
+});
 
 onMounted(() => {
-	dataObligations.value = obligacionesPagadasMock;
 	loading.value = false;
 });
 </script>
@@ -77,8 +78,8 @@ onMounted(() => {
 			<div v-if="dataObligations.length">
 				<BaseAcordion
 					v-for="obligation in dataObligations"
-					:key="obligation.period"
-					:title="`CICLO ${obligation.period}`"
+					:key="obligation.periodo"
+					:title="`${obligation.periodo}`"
 					className="mb-5"
 				>
 					<div class="w-full overflow-auto">
@@ -107,43 +108,43 @@ onMounted(() => {
 									MONTO PAGADO
 								</th>
 							</tr>
-							<tr v-for="(payment, index) in obligation.payments" :key="index">
+							<tr v-for="(payment, index) in obligation.pagos" :key="index">
 								<td class="font-nunito text-xs leading-5 md:text-sm">
 									<div class="w-full flex justify-center">
 										<span class="w-[144px] text-limit">{{
-											payment.paidDate
+											payment.fechaPago
 										}}</span>
 									</div>
 								</td>
 								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center items-center h-[40px]">
 										<span class="w-[164px] !flex justify-center text-limit">
-											{{ payment.concept }}
+											{{ payment.concepto }}
 										</span>
 									</div>
 								</td>
 								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center items-center h-[40px]">
 										<span class="w-[144px] !flex justify-center text-limit">
-											{{ payment.documentNumber }}
+											{{ payment.numeroDocumentoPago }}
 										</span>
 									</div>
 								</td>
 								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center">
-										<span class="w-[77px] text-limit">{{ payment.fee }}</span>
+										<span class="w-[77px] text-limit">{{ payment.numeroCuota }}</span>
 									</div>
 								</td>
 								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center">
 										<span class="w-[144px] text-limit">{{
-											payment.import
+											payment.importe
 										}}</span>
 									</div>
 								</td>
 								<td class="font-nunito text-xs md:text-sm leading-5">
 									<div class="w-full flex justify-center">
-										<span class="w-[144px] text-limit">{{ payment.paid }}</span>
+										<span class="w-[144px] text-limit">{{ payment.montoPagado }}</span>
 									</div>
 								</td>
 							</tr>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { HorarioData } from '~/types/cursos.types';
-import dataHorarioMock from '~/utils/data/dataHorarioMock.json'
 
-// const { $api } = useNuxtApp();
+const { $api } = useNuxtApp();
+const tokenStore = useTokenStore();
 
 const dataHorario = ref<HorarioData[]>([]);
 const user = useUserStoreAuth();
@@ -15,7 +15,6 @@ const currentDay = new Date();
 const nextDay = new Date(new Date().setDate(currentDay.getDate() + 1));
 const dayNum = (day: Date) => (day.getDay() + 6) % 7;
 const visibleDay = ref(dayNum(currentDay));
-const pending = ref(true);
 
 const Days = [
 	'Lunes',
@@ -38,35 +37,33 @@ const fechaSession2 = ref(
 	}-${currentDay.getDate()}T23:59:00Z`,
 );
 
-// async function callHorarios() {
-// 	const { data, error, pending } = await $api.horario.getHorariosByCodeAlum(
-// 		codAlum,
-// 		fechaSession1.value,
-// 		fechaSession2.value,
-// 		{
-// 			lazy: true,
-// 		},
-// 	);
-// 	return { data, error, pending };
-// }
+const callHorarioRango = async () =>
+  await $api.horarioRango.getHorariosRango(
+    tokenStore.getDataToken.Id,
+    fechaSession1.value,
+    fechaSession2.value,
+    {
+      lazy: true,
+    }
+  );
 
-// const {
-// 	data: horarioDataResponse,
-// 	error: errorServicesHorario,
-// 	pending,
-// } = await callHorarios();
+const {
+	data: horarioDataResponse,
+	error: errorServicesHorario,
+	pending,
+} = await callHorarioRango();
 
-// watch(horarioDataResponse, (response) => {
-// 	if (response?.flag) {
-// 		dataHorario.value = response.data.filter((item) => {
-// 			return Number(item.horario.diaNumero) === visibleDay.value;
-// 		});
-// 	}
-// 	if (response?.error) {
-// 		servicesError.value = response.error;
-// 	}
-// 	// unwatch();
-// });
+watch(horarioDataResponse, (response) => {
+	if (response?.data.length) {
+		dataHorario.value = response.data.filter((item) => {
+			return Number(item.horario.diaNumero) === visibleDay.value;
+		});
+	}
+	if (response?.error) {
+		servicesError.value = response.error;
+	}
+	// unwatch();
+});
 
 function callCurrentDayClass() {
 	if (visibleDay.value === dayNum(currentDay)) return;
@@ -85,18 +82,12 @@ function callCurrentDayClass() {
 	fechaSession2.value = `${currentDay.getFullYear()}-${
 		currentDay.getMonth() + 1
 	}-${currentDay.getDate()}T23:00:00Z`;
-	callHorarios();
+	callHorarioRango();
 }
 
 function callNextDayClass() {
 	if (visibleDay.value === dayNum(nextDay)) return;
-	// if (window.dataLayer) {
-	// 	window.dataLayer.push({
-	// 		event: 'Click-Dashboard',
-	// 		section: 'Mis horarios',
-	// 		title: 'Mañana',
-	// 	});
-	// }
+
 	selectDay.value = 1;
 	visibleDay.value = dayNum(nextDay);
 	fechaSession1.value = `${nextDay.getFullYear()}-${
@@ -105,7 +96,7 @@ function callNextDayClass() {
 	fechaSession2.value = `${nextDay.getFullYear()}-${
 		nextDay.getMonth() + 1
 	}-${nextDay.getDate()}T23:00:00Z`;
-	callHorarios();
+	callHorarioRango();
 }
 
 const handleScroll = (e: any) => {
@@ -120,15 +111,8 @@ const handleScroll = (e: any) => {
 	}
 };
 
-const callHorarios = () => {
-	dataHorario.value = dataHorarioMock.filter((item) => {
-			return Number(item.horario.diaNumero) === visibleDay.value;
-	}) as any;
-}
-
 onMounted(() => {
 	elementHorario.value?.addEventListener('scroll', handleScroll);
-	callHorarios();
 	pending.value = false;
 });
 

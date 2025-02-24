@@ -115,7 +115,7 @@ const applyFilters = (category: string | null = null) => {
 const resetEvents = () => {
   filterStore.clearCategory();
   currentType.value = undefined;
-  callEvents();
+  // callEvents();
 };
 
 watch(data, (response) => {

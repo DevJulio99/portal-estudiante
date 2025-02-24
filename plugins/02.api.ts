@@ -14,6 +14,7 @@ import DocumentosModule from '~/repository/modules/Documentos';
 import ExamenModule from '~/repository/modules/Examen';
 import CalendarModule from '~/repository/modules/Calendario';
 import EventosModule from '~/repository/modules/Eventos';
+import ObligacionesPagadasModule from '~/repository/modules/ObligacionesPagadas';
 
 
 interface IApiInstance {
@@ -32,6 +33,7 @@ interface IApiInstance {
 	examen: ExamenModule;
 	calendario: CalendarModule;
 	eventos: EventosModule;
+	obligacionesPagadas: ObligacionesPagadasModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -58,6 +60,7 @@ export default defineNuxtPlugin(() => {
 		examen: new ExamenModule(apiFecther),
 		calendario: new CalendarModule(apiFecther),
 		eventos: new EventosModule(apiFecther),
+		obligacionesPagadas: new ObligacionesPagadasModule(apiFecther),
 	};
 
 	return {
