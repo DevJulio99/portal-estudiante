@@ -149,7 +149,7 @@ onBeforeUpdate(() => {
 
 <template>
   <div
-    class="absolute bottom-0 left-0 w-full flex flex-wrap bg-white pt-[23px] pr-[31px] pb-[25px] pl-[35px] gap-[21px] lg:justify-between items-center"
+    class="fixed ml-[156px] width-container bottom-0 left-0 flex flex-wrap bg-white pt-[23px] pr-[31px] pb-[25px] pl-[35px] gap-[21px] lg:justify-between items-center"
   >
     <div class="w-full flex flex-wrap gap-[5px] xl:w-auto grow">
       <div v-for="(pregunta, i) in cantidad">
@@ -181,7 +181,7 @@ onBeforeUpdate(() => {
       </div>
     </div>
 
-    <div class="w-full flex max-w-[200px] justify-center gap-4">
+    <div class="w-full flex max-w-[300px] justify-center gap-4">
       <BaseButton
         styles="!w-full max-w-[109px] text-white rounded-[6px]"
         :color="BtnColor.blueLight"
@@ -192,13 +192,19 @@ onBeforeUpdate(() => {
       </BaseButton>
 
       <BaseButton
-        styles="!w-full max-w-[109px] text-white rounded-[6px]"
+        styles="!w-full max-w-[150px] text-white rounded-[6px]"
         :color="BtnColor.blueLight"
         @click="next"
         :disabled="guardadoPendiente.valueOf()"
       >
-        Siguiente
+      Guardar respuesta
       </BaseButton>
     </div>
   </div>
 </template>
+
+<style>
+.width-container {
+  width: -webkit-fill-available;
+}
+</style>

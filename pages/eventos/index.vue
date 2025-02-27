@@ -87,6 +87,7 @@ const onSelectCategory = (category: string) => {
 
 const onSelectType = (type: any) => {
   currentType.value = type.name.toLowerCase() === "todos" ? undefined : type.name.toLowerCase();
+  typeId.value = type.id;
   applyFilters(filterStore.selectedCategory); 
 };
 
@@ -142,6 +143,11 @@ onMounted(async() => {
     applyFilters(null);
   }
 });
+
+
+onBeforeUnmount(() => {
+  filterStore.clearCategory();
+})
 
 const isLargeScreen = useMediaQuery("(min-width: 1200px)");
 </script>

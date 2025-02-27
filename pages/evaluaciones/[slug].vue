@@ -299,7 +299,7 @@ onBeforeUnmount(() => {
 
 <template>
   <BaseLayout :rightAside="false" bgGray>
-    <div v-if="!competenciaStore.finalizoCompetencia">
+    <div v-if="!competenciaStore.finalizoCompetencia" class="mb-[84px]">
       <BaseBreadcrumbs :items="breadcrumbsItem" />
       <div class="flex flex-wrap justify-between my-5">
         <div
@@ -336,19 +336,6 @@ onBeforeUnmount(() => {
           </div>
           <Opciones :onResponse="onResponse" :checkedOption="getValueOption().response" :pregunta="preguntaActual?.preguntas"/>
         </div>
-        <Preguntas
-        :cantidad="totalQuestions"
-        :onBack="onBack"
-        :onNext="onNext"
-        :preguntaRespondida="preguntaRespondida"
-        :finish="finishQuestion"
-        :was-not-saved="wasNotSaved"
-        :force-next="forceNext"
-        :on-ask-next="onAskNext"
-        :on-next-finish="onNextFinish"
-        :on-last-question="ultimaPregunta"
-
-      />
         <!-- <div class="w-full flex justify-end mt-[11px]">
           <BaseButton
             :color="BtnColor.blueLight"
@@ -383,5 +370,19 @@ onBeforeUnmount(() => {
     <div class="flex justify-center">
       <CompletedEvaluation v-if="competenciaStore.finalizoCompetencia" :time="timeData"/>
     </div>
+
+    <Preguntas
+        :cantidad="totalQuestions"
+        :onBack="onBack"
+        :onNext="onNext"
+        :preguntaRespondida="preguntaRespondida"
+        :finish="finishQuestion"
+        :was-not-saved="wasNotSaved"
+        :force-next="forceNext"
+        :on-ask-next="onAskNext"
+        :on-next-finish="onNextFinish"
+        :on-last-question="ultimaPregunta"
+
+      />
   </BaseLayout>
 </template>
