@@ -15,7 +15,7 @@ withDefaults(
 </script>
 <template>
 	<div
-		class="border rounded mb-4 font-telegraf py-2 px-4"
+		class="border rounded mb-4 font-nunito py-2 px-4"
 		:class="{
 			'text-[#065074] bg-[#e4f2ff] border-[#00B9FF]':
 				style === CardStyle.default,

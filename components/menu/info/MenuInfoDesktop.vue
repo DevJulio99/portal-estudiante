@@ -19,7 +19,7 @@ const eventClickOpen = (title: string) => {
 
 <template>
 	<div class="flex w-full pl-40 pr-0">
-		<ul v-if="menuInfo?.length" class="w-[55%] flex items-center">
+		<!-- <ul v-if="menuInfo?.length" class="w-[55%] flex items-center">
 			<li v-for="item in menuInfo" :key="item.id" class="links-section">
 				<a
 					:href="item.url ?? ''"
@@ -36,7 +36,7 @@ const eventClickOpen = (title: string) => {
 					}}</span>
 				</a>
 			</li>
-		</ul>
+		</ul> -->
 		<button
 			v-if="Boolean(helpInfo)"
 			class="btn-help"

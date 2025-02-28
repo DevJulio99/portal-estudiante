@@ -182,7 +182,7 @@ onMounted(() => {
 	--vc-accent-900: #d900b9;
 }
 .v-calendar-style {
-	@apply w-full mb-4 font-telegraf;
+	@apply w-full mb-4 font-nunito;
 }
 .v-calendar-style .vc-pane {
 	@apply min-w-full;

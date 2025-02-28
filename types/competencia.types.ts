@@ -28,4 +28,5 @@ export interface Competencia {
     idEtapa: string;
     idProceso: string;
     tiempoLimite: string;
+    urlImagen: string;
 }

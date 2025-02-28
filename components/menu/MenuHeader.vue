@@ -66,12 +66,12 @@ const eventClick = () => {
       "
     />
     <div :class="`flex items-center py-3 ml-auto`">
-      <div v-if="!viewAccessDenied" class="me-5 lg:me-2">
+      <!-- <div v-if="!viewAccessDenied" class="me-5 lg:me-2">
         <MenuInfoMenuBtnNotification
           :count="notificationStore.getItemsVistos() || 0"
           :isActive="showCardNotifications"
         />
-      </div>
+      </div> -->
       <div v-if="!viewAccessDenied" class="flex items-center cursor-pointer" :class="{
 						'lg:shadow-[_0_0_0_1px_#A1D7FF] lg:bg-cyan_10 lg:rounded':
 							menuStore.menuProfile,

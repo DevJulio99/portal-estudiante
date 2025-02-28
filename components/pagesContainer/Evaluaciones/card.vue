@@ -39,7 +39,7 @@ const status = () => true ? 'bg-green_70' : 'bg-yellow';
         Disponible ahora
       </div>
       <div class="w-full h-[157px] rounded-[6px] overflow-hidden">
-        <img :src="imgEv2" alt="img-card-competencia">
+        <img :src="data.urlImagen" alt="img-card-competencia">
       </div>
     </div>
     <span class="text-base font-bold text-blue_link pb-[9px] mb-[7px] block border border-gray_50 border-x-0 border-t-0">{{ data.nombreCompetencia }}</span>
