@@ -47,21 +47,26 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
     async getLista() {
       try {
         const storePostulante = usePostulanteStore();
-        const listaCompetencias = await useNuxtApp().$api.competencias.listarCompetencias(storePostulante.data?.idPostulante ?? 0); 
-
-        if(listaCompetencias.error.value){
-            //console.log('ee data', estado.error.)
-            const bodyError = listaCompetencias.error.value.data;
-            throw new Error(bodyError ? "nodata" : "other");
+    
+        while (!storePostulante.data?.idPostulante || storePostulante.data.idPostulante === 0) {
+          await new Promise(resolve => setTimeout(resolve, 100));
         }
-        //console.log('listaCompetencias', listaCompetencias);
-        listaCompetencias.data.value?.data.length && this.setLista(listaCompetencias.data.value.data);
-
-      } catch (error : any) {
-        //console.log('catch', error.message)
-        
+    
+        const listaCompetencias = await useNuxtApp().$api.competencias.listarCompetencias(storePostulante.data.idPostulante);
+    
+        if (listaCompetencias.error.value) {
+          const bodyError = listaCompetencias.error.value.data;
+          throw new Error(bodyError ? "nodata" : "other");
+        }
+    
+        if (listaCompetencias.data.value?.data.length) {
+          this.setLista(listaCompetencias.data.value.data);
+        }
+    
+      } catch (error: any) {
+        console.error("Error al obtener competencias:", error.message);
       }
-    },
+    }    
   },
   getters: {
     competenciaActual: (state) => {
