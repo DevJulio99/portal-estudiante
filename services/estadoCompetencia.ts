@@ -46,7 +46,7 @@ export const RegistrarEstado = async(idPostulante: number, idCompetencia: number
 	console.log('se registro nuevo estado');
 }
 
-export const FinalizarCompetencia = async() => {
+export const FinalizarCompetencia = async(pasosFinales = true) => {
 	const { $api } = useNuxtApp();
 	const postulanteStore = usePostulanteStore();
 	const competenciaStore = useCompetenciaStore();
@@ -58,6 +58,8 @@ export const FinalizarCompetencia = async() => {
 	};
 
 	await $api.cambiarEstado.actualizarEstado(request, {lazy: true,})
-	competenciaStore.llegoAlFinal = true;
-	competenciaStore.finalizoCompetencia = true;
+	if(pasosFinales){
+		competenciaStore.llegoAlFinal = true;
+		competenciaStore.finalizoCompetencia = true;
+	}
 }

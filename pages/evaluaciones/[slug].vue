@@ -18,6 +18,7 @@ definePageMeta({
 });
 
 const route = useRoute();
+const router = useRouter();
 const { $api } = useNuxtApp();
 const EstadoCompetenciaStore = useEstadoCompetenciaStore();
 const profileStore = useProfileStore();
@@ -131,28 +132,34 @@ const onResponse = (id: string, option: string) => {
 
 const guardarRespuesta = () => {
   savedAnswer.value && (preguntaRespondida.value = true);
-  if (totalQuestions.value === summaryEvaluation.value?.currentQuestion) {
-    ultimaPregunta();
-  }
   wasNotSaved.value = false;
   const data = {
     numeroPregunta: preguntaActual.value?.preguntas.numeroPregunta ?? 0,
     respuestaSeleccionada: opcionSeleccionada.value
   }
-  console.log('preguntaActual.value', preguntaActual.value);
-  examenStore.setBancoRespuesta(data);
+  data.respuestaSeleccionada.trim().length && examenStore.setBancoRespuesta(data);
   // console.log('responsesData', responsesData.value)
 };
 
 const ultimaPregunta = () => {
   summaryEvaluation.value = {
       ...summaryEvaluation.value,
+      currentQuestion: totalQuestions.value,
       respondidas: finalizedBefore.value ? summaryEvaluation.value.respondidas : summaryEvaluation.value.respondidas + 1,
     };
     console.log("fin de la evaluacion", { ...summaryEvaluation.value });
+    
     finishQuestion.value = true;
     finalizedBefore.value = true;
     showModal.value = true;
+    if(opcionSeleccionada.value.trim().length){
+      const data = {
+       numeroPregunta: totalQuestions.value,
+       respuestaSeleccionada: opcionSeleccionada.value
+      }
+      examenStore.setBancoRespuesta(data);
+      opcionSeleccionada.value = '';
+    }
 }
 
 const getValueOption = () => {
@@ -189,6 +196,11 @@ const onNext = (resumen: ResumenPregunta) => {
   examenStore.setpreguntaActual(resumen.currentQuestion);
 }
 
+const onSelectPage = (page: number) => {
+  opcionSeleccionada.value = '';
+  examenStore.setpreguntaActual(page);
+}
+
 const EvaluacionExpirada = () => {
   wasNotSaved.value = false;
   summaryEvaluation.value.currentQuestion === 1 &&
@@ -199,6 +211,10 @@ const EvaluacionExpirada = () => {
       idsAnswered: []
     });
   showModal.value = true;
+  !competenciaStore.finalizoCompetencia && FinalizarCompetencia(false);
+  setTimeout(() => {
+    router.push('/evaluaciones');
+  }, 3000);
 };
 
 const OnNextNotSave = () => {
@@ -372,6 +388,7 @@ onBeforeUnmount(() => {
     </div>
 
     <Preguntas
+        v-if="!competenciaStore.finalizoCompetencia"
         :cantidad="totalQuestions"
         :onBack="onBack"
         :onNext="onNext"
@@ -382,6 +399,7 @@ onBeforeUnmount(() => {
         :on-ask-next="onAskNext"
         :on-next-finish="onNextFinish"
         :on-last-question="ultimaPregunta"
+        :on-select-page="onSelectPage"
 
       />
   </BaseLayout>

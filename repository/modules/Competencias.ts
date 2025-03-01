@@ -12,6 +12,7 @@ class CompetenciaModule extends FetchFactory<DataResponse<Competencia[]>> {
 	 * @returns
 	 */
 	async listarCompetencias(
+		idPostulante: number,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<Competencia[]>>,
 	) {
 		return await useAsyncData(() => {
@@ -20,7 +21,7 @@ class CompetenciaModule extends FetchFactory<DataResponse<Competencia[]>> {
 			};
 			return this.call(
 				'GET',
-				`${this.RESOURCE}`,
+				`${this.RESOURCE}?idPostulante=${idPostulante}`,
 				undefined,
 				fetchOptions,
 			);

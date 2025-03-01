@@ -26,7 +26,8 @@ watch(() => postulanteStore.habilitado , (habilitado) => {
   if(habilitado === 1){
     competenciaStore.getLista();
     noHabilitado.value = false;
-  }else {
+  }
+  if(habilitado === 2) {
     noHabilitado.value = true;
     competenciaStore.pending = false;
   }
@@ -37,6 +38,7 @@ watch(() => postulanteStore.habilitado , (habilitado) => {
 onMounted(() => {
   if(existeProfile.value){
     profileStore.postulanteHabilitado();
+    competenciaStore.finalizoCompetencia = false;
   }
 })
 

@@ -41,14 +41,6 @@ const onBack = () => {
 };
 
 const onNext = () => {
-  //const finishQuestions = !props.resumen.pendientes;
-
-  // if (finishQuestions && !props.wasNotSaved) {
-  //   console.log('finishQuestions')
-  //   props.finish();
-  // }
-  //console.log('props.resumen', props)
-  //console.log('examenStore', examenStore.lista.length)
   if (props.wasNotSaved) {
     props.nextNotSave();
   }
@@ -99,32 +91,31 @@ const onNext = () => {
         >Preguntas en blanco: {{ pendientes.valueOf() }}</span
       >
 
-      <div
+      <!-- <div
         v-if="success && !pendientes && !wasNotSaved"
         class="mb-4 text-gray1 text-sm leading-[21px] font-normal text-center"
       >
         Usted desea pasar a la Competencia 02: Razonamiento Crítico
-      </div>
+      </div> -->
 
-      <div
+      <!-- <div
         v-if="success && !pendientes && !wasNotSaved"
         class="mb-4 text-gray1 text-xs leading-[18px] font-normal text-center"
       >
         ¿Está seguro que desea avanzar y finalizar la competencia 01:
         Comprensión lectora?
-      </div>
+      </div> -->
 
-      <div v-if="wasNotSaved" class="text-center font-normal text-base text-gray1">
+      <!-- <div v-if="wasNotSaved" class="text-center font-normal text-base text-gray1">
         <p>
           Si continúa sin guardarla, la respuesta se considerará como no
           respondida.
         </p>
         <br />
         <p>¿Desea continuar?</p>
-      </div>
-
+      </div> -->
       <div
-        v-if="success && pendientes > 0"
+        v-if="success && pendientes >= 0"
         class="mb-4 text-xs leading-[18px] font-normal text-gray1 text-center"
       >
         Por favor, complete las preguntas pendientes antes de que se agote el
@@ -132,20 +123,24 @@ const onNext = () => {
         respuesta y obtendrán 0 puntos.
       </div>
 
-      <div
+      <div v-if="!success" class="text-center text-neutron80 text-base font-medium mb-[14px]">
+          Sera redirigido a la vista de competencias
+      </div>
+
+      <!-- <div
         v-if="!success && !wasNotSaved"
         class="text-center text-neutron80 text-base font-medium mb-[14px]"
       >
         Usted está siendo redirigido automáticamente a la competencia 02:
         Razonamiento crítico
-      </div>
+      </div> -->
 
-      <div
+      <!-- <div
         v-if="!success && !wasNotSaved"
         class="font-normal text-base text-gray1 font-normal text-center"
       >
         Por favor, espere mientras se carga la competencia indicada.
-      </div>
+      </div> -->
 
       <div
         v-if="success || wasNotSaved"

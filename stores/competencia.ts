@@ -46,7 +46,8 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
     },
     async getLista() {
       try {
-        const listaCompetencias = await useNuxtApp().$api.competencias.listarCompetencias(); 
+        const storePostulante = usePostulanteStore();
+        const listaCompetencias = await useNuxtApp().$api.competencias.listarCompetencias(storePostulante.data?.idPostulante ?? 0); 
 
         if(listaCompetencias.error.value){
             //console.log('ee data', estado.error.)

@@ -21,6 +21,7 @@ const props = withDefaults(
     onNextFinish: () => void;
     onAskNext: () => void;
     onLastQuestion: () => void;
+    onSelectPage: (page: number) => void;
   }>(),
   {
     cantidad: 0,
@@ -30,7 +31,8 @@ const props = withDefaults(
     wasNotSaved: false,
     forceNext: false,
     onAskNext: () => {},
-    onNextFinish: () => {}
+    onNextFinish: () => {},
+    onSelectPage: () => {}
   }
 );
 
@@ -145,6 +147,12 @@ onBeforeUpdate(() => {
     registerPending();
   }
 });
+
+const onPageSelect = (page: number) => {
+  preguntaActual_.value = page;
+  examenStore.setpreguntaActual(page);
+  props.onSelectPage(page);
+}
 </script>
 
 <template>
@@ -152,9 +160,9 @@ onBeforeUpdate(() => {
     class="fixed ml-[156px] width-container bottom-0 left-0 flex flex-wrap bg-white pt-[23px] pr-[31px] pb-[25px] pl-[35px] gap-[21px] lg:justify-between items-center"
   >
     <div class="w-full flex flex-wrap gap-[5px] xl:w-auto grow">
-      <div v-for="(pregunta, i) in cantidad">
+      <div v-for="(pregunta, i) in cantidad" @click="() => onPageSelect(pregunta)">
         <div
-          class="w-[43px] h-[12px] transition-colors"
+          class="w-[43px] h-[12px] transition-colors cursor-pointer"
           :class="`${
             preguntaActual_ === i + 1
               ? finish
