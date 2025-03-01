@@ -35,9 +35,8 @@ export const getExamenes = async () => {
       const request = {
         idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia,
         idPostulante: postulanteStore.data?.idPostulante,
-        numeroPreguntas: 10,
+        numeroPreguntas: competenciaStore.competenciaSeleccionada?.numeroPreguntas,
         idGrado: postulanteStore.data?.idGrado,
-        esGrupal: false
       } as GenerarExamen;
 
       const generarExamen = await $api.examen.generarExamen(
@@ -60,9 +59,8 @@ export const generarExamen = async () => {
   const request = {
     idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia,
     idPostulante: postulanteStore.data?.idPostulante,
-    numeroPreguntas: 10,
+    numeroPreguntas: competenciaStore.competenciaSeleccionada?.numeroPreguntas,
     idGrado: postulanteStore.data?.idGrado,
-    esGrupal: false
   } as GenerarExamen;
 
   console.log('request generar', request)

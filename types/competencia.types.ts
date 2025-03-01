@@ -17,6 +17,7 @@ export interface Competencia {
     id_compentencia: number;
     nombreCompetencia: string;
     pesoCompetencia: string;
+    numeroPreguntas: number;
     descripcion: string;
     fechaDisponibilidad: string;
     fechaInicio: string;

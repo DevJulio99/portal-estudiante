@@ -3,7 +3,6 @@ export interface GenerarExamen {
     numeroPreguntas: number;
     idCompetencia: number;
     idGrado: number;
-    esGrupal: boolean;
 }
 
 export interface ExamenGenerado {

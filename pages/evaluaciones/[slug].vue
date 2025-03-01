@@ -345,9 +345,14 @@ onBeforeUnmount(() => {
             </div>
             <div
               class="content-ev overflow-auto h-[425px] pr-[37px] font-sm font-light text-justify"
-              v-html="`${preguntaActual?.preguntas.textoSuperior} ${preguntaActual?.preguntas.textoInferior}`"
             >
-
+              <div v-html="preguntaActual?.preguntas.textoSuperior"></div>
+              
+              <div v-if="preguntaActual?.preguntas.textoImagen" class="flex justify-center">
+                <img :src="preguntaActual?.preguntas.textoImagen" alt="Imagen pregunta" class="w-[60%] py-4" />
+              </div>
+              
+              <div v-html="preguntaActual?.preguntas.textoInferior"></div>
             </div>
           </div>
           <Opciones :onResponse="onResponse" :checkedOption="getValueOption().response" :pregunta="preguntaActual?.preguntas"/>
