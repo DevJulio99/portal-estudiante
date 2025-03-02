@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { BtnColor } from "~/types/helper.types";
 import imgZoom from "@/assets/icons/Icon-flat-search.svg";
 import type { ResumenPregunta } from "~/components/pagesContainer/Evaluaciones/preguntas.vue";
 import type { timeEvaluation } from "~/components/pagesContainer/Evaluaciones/tiempoEvaluacion.vue";
@@ -20,8 +19,8 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const { $api } = useNuxtApp();
-const EstadoCompetenciaStore = useEstadoCompetenciaStore();
-const profileStore = useProfileStore();
+// const EstadoCompetenciaStore = useEstadoCompetenciaStore();
+// const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
 const competenciaStore = useCompetenciaStore();
 const examenStore = useExamenStore();
@@ -311,6 +310,30 @@ onBeforeUnmount(() => {
   postulanteStore.setHabilitado(0);
   competenciaStore.resetCompetencia();
 });
+
+const imagenCargada = ref(false);
+const imagenUrl = ref("");
+
+const cargarImagen = async (url:any) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("No se pudo cargar la imagen");
+
+    const blob = await response.blob();
+    imagenUrl.value = URL.createObjectURL(blob);
+    imagenCargada.value = true;
+  } catch (error) {
+    console.error("Error cargando la imagen:", error);
+  }
+};
+
+watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
+  if (newUrl) {
+    imagenCargada.value = false;
+    cargarImagen(newUrl);
+  }
+}, { immediate: true });
+
 </script>
 
 <template>
@@ -349,7 +372,13 @@ onBeforeUnmount(() => {
               <div v-html="preguntaActual?.preguntas.textoSuperior"></div>
               
               <div v-if="preguntaActual?.preguntas.textoImagen" class="flex justify-center">
-                <img :src="preguntaActual?.preguntas.textoImagen" alt="Imagen pregunta" class="w-[60%] py-4" />
+                <img
+                  v-if="imagenCargada"
+                  :src="imagenUrl"
+                  alt="Imagen pregunta"
+                  class="w-[60%] py-4"
+                />
+                <BaseStatusLoading v-else></BaseStatusLoading>
               </div>
               
               <div v-html="preguntaActual?.preguntas.textoInferior"></div>
