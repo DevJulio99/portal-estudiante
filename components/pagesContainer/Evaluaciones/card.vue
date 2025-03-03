@@ -16,11 +16,10 @@ const props = defineProps<{
 
 const validarFechas = (fechaInicio: string, fechaFin: string) => {
   if(!fechaInicio.trim().length || !fechaFin.trim().length) return false
-  const fechaInicio_ = transformarFecha(fechaInicio);
-  const fechaFin_ = transformarFecha(fechaFin);
+  const fechaInicio_ = new Date(fechaInicio) //transformarFecha(fechaInicio);
+  const fechaFin_ = new Date(fechaFin) //transformarFecha(fechaFin);
   const fechaActual = new Date();
 
-  //console.log('fechaInicio_', fechaInicio_)
 
   //if(fechaInicio_ == 'Invalid Date' || fechaFin_ == 'Invalid Date')
 
