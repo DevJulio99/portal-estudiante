@@ -189,5 +189,17 @@
         "submenu": [],
         "es_clasico": 0,
         "modalidad": "ALL"
+    },
+    {
+        "id": 15,
+        "etiqueta": "resultado-competencias",
+        "nombre": "resultado competencias",
+        "url": "/resultado-competencias",
+        "icono": "../public/images/evaluaciones.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
     }
 ]

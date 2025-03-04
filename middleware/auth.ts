@@ -3,13 +3,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const examenStore = useExamenStore();
     const postulanteStore = usePostulanteStore();
     const competenciaStore = useCompetenciaStore();
+    const resultadoCompetenciaStore = useResultadoCompetenciaStore();
 
-    // console.log('accessToken',tokenStore.accessToken)
     // console.log('refreshToken',tokenStore.refreshToken)
 
     const isAuth = tokenStore.accessToken.trim().length && tokenStore.refreshToken.trim().length;
     const isEvaluaciones = to.fullPath.includes('evaluaciones');
     const detalleEvaluacion = to.fullPath.split('/');
+    const isResultadoCompetencia = to.fullPath.includes('resultado-competencias/detalle');
 
     if(!isAuth){
         return navigateTo("/login", { replace: true });
@@ -30,4 +31,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
       }
       //console.log('competenciaStore.competenciaActual auth', competenciaStore.competenciaSeleccionada);
     }
+
+    console.log('postulanteStore.data', postulanteStore.data);
+    console.log('resultadoCompetenciaStore.competenciaSeleccionada', resultadoCompetenciaStore.competenciaSeleccionada);
+
+    if(isResultadoCompetencia && (!postulanteStore.data || !resultadoCompetenciaStore.competenciaSeleccionada)){
+      return navigateTo("/resultado-competencias", { replace: true });
+    }
+
+    if(!isResultadoCompetencia){
+      resultadoCompetenciaStore.resetCompetencia();
+      postulanteStore.setHabilitado(0);
+    }
+
 });
