@@ -1,22 +1,27 @@
 import { defineStore } from "pinia";
-import type { Competencia } from "~/types/competencia.types";
+import type { Competencia, ResultadoEvaluacion } from "~/types/competencia.types";
 
 interface stateEstado {
     listaCompetencia: Competencia[];
     pending: boolean;
     competenciaSeleccionada: Competencia | null;
+    listaResultados: ResultadoEvaluacion[];
 }
 
 export const useResultadoCompetenciaStore = defineStore("resultadoCompetenciaStore", {
   state: (): stateEstado => ({
     listaCompetencia: [],
     pending: true,
-    competenciaSeleccionada: null
+    competenciaSeleccionada: null,
+    listaResultados: []
   }),
   actions: {
     setLista(data: Competencia[]) {
       this.listaCompetencia = data;
       this.pending = false;
+    },
+    setResultados(data: ResultadoEvaluacion[]){
+      this.listaResultados= data;
     },
     setCompetenciaSeleccionada(data: Competencia){
       console.log('seteando competencia', data);
@@ -26,6 +31,7 @@ export const useResultadoCompetenciaStore = defineStore("resultadoCompetenciaSto
       this.listaCompetencia = [];
       this.pending = true;
       this.competenciaSeleccionada = null;
+      this.listaResultados= [];
     },
     async getLista() {
       try {
@@ -39,6 +45,9 @@ export const useResultadoCompetenciaStore = defineStore("resultadoCompetenciaSto
     
         if (listaCompetencias.error.value) {
           const bodyError = listaCompetencias.error.value.data;
+          if(listaCompetencias.error.value.statusCode = 404){
+             this.pending = false;
+          }
           throw new Error(bodyError ? "nodata" : "other");
         }
     

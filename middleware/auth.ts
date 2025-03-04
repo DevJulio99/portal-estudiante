@@ -29,7 +29,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
       if(!competenciaStore.competenciaSeleccionada){
         return navigateTo("/evaluaciones", { replace: true });
       }
-      //console.log('competenciaStore.competenciaActual auth', competenciaStore.competenciaSeleccionada);
     }
 
     console.log('postulanteStore.data', postulanteStore.data);

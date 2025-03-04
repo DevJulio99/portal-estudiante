@@ -7,7 +7,7 @@ definePageMeta({
 
 const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
-const competenciaStore = useResultadoCompetenciaStore();
+const resultadoCompetenciaStore = useResultadoCompetenciaStore();
 const existeProfile = ref(0);
 const noHabilitado = ref();
 
@@ -25,12 +25,12 @@ watch(() => profileStore.profileData.data , (profileData) => {
 watch(() => postulanteStore.habilitado , (habilitado) => {
   console.log('habilitado ev result', habilitado);
   if(habilitado === 1){
-    competenciaStore.getLista();
+    resultadoCompetenciaStore.getLista();
     noHabilitado.value = false;
   }
   if(habilitado === 2) {
     noHabilitado.value = true;
-    competenciaStore.pending = false;
+    resultadoCompetenciaStore.pending = false;
   }
 })
 
@@ -52,13 +52,10 @@ onBeforeUnmount(() => {
   <BaseLayout :rightAside="false" bgWhite>
     <BaseTitle text="resultado evaluaciones" />
     <div class="bg-cyan_40 p-4 rounded font-nunito border border-cyan_80 border-l-[10px]">
-      <strong>¡La sección para rendir la evaluación de competencias generales ya está
-      disponible!</strong> Es importante tener en cuenta que una vez que comience, no
-      podrá acceder a otras secciones de la plataforma hasta terminar la
-      evaluación.
+      Para consultar los resultados, acceda a la sección correspondiente de cada evaluación.
     </div>
 
-    <div v-if="competenciaStore.pending" class="text-xs text-black py-16">
+    <div v-if="resultadoCompetenciaStore.pending" class="text-xs text-black py-16">
 			<BaseStatusLoading />
 		</div>
 
@@ -66,6 +63,10 @@ onBeforeUnmount(() => {
       No tiene habilitado dar la prueba
     </div>
 
-    <Lista tipo="resultado"/>
+    <div class="w-full py-10 px-3 font-nunito flex justify-center text-xl font-semibold" v-else-if="noHabilitado">
+      No tiene habilitado dar la prueba
+    </div>
+
+    <Lista :pending="resultadoCompetenciaStore.pending" tipo="resultado"/>
   </BaseLayout>
 </template>

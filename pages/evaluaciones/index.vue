@@ -62,6 +62,6 @@ onMounted(() => {
       No tiene habilitado dar la prueba
     </div>
 
-    <Lista />
+    <Lista :pending="competenciaStore.pending"/>
   </BaseLayout>
 </template>

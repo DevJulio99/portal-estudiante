@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Card from '~/components/pagesContainer/ResultadoEvaluacion/card.vue';
+import ModalResultado from '~/components/pagesContainer/ResultadoEvaluacion/modalResultado.vue';
 import type { ResultadoEvaluacion } from '~/types/competencia.types';
 
 definePageMeta({
@@ -11,6 +12,7 @@ const postulanteStore = usePostulanteStore();
 const competenciaStore = useResultadoCompetenciaStore();
 const estadoEvaluacion = ref('0');
 const resultadoEvaluacion = ref<ResultadoEvaluacion[]>([]);
+const mostrarModal = ref(false);
 const router = useRouter();
 
 const {data: dataResultados, error: errorEstados, pending} = await $api.resultadoCompetencia.listarCompetencias(postulanteStore.data?.idPostulante ?? 0, competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0, {lazy: true,})
@@ -19,14 +21,22 @@ watch(dataResultados, (lista)  => {
     console.log('response resultados', lista)
   if(lista?.data.length){
     resultadoEvaluacion.value = lista.data;
+    competenciaStore.setResultados(lista.data);
     const sumapuntaje = lista.data.map(x => x.puntaje).reduce((acc, val) => acc + val, 0) / lista.data.length;
-    estadoEvaluacion.value = lista.data.length ? (sumapuntaje >= 70 ? '1' : '2') : '0'
+    estadoEvaluacion.value = lista.data.length ? (sumapuntaje >= lista.data[0].competencia.puntajeMinimoAprobatorio ? '1' : '2') : '0'
   }
 });
 
 const back = () => {
     router.push('/resultado-competencias')
 }
+
+const abrirModal = () =>  mostrarModal.value = true;
+const cerraModal = () =>  mostrarModal.value = false;
+
+onBeforeUnmount(() => {
+    competenciaStore.setResultados([]);
+});
 
 </script>
 
@@ -38,7 +48,7 @@ const back = () => {
             <nuxt-icon name="Chalkboard" class="text-[50px] no-margin" filled />
             <span>
                 <p class="text-white font-semibold text-xl leading-[30px]">Puntaje total de evaluación: {{resultadoEvaluacion?.[0]?.puntaje}}pts</p>
-                <p class="text-white font-semibold text-sm leading-[21px]">*Puntaje minimo aprobatorio: 70 pts</p>
+                <p class="text-white font-semibold text-sm leading-[21px]">*Puntaje minimo aprobatorio: {{resultadoEvaluacion?.[0]?.competencia?.puntajeMinimoAprobatorio}} pts</p>
             </span>
         </div>
         <div v-if="estadoEvaluacion !== '0'" 
@@ -59,7 +69,7 @@ const back = () => {
     <div class="w-full" v-else-if="!errorEstados">
         <div class="flex flex-wrap gap-[29px] mt-6 justify-center" v-if="resultadoEvaluacion.length">
             <Card v-for="data in resultadoEvaluacion" :data="data" 
-                  :competencia="competenciaStore.competenciaSeleccionada" />
+                  :competencia="competenciaStore.competenciaSeleccionada" :approved="data.puntaje >= data.competencia.puntajeMinimoAprobatorio"/>
         </div>
     
         <div class="flex justify-center items-center gap-[21px] mt-10">
@@ -68,8 +78,9 @@ const back = () => {
                 @click="back"
                 >Volver</button>
             <button class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm 
-                            h-[34px] bg-green_40 text-black font-semibold">Visualizar resultados</button>
+                            h-[34px] bg-green_40 text-black font-semibold" @click="abrirModal">Visualizar resultados</button>
         </div>
     </div>
 </div>
+<ModalResultado v-if="mostrarModal" :on-close="cerraModal"/>
 </template>

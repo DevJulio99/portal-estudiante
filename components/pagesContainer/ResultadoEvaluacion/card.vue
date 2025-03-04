@@ -5,13 +5,13 @@ const props = withDefaults(
   defineProps<{
     competencia: Competencia | null;
 	data: ResultadoEvaluacion;
+    approved: boolean;
 }>(),
 {
 }
 );
 
 const valueStroke = !props.data ? 0 : 100 - props.data.puntaje;
-const approved = props.data.puntaje >= 70;
 </script>
 <template>
     <div v-if="data" class="border border-gray_40 rounded-[10px] 

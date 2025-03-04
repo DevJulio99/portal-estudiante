@@ -4,6 +4,7 @@ import type { Competencia } from '~/types/competencia.types';
 
 const props = withDefaults(defineProps<{
 	tipo: 'detalle' | 'resultado';
+  pending: boolean;
 }>(),
 {
   tipo : 'detalle'
@@ -43,5 +44,9 @@ const goDetail = (nombre: string, competencia: Competencia) => {
 
 <div class="flex flex-wrap mt-[15px] gap-5 lg:gap-[30px]" v-if="dataCompetencia.length">
   <Card v-for="lista in dataCompetencia" :data="lista" :on-detail="(nombre) => goDetail(nombre, lista)" :tipo="tipo"/>
+</div>
+
+<div v-if="!pending && !dataCompetencia.length" class="w-full py-10 px-3 font-nunito flex justify-center text-xl font-semibold">
+  No se encontraron resultados
 </div>
 </template>

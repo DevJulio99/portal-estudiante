@@ -18,6 +18,12 @@ export interface CompetenciaBase {
     nombreCompetencia: string;
     descripcion: string;
     urlImagen: string;
+    tiempoFinalizado: string;
+}
+
+export interface CompetenciaResultado extends CompetenciaBase{
+    puntajeMinimoAprobatorio: number;
+    puntajePregunta: number;
 }
 
 export interface Competencia extends CompetenciaBase{
@@ -45,6 +51,7 @@ export interface PreguntaResultado {
 
 export interface ResultadoEvaluacion {
     preguntas: PreguntaResultado[];
+    competencia: CompetenciaResultado;
     totalPreguntas: number;
     correctas: number;
     incorrectas: number;
