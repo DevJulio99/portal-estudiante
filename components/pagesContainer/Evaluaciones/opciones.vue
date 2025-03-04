@@ -6,6 +6,8 @@ const props = withDefaults(
     pregunta: Pregunta | null;
     checkedOption: string;
     onResponse: (id: string, opcion: string) => void;
+    numeroEnGrupo: Number | null,
+    totalPreguntasGrupo: Number | null
   }>(),
   {
     checkedOption: `option`,
@@ -64,6 +66,11 @@ const onSelect = (id: string, opcion: string) => {
         >Pregunta N° {{ pregunta?.numeroPregunta }}: {{ pregunta?.pregunta }}</span
       >
       <!-- <p>option {{ checkedOption }}</p> -->
+      <span
+        v-if="numeroEnGrupo && totalPreguntasGrupo"
+        class="w-full block text-sm font-semibold text-primary"
+        >Pregunta {{ numeroEnGrupo }} de {{ totalPreguntasGrupo }}</span
+      >
       <div
         v-for="(alternativa, index) in preguntasData"
         class="flex w-full cursor-pointer px-[11px] pt-[10px] pb-[7px] border border-[#B3B3B3] rounded-[10px] gap-2 items-center transition-colors"
