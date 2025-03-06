@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core';
+import ImageUploader from '~/components/base/ImageUploader.vue';
 import type { PagosPendientesData } from '~/types/pagos.types';
 
 const { $api } = useNuxtApp();
@@ -106,6 +107,7 @@ watch(dataPagos, (response) => {
 							<th class="min-w-[120px]">SALDO</th>
 							<th class="min-w-[120px]">MORA</th>
 							<th class="min-w-[120px]">TOTAL A PAGAR</th>
+							<th class="min-w-[120px]">SUBIR</th>
 							<th class="min-w-[120px]">DETALLE</th>
 						</tr>
 					</thead>
@@ -132,6 +134,9 @@ watch(dataPagos, (response) => {
 							</td>
 							<td>S/ {{ item.mora.toFixed(2) }}</td>
 							<td><strong>S/ {{ item.totalAPagar.toFixed(2) }}</strong></td>
+							<td class="flex justify-center">
+								<ImageUploader />
+							</td>
 							<td>
 								<div class="flex gap-[9px] items-center justify-center">
 									<nuxt-icon
