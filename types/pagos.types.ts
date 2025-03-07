@@ -83,3 +83,8 @@ export interface PagosPendientesData {
 	imagen: string;
 	anio: number;
 }
+
+export interface ImagenPago {
+	idPago: number;
+	imagen: string;
+}

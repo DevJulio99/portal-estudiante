@@ -78,7 +78,7 @@ const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id), new Date().getFullYear() ,{
+} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear() ,{
 	lazy: true,
 });
 
@@ -113,7 +113,7 @@ async function initCallNotas(curso: Curso, status: boolean) {
 	if (status) {
 		// handlerScrollMove(curso.codCurso);
 		// const { data: NotasData, error: errorServicesNotas } = await callNotas();
-		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id), 'Bimestre', new Date().getFullYear());
+		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre', new Date().getFullYear());
 		onExpansionNota(indexCurso, data);
 	} else {
 		const dataNota = {

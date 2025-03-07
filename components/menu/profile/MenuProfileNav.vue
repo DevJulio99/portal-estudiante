@@ -38,6 +38,7 @@ async function signOut() {
 	tokenStore.clearTokens();
 	const userDev = JSON.parse(localStorage.getItem('userDev')!);
 	menuStore.closeMenuProfile();
+	menuStore.resetMainMenuData();
 	router.push('/login');
 	// if (window.dataLayer) {
 	// 	window.dataLayer.push({
@@ -81,6 +82,17 @@ const eventClick = (url: string, title: string) => {
 	// 	});
 	// }
 };
+
+onMounted(() => {
+	if(tokenStore.getDataToken.Role.toLowerCase() == 'admin'){
+       profileStore.profileData.data = {
+		...profileStore.profileData.data as any,
+		fullName: tokenStore.getDataToken.Name,
+		usuarioEmail : tokenStore.getDataToken.Email,
+		documenIdentida: tokenStore.getDataToken.Dni_Usuario,
+	   }
+	}
+})
 </script>
 
 <template>

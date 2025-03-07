@@ -10,6 +10,7 @@ const timestamp = Math.floor(Date.now() / 1000);
 const fileInput = ref(null);
 const isUploading = ref(false);
 const isUploaded = ref(false);
+const pagoStore = usePagoStore();
 
 const generateSignature = async () => {
   const stringToSign = `folder=${folderName}&timestamp=${timestamp}${apiSecret}`;
@@ -33,6 +34,7 @@ const handleFileChange = async () => {
   formData.append("folder", folderName);
 
   try {
+    if(pagoStore.idPago <= 0) return
     const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
       method: "POST",
       body: formData,
@@ -43,6 +45,7 @@ const handleFileChange = async () => {
     if (response.ok) {
       console.log("Imagen subida con éxito:", data.secure_url);
       isUploaded.value = true;
+      pagoStore.registrarImagenPago(data.secure_url);
       setTimeout(() => (isUploaded.value = false), 2000);
     } else {
       console.error("Error al subir la imagen:", data);

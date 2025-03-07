@@ -15,7 +15,7 @@ const unWatch = watch(
       //console.log('pendingLogued', pendingLogued)
       //console.log('logueado', logueado)
       if(logueado && !pendingLogued){
-        await getProfile(parseInt(tokenStore.getDataToken.Id));
+        await getProfile(tokenStore.getDataToken.Dni_Usuario);
       }
 
       if(!logueado){
@@ -25,8 +25,8 @@ const unWatch = watch(
   );
 
 
-if(tokenStore.getDataToken && tokenStore.getDataToken.Id && tokenStore.accessToken.trim().length){
-    await getProfile(parseInt(tokenStore.getDataToken.Id));
+if(tokenStore.getDataToken && tokenStore.getDataToken.Id_Alumno && tokenStore.accessToken.trim().length){
+    await getProfile(tokenStore.getDataToken.Dni_Usuario);
   }
 
 

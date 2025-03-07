@@ -1,7 +1,7 @@
 import { useProfileStore } from '~/stores/profile';
 
 
-export const getProfile = async (codAlum: number) => {
+export const getProfile = async (codAlum: string) => {
     const { $api } = useNuxtApp();
     const profileStore = useProfileStore();
 

@@ -81,5 +81,8 @@ export const useMenuStore = defineStore('menuStore', {
 				this.menuProfile = false;
 			}
 		},
+		resetMainMenuData(){
+			this.mainMenuData.data = dataMenuMock;
+		}
 	},
 });

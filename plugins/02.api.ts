@@ -16,6 +16,7 @@ import CalendarModule from '~/repository/modules/Calendario';
 import EventosModule from '~/repository/modules/Eventos';
 import ObligacionesPagadasModule from '~/repository/modules/ObligacionesPagadas';
 import ResultadoCompetenciaModule from '~/repository/modules/ResultadoCompetencia';
+import ImagenPagoModule from '~/repository/modules/ImagePago';
 
 
 interface IApiInstance {
@@ -36,6 +37,7 @@ interface IApiInstance {
 	eventos: EventosModule;
 	obligacionesPagadas: ObligacionesPagadasModule;
 	resultadoCompetencia: ResultadoCompetenciaModule;
+	imagenPago: ImagenPagoModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -63,7 +65,8 @@ export default defineNuxtPlugin(() => {
 		calendario: new CalendarModule(apiFecther),
 		eventos: new EventosModule(apiFecther),
 		obligacionesPagadas: new ObligacionesPagadasModule(apiFecther),
-		resultadoCompetencia: new ResultadoCompetenciaModule(apiFecther)
+		resultadoCompetencia: new ResultadoCompetenciaModule(apiFecther),
+		imagenPago: new ImagenPagoModule(apiFecther)
 	};
 
 	return {

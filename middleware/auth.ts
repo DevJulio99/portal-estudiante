@@ -11,9 +11,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const isEvaluaciones = to.fullPath.includes('evaluaciones');
     const detalleEvaluacion = to.fullPath.split('/');
     const isResultadoCompetencia = to.fullPath.includes('resultado-competencias/detalle');
+    const isAdmin = tokenStore.getDataToken.Role.toLowerCase() == "admin";
+    const isTotalPagos = to.fullPath.includes('total-pagos');
 
     if(!isAuth){
         return navigateTo("/login", { replace: true });
+    }
+
+    if(isTotalPagos && !isAdmin){
+      return navigateTo("/inicio", { replace: true });
     }
 
     if(!isEvaluaciones){

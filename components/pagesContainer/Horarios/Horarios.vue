@@ -39,7 +39,7 @@ const fechaSession2 = ref(
 
 const callHorarioRango = async () =>
   await $api.horarioRango.getHorariosRango(
-    tokenStore.getDataToken.Id,
+    tokenStore.getDataToken.Id_Alumno,
     fechaSession1.value,
     fechaSession2.value,
     {
