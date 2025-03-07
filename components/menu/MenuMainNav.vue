@@ -4,6 +4,8 @@ import { useMediaQuery } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
 import { Menu } from "~/types/helper.types";
 import MenuNavItem from "./MenuNavItem.vue";
+import dataMenuUser from "~/utils/data/dataMenuUser.json";
+import dataMenuAdmin from "~/utils/data/dataMenuAdmin.json";
 
 const menuStore = useMenuStore();
 const tokenStore = useTokenStore();
@@ -47,21 +49,16 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 onMounted(() => {
   if (tokenStore.getDataToken.Role.toLowerCase() == "admin") {
     const newMainMenu = {
-      data: [
-        ...(menuStore.mainMenuData.data as any),
-        {
-          id: 16,
-          etiqueta: "total-pagos",
-          nombre: "Total Pagos",
-          url: "/total-pagos",
-          icono: "../public/images/pagos.svg",
-          es_nuevo: false,
-          abrir_nueva_pagina: false,
-          submenu: [],
-          es_clasico: 0,
-          modalidad: "ALL",
-        },
-      ],
+      data: dataMenuAdmin,
+      pending: false,
+      error: null,
+    };
+    menuStore.setMainMenu(newMainMenu);
+  }
+
+  if (tokenStore.getDataToken.Role.toLowerCase() == "user") {
+    const newMainMenu = {
+      data: dataMenuUser,
       pending: false,
       error: null,
     };

@@ -1,3 +1,6 @@
+import dataMenuUser from "~/utils/data/dataMenuUser.json";
+import dataMenuAdmin from "~/utils/data/dataMenuAdmin.json";
+
 export default defineNuxtRouteMiddleware(async (to) => {
     const tokenStore = useTokenStore();
     const examenStore = useExamenStore();
@@ -11,8 +14,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const isEvaluaciones = to.fullPath.includes('evaluaciones');
     const detalleEvaluacion = to.fullPath.split('/');
     const isResultadoCompetencia = to.fullPath.includes('resultado-competencias/detalle');
-    const isAdmin = tokenStore.getDataToken.Role.toLowerCase() == "admin";
+    const isAdmin = tokenStore.getDataToken.Role == "admin";
     const isTotalPagos = to.fullPath.includes('total-pagos');
+    const rutasUsuario = getUrls(dataMenuUser);
+    const rutasAdmin = getUrls(dataMenuAdmin);
 
     if(!isAuth){
         return navigateTo("/login", { replace: true });
@@ -22,8 +27,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo("/inicio", { replace: true });
     }
 
+    if(isAdmin && rutasUsuario.includes(to.fullPath)){
+      return navigateTo("/admin", { replace: true });
+    }
+
+    if(!isAdmin && rutasAdmin.includes(to.fullPath)){
+      return navigateTo("/inicio", { replace: true });
+    }
+
     if(!isEvaluaciones){
-      //console.log('limpiar data de evaluaciones');
       examenStore.resetExamen();
       postulanteStore.setHabilitado(0);
       competenciaStore.resetCompetencia();

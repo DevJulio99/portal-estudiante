@@ -13,7 +13,7 @@ export const useMenuStore = defineStore('menuStore', {
 			menuProfile: false,
 			menuInfo: false,
 			mainMenuData: {
-				data: dataMenuMock,
+				data: null,
 				pending: false,
 				error: null,
 			} as MainMenuData,
@@ -82,7 +82,7 @@ export const useMenuStore = defineStore('menuStore', {
 			}
 		},
 		resetMainMenuData(){
-			this.mainMenuData.data = dataMenuMock;
+			this.mainMenuData.data = null;
 		}
 	},
 });

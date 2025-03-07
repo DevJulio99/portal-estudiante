@@ -84,7 +84,7 @@ const eventClick = (url: string, title: string) => {
 };
 
 onMounted(() => {
-	if(tokenStore.getDataToken.Role.toLowerCase() == 'admin'){
+	if(tokenStore.getDataToken.Role == 'admin'){
        profileStore.profileData.data = {
 		...profileStore.profileData.data as any,
 		fullName: tokenStore.getDataToken.Name,

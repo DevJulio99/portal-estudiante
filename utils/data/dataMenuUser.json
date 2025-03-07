@@ -1,0 +1,205 @@
+[
+    {
+        "id": 3,
+        "etiqueta": "inicio",
+        "nombre": "Inicio",
+        "url": "/inicio",
+        "icono": "../public/images/homeIcon.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": true,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 4,
+        "etiqueta": "estudios",
+        "nombre": "Mis estudios",
+        "url": null,
+        "icono": "../public/images/mis-estudios.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [
+            {
+                "etiqueta": "notas",
+                "nombre": "Cursos y notas",
+                "url": "/notas",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "horarios",
+                "nombre": "Horario",
+                "url": "/horarios",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "contenido",
+                "nombre": "Contenido",
+                "url": null,
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "calendario",
+                "nombre": "Calendario",
+                "url": null,
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            }
+        ],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 5,
+        "etiqueta": "pagos",
+        "nombre": "Pagos",
+        "url": null,
+        "icono": "../public/images/pagos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [
+            {
+                "etiqueta": "obligaciones-por-pagar",
+                "nombre": "Obligaciones por pagar",
+                "url": "obligaciones-por-pagar",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "obligaciones-pagadas",
+                "nombre": "Obligaciones pagadas",
+                "url": null,
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            }
+        ],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 6,
+        "etiqueta": "solicitudes",
+        "nombre": "Solicitudes",
+        "url": null,
+        "icono": "../public/images/solicitudes.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 12,
+        "etiqueta": "solicitudes",
+        "nombre": "Solicitudes",
+        "url": null,
+        "icono": "../public/images/solicitudes.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [
+            {
+                "etiqueta": "consolidados_de_matricula",
+                "nombre": "Consolidado de Matrícula",
+                "url": "/consolidado",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "carta_de_presentacion",
+                "nombre": "Solicitud de carta de presentación",
+                "url": "",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "documentos_virtuales",
+                "nombre": "Documentos virtuales",
+                "url": "",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "otras_solicitudes",
+                "nombre": "Otras solicitudes",
+                "url": "",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            }
+        ],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 9,
+        "etiqueta": "documentos",
+        "nombre": "Documentos",
+        "url": "/documentos",
+        "icono": "../public/images/documentos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 7,
+        "etiqueta": "servicios",
+        "nombre": "Mis servicios",
+        "url": null,
+        "icono": "../public/images/mis-servicios.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 14,
+        "etiqueta": "evento",
+        "nombre": "eventos",
+        "url": "/eventos",
+        "icono": "../public/images/eventos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 15,
+        "etiqueta": "evaluaciones",
+        "nombre": "evaluaciones",
+        "url": "/evaluaciones",
+        "icono": "../public/images/evaluaciones.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 15,
+        "etiqueta": "resultado-competencias",
+        "nombre": "resultado competencias",
+        "url": "/resultado-competencias",
+        "icono": "../public/images/evaluaciones.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    }
+]
