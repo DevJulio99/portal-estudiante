@@ -86,7 +86,7 @@ async function actionExpansion(option: Option) {
 	}
 
 	if(option.id == 2 && currentOption.value){
-		const { data, error, pending } = await callAsistencias(parseInt(tokenStore.getDataToken.Id), props.item.periodo, props.item.codCurso, new Date().getFullYear());
+		const { data, error, pending } = await callAsistencias(parseInt(tokenStore.getDataToken.Id_Alumno), props.item.periodo, props.item.codCurso, new Date().getFullYear());
 		setTimeout(() => {
 			serviceAsistencia.value = data.value;
 		}, 0);
@@ -104,7 +104,7 @@ async function actionExpansion(option: Option) {
 	}
 
 	if(option.id == 3 && currentOption.value){
-		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id), 'Bimestre'/*props.item.periodo*/, new Date().getFullYear());
+		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre'/*props.item.periodo*/, new Date().getFullYear());
 		setTimeout(() => {
 			serviceNotas.value = data.value;
 			errorNotas.value = error.value;

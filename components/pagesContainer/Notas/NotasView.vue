@@ -103,7 +103,7 @@ const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id), new Date().getFullYear() ,{
+} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear() ,{
 	lazy: true,
 });
 

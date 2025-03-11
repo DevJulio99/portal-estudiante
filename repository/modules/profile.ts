@@ -12,7 +12,7 @@ class ProfileModule extends FetchFactory<DataResponse<ProfileData[]>> {
 	 * @returns
 	 */
 	async getProfile(
-		CodAlumno: number,
+		CodAlumno: string,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<ProfileData[]>>,
 	) {
 		return await useAsyncData(() => {

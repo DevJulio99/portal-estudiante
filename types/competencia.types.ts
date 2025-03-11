@@ -13,12 +13,22 @@ export interface RequestEstado {
     estado: string;
 }
 
-export interface Competencia {
+export interface CompetenciaBase {
     id_compentencia: number;
     nombreCompetencia: string;
+    descripcion: string;
+    urlImagen: string;
+    tiempoFinalizado: string;
+}
+
+export interface CompetenciaResultado extends CompetenciaBase{
+    puntajeMinimoAprobatorio: number;
+    puntajePregunta: number;
+}
+
+export interface Competencia extends CompetenciaBase{
     pesoCompetencia: string;
     numeroPreguntas: number;
-    descripcion: string;
     fechaDisponibilidad: string;
     fechaInicio: string;
     fechaFin: string;
@@ -29,6 +39,22 @@ export interface Competencia {
     idEtapa: string;
     idProceso: string;
     tiempoLimite: string;
-    urlImagen: string;
     finalizado: boolean;
+    esGrupal: boolean;
+}
+
+export interface PreguntaResultado {
+    idPregunta: number;
+    ordenPregunta: number;
+    estado: number;
+}
+
+export interface ResultadoEvaluacion {
+    preguntas: PreguntaResultado[];
+    competencia: CompetenciaResultado;
+    totalPreguntas: number;
+    correctas: number;
+    incorrectas: number;
+    enblanco: number;
+    puntaje: number;
 }

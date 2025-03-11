@@ -41,7 +41,7 @@ async function handleFormSubmit() {
     if (response) {
       tokenStore.setToken(response.accessToken, response.refreshToken);
       localStorage.setItem("access", JSON.stringify(response));
-      await getProfile(parseInt(tokenStore.getDataToken.Id));
+      await getProfile(tokenStore.getDataToken.Dni_Usuario);
       router.push("/inicio");
     }
     if (!response) {

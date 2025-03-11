@@ -13,6 +13,7 @@ const openedSubmenu = ref<null | number>(null);
 const needHelp = ref();
 const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
+const alumnoStore = useAlumnoStore();
 
 const handleSubmenu = (id: number, title: string) => {
 	if (openedSubmenu.value !== id) {
@@ -38,6 +39,8 @@ async function signOut() {
 	tokenStore.clearTokens();
 	const userDev = JSON.parse(localStorage.getItem('userDev')!);
 	menuStore.closeMenuProfile();
+	menuStore.resetMainMenuData();
+	alumnoStore.resetAlumnos();
 	router.push('/login');
 	// if (window.dataLayer) {
 	// 	window.dataLayer.push({
@@ -81,6 +84,17 @@ const eventClick = (url: string, title: string) => {
 	// 	});
 	// }
 };
+
+onMounted(() => {
+	if(tokenStore.getDataToken.Role == 'admin'){
+       profileStore.profileData.data = {
+		...profileStore.profileData.data as any,
+		fullName: tokenStore.getDataToken.Name,
+		usuarioEmail : tokenStore.getDataToken.Email,
+		documenIdentida: tokenStore.getDataToken.Dni_Usuario,
+	   }
+	}
+})
 </script>
 
 <template>

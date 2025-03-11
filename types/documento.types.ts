@@ -6,9 +6,9 @@ export interface DataDocumento {
 	nombre?: string;
 	titulo?: string;
 	secuencia: number;
-	secuencia_mas_buscada?: number;
-	date_created: string | null;
-	mas_buscados?: boolean;
+	secuenciaMasBuscada?: number;
+	dateCreated: string | null;
+	masBuscados?: boolean;
 	documento?: string;
 	documentoDescarga: string;
 	documentos?: DataDocumento[];
@@ -31,4 +31,13 @@ export interface DocumentosParams {
 
 export interface UrlDoc {
 	url: string;
+}
+
+export interface DocumentoAdd {
+	idCategoriaDocumento: Number;
+	titulo: string;
+	descripcion: string;
+	documento: string;
+	interno: Boolean;
+	documentoDescarga: string;
 }

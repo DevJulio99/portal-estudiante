@@ -13,6 +13,9 @@ definePageMeta({
 
 const { $api } = useNuxtApp();
 
+const tokenStore = useTokenStore();
+const isAdmin = tokenStore.getDataToken.Role === "admin";
+
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
 	{ name: 'Documentos', current: true, url: '/documentos' },
@@ -22,21 +25,11 @@ const filteredData: Ref<DataDocumento[]> | Ref<[]> = ref([]);
 const documentsData: Ref<DataDocumento[]> | Ref<[]> = ref([]);
 const documentsError: Ref<ErrorResponse | null> = ref(null);
 const loading: Ref<boolean> = ref(true);
-// const { profileData } = useProfileStore();
-/* const params = {
-	codNivel: profileData.data?.codNivel ?? '',
-	codCampus: profileData.data?.codCampus ?? '',
-	facultad: profileData.data?.facultad ?? '',
-	codProductoActual: profileData.data?.codProductoActual ?? '',
-	facultadId: profileData.data?.facultadId ?? '',
-}; */
-// const params = {
-// 	cod_modalidad: profileData.data?.codNivel,
-// 	status: profileData.data?.status,
-// };
+
 const { data, error, pending } = await $api.documentos.getDocumentos({
 	lazy: true,
 });
+
 watch(data, (response) => {
 	if (response?.data.length) {
 		documentsData.value = response.data;
@@ -101,14 +94,17 @@ const detailDoc = ref({
 	url: '',
 	type: '',
 });
-const filterListWithCategories = ref([] as any);
+const filterListWithCategories = ref<any[]>([]);
 const filterListSearch = ref<DataDocumento[]>([]);
 
+const categories = computed(() =>
+  filterListWithCategories.value.map(category => ({
+    id: category.id,
+    nombre: category.nombre
+  }))
+);
+
 onMounted(() => {
-	// documentsData.value = data as any;
-	// console.log("documentsData.value",documentsData.value);
-	// filteredData.value = data as any;
-	// console.log("filteredData.value",filteredData.value);
 	setFilterDefault();
 	loading.value = false;
 });
@@ -176,10 +172,10 @@ const orderListDocs = (idOrder: number) => {
 	}
 	if (idOrder === 5) {
 		filterListSearch.value = filterListSearch.value.filter(
-			(x: any) => x.mas_buscados,
+			(x: any) => x.masBuscados,
 		);
 		filterListSearch.value.sort(
-			(a: any, b: any) => a.secuencia_mas_buscada - b.secuencia_mas_buscada,
+			(a: any, b: any) => a.secuenciaMasBuscada - b.secuenciaMasBuscada,
 		);
 	}
 	if (idOrder === 1) {
@@ -214,12 +210,12 @@ const orderCategoryListDocs = (idOrder: number) => {
 		for (const doc of filterListWithCategories.value) {
 			newFilterCategory.push({
 				...doc,
-				documentos: doc?.documentos?.filter((x: any) => x.mas_buscados),
+				documentos: doc?.documentos?.filter((x: any) => x.masBuscados),
 			});
 		}
 		for (const doc of newFilterCategory) {
 			doc?.documentos?.sort(
-				(a: any, b: any) => a.secuencia_mas_buscada - b.secuencia_mas_buscada,
+				(a: any, b: any) => a.secuenciaMasBuscada - b.secuenciaMasBuscada,
 			);
 		}
 		filterListWithCategories.value = newFilterCategory;
@@ -310,9 +306,9 @@ const filterbyNameSearch = (val: string) => {
 	);
 	if (orderId.value === 5) {
 		resultTotal = result
-			.filter((x) => x.mas_buscados)
+			.filter((x) => x.masBuscados)
 			.sort(
-				(a: any, b: any) => a.secuencia_mas_buscada - b.secuencia_mas_buscada,
+				(a: any, b: any) => a.secuenciaMasBuscada - b.secuenciaMasBuscada,
 			);
 	} else {
 		resultTotal = result;
@@ -390,6 +386,9 @@ const onActionInputSearch = () => {
 		setFilterDefault();
 	}
 };
+
+const showUploadModal = ref(false);
+
 </script>
 
 <template>
@@ -418,12 +417,12 @@ const onActionInputSearch = () => {
 
 			<div
 				v-else
-				class="flex flex-wrap justify-between min-[1367px]:gap-[52px]"
+				class="flex flex-wrap gap-x-5 min-[1367px]:gap-[52px]"
 			>
 				<BaseSearchInput
 					:value="searchVal"
 					placeholder="Ingrese su búsqueda aquí"
-					customClass="w-full lg:w-[636px] mb-4 xl:mb-10 mt-6"
+ 					:customClass="`w-full lg:w-[636px] mb-4 xl:mb-10 mt-6 ${isAdmin ? 'xl:!w-[500px]' : ''}`"
 					customClassInput="h-[40px] text-xs md:text-base placeholder:text-xs md:h-auto"
 					@change="changeInputSearch"
 					@on-action="onActionInputSearch"
@@ -431,7 +430,7 @@ const onActionInputSearch = () => {
 				/>
 
 				<div
-					class="flex-wrap gap-[4px] lg:gap-[23px] flex mb-6 min-[1366px]:mb-0"
+					class="flex-wrap items-center gap-x-1 gap-y-4 lg:gap-[23px] flex mb-6 min-[1366px]:mb-0"
 				>
 					<div class="flex flex-wrap items-center gap-2 w-max">
 						<span class="hidden md:block font-nunito text-sm font-extrabold"
@@ -465,6 +464,16 @@ const onActionInputSearch = () => {
 						>
 						</BaseVeeSelectV2>
 					</div>
+					<BaseButton
+						v-if="isAdmin"
+						styles="!bg-[#A1D7FF] min-h-[46px] px-4 py-3.5 text-sm !w-[120px]"
+						@click="showUploadModal = true"
+					>
+						<div class="flex gap-2 items-center">
+							<nuxt-icon name="icon-upload" filled class="text-[18px] text-black" />
+							<span>Subir documento</span>
+						</div>
+					</BaseButton>
 				</div>
 			</div>
 
@@ -518,4 +527,9 @@ const onActionInputSearch = () => {
 			:on-close="() => handleModal(false)"
 		/>
 	</BaseLayout>
+	<ModalUploadDocument
+		:show="showUploadModal"
+		:categories="categories"
+		@close="showUploadModal = false"
+	/>
 </template>

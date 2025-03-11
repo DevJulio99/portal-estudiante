@@ -14,9 +14,9 @@ export const useProfileStore = defineStore('profileStore', {
 	},
 	actions: {
 		setProfileData(payload: ProfileDataStore) {
-			console.log('set profile')
+			const tokenStore = useTokenStore();
 			this.profileData = payload;
-			 getPostulante();
+			tokenStore.getDataToken.Role !== 'admin' && getPostulante();
 		},
 		clearPorfileData(){
 			this.profileData = {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core';
+import ImageUploader from '~/components/base/ImageUploader.vue';
 import type { PagosPendientesData } from '~/types/pagos.types';
 
 const { $api } = useNuxtApp();
@@ -12,6 +13,7 @@ const popupDetalleVisible = ref(false);
 const servicesError: Ref<any> = ref(null);
 // const loadingPagos = ref(true);
 const tokenStore = useTokenStore();
+const pagoStore = usePagoStore();
 
 const showPopup = (datos: object) => {
 	popupDetalleData.value = datos;
@@ -34,6 +36,10 @@ const dateIsExpired = (strFechaDoc: string) => {
 	return fechaDocumento < fechaActual;
 };
 
+const SubirImagen = (idPago: number) => {
+	pagoStore.setPago(idPago);
+}
+
 const montoTotalPagar = computed(() => {
   return listaPagosPendientes.value.reduce((total, item) => {
     return total + (item.totalAPagar || 0);
@@ -44,7 +50,7 @@ const {
 	data: dataPagos,
 	error: errorPagos,
 	pending: loadingPagos,
-} = await $api.pagos.getPagosPendientes(parseInt(tokenStore.getDataToken.Id), new Date().getFullYear(), {
+} = await $api.pagos.getPagosPendientes(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), {
 	lazy: true,
 });
 
@@ -106,6 +112,7 @@ watch(dataPagos, (response) => {
 							<th class="min-w-[120px]">SALDO</th>
 							<th class="min-w-[120px]">MORA</th>
 							<th class="min-w-[120px]">TOTAL A PAGAR</th>
+							<th class="min-w-[120px]">SUBIR</th>
 							<th class="min-w-[120px]">DETALLE</th>
 						</tr>
 					</thead>
@@ -132,6 +139,9 @@ watch(dataPagos, (response) => {
 							</td>
 							<td>S/ {{ item.mora.toFixed(2) }}</td>
 							<td><strong>S/ {{ item.totalAPagar.toFixed(2) }}</strong></td>
+							<td class="flex justify-center">
+								<ImageUploader @click="() => SubirImagen(item.idPago)"/>
+							</td>
 							<td>
 								<div class="flex gap-[9px] items-center justify-center">
 									<nuxt-icon

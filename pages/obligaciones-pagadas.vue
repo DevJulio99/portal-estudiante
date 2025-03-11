@@ -27,7 +27,7 @@ const tokenStore = useTokenStore();
 const obligationError: Ref<ErrorResponse | null> = ref(null);
 
 const { data, error, pending } = await $api.obligacionesPagadas.getObligacionesPagadas(
-	parseInt(tokenStore.getDataToken.Id),
+	parseInt(tokenStore.getDataToken.Id_Alumno),
 	{
 		lazy: true,
 	},

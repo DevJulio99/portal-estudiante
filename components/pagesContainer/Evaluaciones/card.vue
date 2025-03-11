@@ -2,10 +2,16 @@
 import type { Competencia } from '~/types/competencia.types';
 import imgEv2 from '@/assets/images/evaluacion_2.png';
 
-const props = defineProps<{
+const props = withDefaults(
+  defineProps<{
 	data: Competencia;
+  tipo: 'detalle' | 'resultado'; 
   onDetail: (name: string) => void;
-}>();
+}>(),
+ {
+  tipo : 'detalle'
+ }
+);
 
 //const router = useRouter();
 
@@ -15,6 +21,7 @@ const props = defineProps<{
 // }
 
 const validarFechas = (fechaInicio: string, fechaFin: string) => {
+  if(props.tipo == 'resultado') return false
   if(!fechaInicio.trim().length || !fechaFin.trim().length) return false
   const fechaInicio_ = new Date(fechaInicio) //transformarFecha(fechaInicio);
   const fechaFin_ = new Date(fechaFin) //transformarFecha(fechaFin);
@@ -51,6 +58,7 @@ const status = () => (stadoFecha == 1 || props.data.finalizado) ? 'bg-green_70' 
     class="relative shadow-[0_4px_4px_#00000040] border border-gray_50 py-[15px] pr-[13px] pl-[10px] w-full h-auto lg:max-w-[341px] rounded-[6px] bg-white"
     >
     <div
+      v-if="tipo == 'detalle'"
         class="z-10 w-full py-[5px] text-xs text-white font-nunito rounded-[16px] absolute top-[9px] left-[10px] text-center lg:max-w-[201px]"
         :class="status()"
         >
@@ -72,10 +80,10 @@ const status = () => (stadoFecha == 1 || props.data.finalizado) ? 'bg-green_70' 
     <div class="w-full absolute bottom-[15px] left-0 pr-[13px] pl-[10px]">
       <BaseButton
 			styles="!w-full !bg-blue_light text-white rounded-[6px]"
-      v-if="!data.finalizado && stadoFecha === 1"
+      v-if="(!data.finalizado && stadoFecha === 1) || tipo == 'resultado'"
       @click="() => onDetail(data.nombreCompetencia)"
 		>
-			Rendir Evaluación
+			{{tipo == 'detalle' ? 'Rendir Evaluación' : 'Ver resultado'}}
 		</BaseButton>
     </div>
     </div>

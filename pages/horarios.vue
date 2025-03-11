@@ -44,7 +44,7 @@ const pendingSchedule = ref<boolean>(true);
 
 const callHorarioRango = async () =>
   await $api.horarioRango.getHorariosRango(
-    tokenStore.getDataToken.Id,
+    tokenStore.getDataToken.Id_Alumno,
     startDate.value,
     endDate.value,
     {

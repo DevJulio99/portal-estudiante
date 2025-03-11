@@ -12,4 +12,22 @@ export const decryptJWT = (token: string) => {
     const decodedPayload = JSON.parse(atob(base64));
   
     return decodedPayload;
+}
+
+export const getUrls = (data: any[]) => {
+  //console.log('data geturl', data);
+  let urls: any = [];
+
+  for(const item of data){
+    const url = item.url || useGetRoute(item.etiqueta)
+    if(url){
+      urls.push(url);
+    }
+
+    if(item.submenu && item.submenu.length){
+      urls = urls.concat(getUrls(item.submenu));
+    }
   }
+
+  return urls
+}

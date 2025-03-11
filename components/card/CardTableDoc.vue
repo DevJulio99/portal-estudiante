@@ -93,7 +93,7 @@ const formatDate = (inputDate: string | null): string => {
 						<div
 							class="ml-[42px] w-[152px] text-left xl:text-center w-full xl:ml-0 min-[1330px]:w-[200px] min-[1280px]:w-auto text-sm font-nunito text-secondary"
 						>
-							{{ item.date_created ? formatDate(item.date_created) : '' }}
+							{{ item.dateCreated ? formatDate(item.dateCreated) : '' }}
 						</div>
 						<div
 							class="flex gap-2 justify-end w-auto xl:w-[232px] absolute top-[33px] right-[16px] md:top-4 xl:static"
