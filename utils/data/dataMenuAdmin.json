@@ -22,5 +22,17 @@
         "submenu": [],
         "es_clasico": 0,
         "modalidad": "ALL"
+    },
+    {
+        "id": 3,
+        "etiqueta": "documentos",
+        "nombre": "documentos",
+        "url": "/documentos",
+        "icono": "../public/images/documentos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
     }
 ]

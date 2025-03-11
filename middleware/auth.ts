@@ -18,6 +18,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const isTotalPagos = to.fullPath.includes('total-pagos');
     const rutasUsuario = getUrls(dataMenuUser);
     const rutasAdmin = getUrls(dataMenuAdmin);
+    const rutasCompartidas = ["/documentos"];
 
     if(!isAuth){
         return navigateTo("/login", { replace: true });
@@ -27,11 +28,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo("/inicio", { replace: true });
     }
 
-    if(isAdmin && rutasUsuario.includes(to.fullPath)){
+    if(isAdmin && rutasUsuario.includes(to.fullPath) && !rutasCompartidas.includes(to.fullPath)){
       return navigateTo("/admin", { replace: true });
     }
 
-    if(!isAdmin && rutasAdmin.includes(to.fullPath)){
+    if(!isAdmin && rutasAdmin.includes(to.fullPath) && !rutasCompartidas.includes(to.fullPath)){
       return navigateTo("/inicio", { replace: true });
     }
 

@@ -70,7 +70,7 @@ const handleFileChange = async () => {
         <BaseStatusLoading />
       </template>
       <template v-else>
-        <nuxt-icon name="icon-upload-white" filled class="text-[18px]" />
+        <nuxt-icon name="icon-upload" filled class="text-[18px] text-white" />
       </template>
 
       <span
