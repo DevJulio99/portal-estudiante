@@ -191,8 +191,8 @@ const onPageSelect = (page: number) => {
 
     <div class="w-full flex max-w-[300px] justify-center gap-4">
       <BaseButton
-        styles="!w-full max-w-[109px] text-white rounded-[6px]"
-        :color="BtnColor.blueLight"
+        styles="!w-full max-w-[145px] text-white rounded-[6px]"
+        :color="BtnColor.secondary"
         :disabled="finish || preguntaActual_ === 1"
         @click="back"
       >
@@ -200,8 +200,8 @@ const onPageSelect = (page: number) => {
       </BaseButton>
 
       <BaseButton
-        styles="!w-full max-w-[150px] text-white rounded-[6px]"
-        :color="BtnColor.blueLight"
+        styles="!w-full max-w-[145px] text-white rounded-[6px]"
+        :color="BtnColor.default"
         @click="next"
         :disabled="guardadoPendiente.valueOf()"
       >

@@ -34,9 +34,9 @@ withDefaults(
 			styles,
 			{
 				'flex items-center': Boolean(iconName),
-				'bg-green_20':
+				'bg-primary opacity-50 cursor-not-allowed':
 					color === BtnColor.default && (disabled || disabledStyle),
-				'bg-green_40 text-black':
+				'bg-primary text-black':
 					color === BtnColor.default && (!disabled || !disabledStyle),
 				'bg-extra_gray disabled:text-black':
 					color === BtnColor.black && (disabled || disabledStyle),
@@ -46,6 +46,10 @@ withDefaults(
 					color === BtnColor.blueLight && (!disabled || !disabledStyle),
 				'bg-blue_light text-white opacity-50 cursor-not-allowed':
 				    color === BtnColor.blueLight && (disabled || disabledStyle),
+				'bg-secondary text-white':
+					color === BtnColor.secondary && (!disabled || !disabledStyle),
+				'bg-secondary text-white opacity-50 cursor-not-allowed':
+				    color === BtnColor.secondary && (disabled || disabledStyle),
 			},
 		]"
 		:disabled="disabled"

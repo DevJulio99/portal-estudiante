@@ -32,7 +32,7 @@ if(tokenStore.getDataToken && tokenStore.getDataToken.Id_Alumno && tokenStore.ac
 
 </script>
 <template>
-  <div class="fixed w-full h-full top-0 bg-green_60 flex justify-center items-center" v-if="tokenStore.pending">
+  <div class="fixed w-full h-full top-0 bg-primary flex justify-center items-center" v-if="tokenStore.pending">
       <p class="text-white font-bold text-xl font-grotesk">Cargando...</p>
   </div>
   <div class="md:grid md:grid-cols-[auto_1fr]" v-if="!tokenStore.pending && router.currentRoute.value.name != 'login'">

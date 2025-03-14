@@ -14,6 +14,8 @@ export interface Alumno {
     tipoAlumno: string;
     observaciones: string;
     apoderado: string;
+    idGrado: number;
+    habilitadoPrueba: boolean;
 }
 
 export interface RequestAlumno {
@@ -30,7 +32,9 @@ export interface RequestAlumno {
     tipoAlumno: string;
     observaciones: string;
     apoderado: string;
-    tipoInstitucion: string; 
+    tipoInstitucion: string;
+    idGrado: number;
+    habilitadoPrueba: boolean;
 }
 
 export interface RegistrarAlumno extends RequestAlumno{

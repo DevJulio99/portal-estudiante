@@ -20,7 +20,7 @@ const valueStroke = !props.data ? 0 : 100 - props.data.puntaje;
         class="bg-green_10 pt-[16px] pr-[13px] pb-[9px] pl-[7px] flex justify-between items-center border border-gray_40 border-x-0 border-t-0">
         <div class="flex gap-[7px] items-center">
             <nuxt-icon name="reading" class="text-[26px] no-margin" filled />
-            <p class="text-gray-11 text-base font-medium capitalize">{{competencia?.nombreCompetencia.toLowerCase()}}</p>
+            <p class="text-gray-11 text-base font-bold capitalize">{{competencia?.nombreCompetencia.toLowerCase()}}</p>
         </div>
         
         <nuxt-icon :name="approved ? 'circle-check' : 'circle-x-mark'" class="text-2xl no-margin" filled />

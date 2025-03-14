@@ -10,16 +10,16 @@ defineProps<{
 </script>
 
 <template>
-    <BaseTitle text="Informacion usuario" />
+    <BaseTitle text="Información del usuario" />
 
 <div class="grid grid-cols-4 gap-x-4 gap-y-10">
    <span>
-    <p class="font-bold">Codigo Alumno:</p>
+    <p class="font-bold">Código del alumno:</p>
     <p>{{ data.codigoAlumno }}</p>
    </span>
    
    <span>
-    <p class="font-bold">Numero Documento</p>
+    <p class="font-bold">Número de documento</p>
     <p>{{ data.dni }}</p>
    </span>
 
@@ -29,17 +29,17 @@ defineProps<{
    </span>
 
    <span>
-    <p class="font-bold">Direccion</p>
+    <p class="font-bold">Dirección</p>
     <p>{{ data.direccion }}</p>
    </span>
 
    <span>
-    <p class="font-bold">Genero</p>
+    <p class="font-bold">Género</p>
     <p>{{ data.genero }}</p>
    </span>
 
    <span>
-    <p class="font-bold">Tipo Alumno</p>
+    <p class="font-bold">Tipo de alumno</p>
     <p>{{ data.tipoAlumno }}</p>
    </span>
 

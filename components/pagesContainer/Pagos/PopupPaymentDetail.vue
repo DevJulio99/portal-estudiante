@@ -159,8 +159,8 @@ onMounted(() => {
 					</div>
 					<div class="col-span-1 flex items-center">
 						<span
-							class="bg-turquoise text-dark_100 font-nunito p-1 font-extrabold lg:text-[16px] text-[14px]"
-							>S/{{ data?.totalAPagar }}</span
+							class="bg-gray text-dark_100 font-nunito p-1 font-extrabold lg:text-[16px] text-[14px]"
+							>S/ {{ data?.totalAPagar.toFixed(2) }}</span
 						>
 					</div>
 				</div>

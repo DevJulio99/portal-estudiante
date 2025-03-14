@@ -342,7 +342,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 						<BaseButton
 							v-if="eventData.url && eventData.nombreBoton.trim().length"
 							:url="eventData?.url"
-							styles="!w-auto !inline-block !min-w-auto !min-h-[38px] !h-auto !font-extrabold font-nunito !text-sm !px-4 !py-2.5"
+							styles="bg-primary text-white hover:bg-[#1E6657] !w-auto !inline-block !min-w-auto !min-h-[36px] !h-auto !font-extrabold font-nunito !text-[14px] !leading-[1.25] !px-4 !py-2.5"
 							@click="eventClick(eventData?.url, eventData?.titulo)"
 						>
 							{{ eventData.nombreBoton }}
@@ -575,7 +575,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 				<div
 					v-for="(category, index) in categories"
 					:key="index"
-					class="uppercase bg-violet_20 px-2 py-1 text-violet_100 text-[10px] font-bold leading-3 font-whitney rounded-2xl cursor-pointer tracking-[0.4px]"
+					class="uppercase bg-[#9EB7CE] px-2 py-1 text-secondary text-[10px] font-bold leading-3 font-whitney rounded-2xl cursor-pointer tracking-[0.4px]"
 					@click="() => onCategoryClick(category.nombre)"
 				>
 					<NuxtLink :to="`/eventos`">

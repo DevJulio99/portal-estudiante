@@ -43,22 +43,22 @@ onBeforeUnmount(() => {
 <template>
     <div class="w-full max-w-[1083px] bg-white rounded-[10px] pt-[22px] pl-[25px] pb-[39px] pr-[19px]">
     <div
-        class="w-full bg-green_30 rounded-[10px] flex justify-between items-center pt-[12px] pl-[19px] pb-[16px] pr-[15px]">
-        <div class="flex gap-2.5 items-center">
-            <nuxt-icon name="Chalkboard" class="text-[50px] no-margin" filled />
+        class="w-full bg-green_10 rounded-[10px] flex justify-between items-center pt-[12px] pl-[19px] pb-[16px] pr-[15px]">
+        <div class="flex gap-2.5 items-center text-[#0c2520]">
+            <nuxt-icon name="Chalkboard" class="text-[50px] no-margin" />
             <span>
-                <p class="text-white font-semibold text-xl leading-[30px]">Puntaje total de evaluación: {{resultadoEvaluacion?.[0]?.puntaje}}pts</p>
-                <p class="text-white font-semibold text-sm leading-[21px]">*Puntaje minimo aprobatorio: {{resultadoEvaluacion?.[0]?.competencia?.puntajeMinimoAprobatorio}} pts</p>
+                <p class="font-semibold text-xl leading-[30px]">Puntaje total de evaluación: {{resultadoEvaluacion?.[0]?.puntaje}} pts</p>
+                <p class="font-semibold text-sm leading-[21px]">*Puntaje mínimo aprobatorio: {{resultadoEvaluacion?.[0]?.competencia?.puntajeMinimoAprobatorio}} pts</p>
             </span>
         </div>
         <div v-if="estadoEvaluacion !== '0'" 
-        class="flex py-2.5 px-[9.5px] gap-[6px] rounded-[10px] items-center h-[46px]"
+        class="flex py-2.5 px-[9.5px] gap-[6px] rounded-[10px] items-center h-[46px] shadow-md"
         :class="{
-            'bg-error': estadoEvaluacion == '2',
-            'bg-green_40': estadoEvaluacion == '1'
+            'bg-[#FFF3CD] text-[#664D03]': estadoEvaluacion == '2',
+            'bg-[#b8eec4] text-[#155724]': estadoEvaluacion == '1'
         }">
-            <nuxt-icon name="book-mark" class="text-[26px] no-margin" filled />
-            <p class="text-base text-white font-semibold">Condición: {{estadoEvaluacion == '1' ? 'Aprobado': 'Desaprobado'}}</p>
+            <nuxt-icon name="book-mark" class="text-[26px] no-margin" />
+            <p class="text-base font-semibold">Condición: {{estadoEvaluacion == '1' ? 'Aprobado': 'Desaprobado'}}</p>
         </div>
     </div>
 
@@ -74,11 +74,11 @@ onBeforeUnmount(() => {
     
         <div class="flex justify-center items-center gap-[21px] mt-10">
             <button
-                class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm bg-green_20 text-black h-[34px] font-semibold"
+                class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm bg-secondary text-white h-[36px] font-semibold"
                 @click="back"
                 >Volver</button>
             <button class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm 
-                            h-[34px] bg-green_40 text-black font-semibold" @click="abrirModal">Visualizar resultados</button>
+                            h-[36px] bg-primary text-white font-semibold" @click="abrirModal">Visualizar resultados</button>
         </div>
     </div>
 </div>

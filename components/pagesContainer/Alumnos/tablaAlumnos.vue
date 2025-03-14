@@ -109,7 +109,7 @@ const eliminar = (datos: Alumno) => {
 							<th class="min-w-[120px]">APELLIDOS</th>
 							<th class="min-w-[120px]">TELEFONO</th>
 							<th class="min-w-[120px]">EMAIL</th>
-							<th class="min-w-[120px]">SEXO</th>
+							<th class="min-w-[120px]">GÉNERO</th>
 							<th class="min-w-[120px]">ACCIONES</th>
 						</tr>
 					</thead>
@@ -121,9 +121,9 @@ const eliminar = (datos: Alumno) => {
                             <td>{{ item.correo }}</td>
                             <td>{{ item.genero }}</td>
                             <td class="flex justify-center items-center gap-2">
-                                <button class="px-2 py-2 text-white bg-blue_link rounded" @click="() => masInformacion(item)">Info</button>
-                                <button class="px-2 py-2 text-white bg-amber_60 rounded" @click="() => actualizar(item)">Actualizar</button>
-                                <button class="px-2 py-2 text-white bg-error rounded" @click="() => eliminar(item)">Eliminar</button>
+                                <button class="px-2 py-2 text-primary font-bold bg-transparent border border-[#287F6B] rounded hover:bg-[#287F6B]/10" @click="() => masInformacion(item)">Info</button>
+                                <button class="px-2 py-2 text-white font-bold bg-primary hover:bg-[#1E6657] rounded" @click="() => actualizar(item)">Actualizar</button>
+                                <button class="px-2 py-2 text-secondary font-bold bg-transparent border border-secondary hover:bg-secondary/10 rounded" @click="() => eliminar(item)">Eliminar</button>
                             </td>
 							
 						</tr>
@@ -162,7 +162,7 @@ th {
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 	color: white;
-	background-color: #28A745;
+	background-color: #031448;
 	font-weight: 600;
 	font-size: 16px;
 }

@@ -87,7 +87,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 			</select>
 		</div>
 		<BaseButton
-			styles="!w-auto !h-[48px] lg:!h-[38px] px-4"
+			styles="!w-auto !h-[48px] lg:!h-[38px] px-4 bg-primary text-white"
 			@click="downloadDoc"
 		>
 			<div class="flex gap-2 items-center">
@@ -99,7 +99,6 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 				<nuxt-icon
 					v-else
 					name="upn-icon-download-box"
-					filled
 					class="text-2xl lg:text-xl"
 				/>
 				<p v-if="isLargeScreen">Descargar</p>

@@ -19,7 +19,7 @@ function textLine(text: string) {
 		{{ title }}
 	</p>
 	<p
-		class="leading-[22px] text-sm text-secondary font-nunito text-reponsive"
+		class="leading-[22px] text-sm text-neutron80 font-nunito text-reponsive"
 		:class="
 			!textLine(description) && !activeTexLine
 				? 'text-line-two'

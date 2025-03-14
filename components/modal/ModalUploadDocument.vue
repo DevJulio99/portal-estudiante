@@ -218,13 +218,19 @@ onUnmounted(() => {
 
 .file-label {
     display: inline-block;
-    background: #007bff;
-    color: white;
-    padding: 8px 12px;
+    background: transparent;
+    color: #287F6B;
+    padding: 6.5px 12px;
     border-radius: 4px;
     cursor: pointer;
     text-align: center;
     font-size: 14px;
+    border: 1px solid #287F6B;
+    transition: background 0.3s, color 0.3s;
+}
+
+.file-label:hover {
+    background: rgba(40, 127, 107, 0.1);
 }
 
 .file-label input {
@@ -272,13 +278,29 @@ onUnmounted(() => {
 }
 
 .btn-cancel {
-    background: gray;
+    background: #031448;
     color: white;
+    transition: background 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #021033;
 }
 
 .btn-primary {
-    background: blue;
+    background: #287F6B;
     color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: #1E6657;
+}
+
+input[type="checkbox"] {
+    accent-color: #287F6B;
 }
 
 .error-message {

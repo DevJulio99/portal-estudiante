@@ -87,7 +87,7 @@ onMounted(() => {
 							class="border border-x-0 border-b-disable border-t-0 min-w-[600px]"
 						>
 							<tr
-								class="border border-b-disable border-x-0 border-t-0 bg-black"
+								class="border border-b-disable border-x-0 border-t-0 bg-secondary"
 							>
 								<th class="text-white font-grotesk text-sm md:text-base">
 									F. DE PAGO

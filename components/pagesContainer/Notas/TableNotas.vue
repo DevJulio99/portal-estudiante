@@ -276,29 +276,29 @@ onMounted(() => {
 			></div> -->
 		</div>
 
-		<button
+		<BaseButton
 			v-if="!simulateNote"
-			class="w-full cursor-pointer rounded bg-green_40 py-[6px] justify-center items-center px-4 flex gap-[11px] lg:w-max"
+			styles="bg-primary text-white lg:!w-[180px] gap-3"
 			@click="simulateAverage"
 		>
-			<nuxt-icon name="calculator-icon" filled />
-			<span class="text-black text-xs md:text-sm font-extrabold"
+			<nuxt-icon name="calculator-icon" />
+			<span class="text-xs md:text-sm font-extrabold"
 				>Simular Promedio</span
 			>
-		</button>
+		</BaseButton>
 
 		<div
 			v-if="simulateNote"
 			class="flex gap-1 md:gap-4 w-full justify-center md:w-auto items-center lg:px-4"
 		>
 			<button
-				class="bg-black rounded text-white font-extrabold p-2 text-xs md:text-sm md:py-[6px] md:px-4"
+				class="bg-secondary rounded text-white font-extrabold p-2 text-xs md:text-sm md:py-[6px] md:px-4"
 				@click="backSimulate"
 			>
 				Atrás
 			</button>
 			<button
-				class="flex gap-2 items-center bg-black rounded text-white font-extrabold p-2 text-xs md:text-sm md:py-[6px] md:px-4 md:flex-row-reverse"
+				class="flex gap-2 items-center bg-secondary rounded text-white font-extrabold p-2 text-xs md:text-sm md:py-[6px] md:px-4 md:flex-row-reverse"
 				@click="resetSimulateNote"
 			>
 				Restablecer notas

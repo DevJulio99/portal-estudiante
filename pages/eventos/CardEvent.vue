@@ -101,13 +101,13 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 					v-if="typeEvent === 'virtual'"
 					filled
 					name="upn-icon-computer-black"
-					class="text-xs inline-block rounded-full h-[20px] bg-skyBlue text-neutral py-1 px-2"
+					class="text-xs inline-block rounded-full h-[20px] bg-[#DDE7F8] text-neutral py-1 px-2"
 				/>
 				<nuxt-icon
 					v-if="typeEvent !== 'virtual'"
 					filled
 					name="upn-icon-map-black"
-					class="text-xs inline-block rounded-full h-[20px] bg-primary text-neutral py-1 px-2"
+					class="text-xs inline-block rounded-full h-[20px] bg-[#9ce0d1] text-neutral py-1 px-2"
 				/>
 			</div>
 

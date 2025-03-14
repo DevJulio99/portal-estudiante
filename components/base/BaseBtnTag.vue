@@ -45,7 +45,7 @@ const eventClick = (url: string, title: string) => {
 			'bg-[#0072AB] text-white': color === TagStyle.default,
 			'bg-[#E4F2FF] text-[#0072AB] font-bold': color === TagStyle.light,
 			'bg-celestial_white text-neutral font-bold': color === TagStyle.neutral,
-			'bg-violet_20 text-violet_100 font-bold': color === TagStyle.violet,
+			'bg-[#AFC7DA] text-secondary font-bold': color === TagStyle.violet,
 		}"
 	>
 		{{ title }}

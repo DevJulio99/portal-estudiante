@@ -20,7 +20,7 @@ const preguntas = dividirArreglo(props.resultado.preguntas,10);
   <div>
     <div class="flex gap-0.5">
       <div
-        class="bg-green_40 rounded-t-lg font-medium pr-[18px] pl-[19px] pt-[3px] pb-[2px] text-white transition-colors text-sm leading-[21px] bg-gray-21 cursor-pointer"
+        class="bg-primary rounded-t-lg font-medium pr-[18px] pl-[19px] pt-[3px] pb-[2px] text-white transition-colors text-sm leading-[21px] bg-gray-21 cursor-pointer"
       >
         {{ resultado.competencia.nombreCompetencia }}
       </div>

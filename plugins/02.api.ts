@@ -19,6 +19,7 @@ import ResultadoCompetenciaModule from '~/repository/modules/ResultadoCompetenci
 import ImagenPagoModule from '~/repository/modules/ImagePago';
 import AlumnoModule from '~/repository/modules/Alumno';
 import DocumentoAddModule from '~/repository/modules/DocumentoAdd';
+import GradosModule from '~/repository/modules/Grados';
 
 
 interface IApiInstance {
@@ -42,6 +43,7 @@ interface IApiInstance {
 	imagenPago: ImagenPagoModule;
 	alumno: AlumnoModule;
 	agregarDocumento: DocumentoAddModule;
+	grados: GradosModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -73,6 +75,7 @@ export default defineNuxtPlugin(() => {
 		imagenPago: new ImagenPagoModule(apiFecther),
 		alumno: new AlumnoModule(apiFecther),
 		agregarDocumento: new DocumentoAddModule(apiFecther),
+		grados: new GradosModule(apiFecther),
 	};
 
 	return {
