@@ -10,7 +10,8 @@ const popupDetalleData = ref<Alumno | null>(null);
 const popupDetalleVisible = ref(false);
 const tipoModal = ref<'edit' | 'info' | 'register' | 'delete'>('info');
 const mensajeError = ref('');
-
+const currentPage = ref(1);
+const valorFilter = ref('');
 const alumnoStore = useAlumnoStore();
 
 watch(() => alumnoStore.lista, (response) => {
@@ -26,11 +27,39 @@ watch(() => alumnoStore.error, (error) => {
 	mensajeError.value = error.message;
 	(document as any).getElementById('popupMsg').style.right = '20px';
 	setTimeout(() => {
-		(document as any).getElementById('popupMsg').style.right = '-250px';
+		(document as any).getElementById('popupMsg').style.right = '-1000px';
 	}, 5000);
   }
   
 });
+
+const handlePage = (number: number) => {
+  currentPage.value = number;
+  if(alumnoStore.paginado.pagina !== number){
+	alumnoStore.setPagina(number);
+  if(alumnoStore.activeFilter){
+	alumnoStore.FiltrarAlumno(valorFilter.value);
+  }
+
+  if(alumnoStore.activeList){
+	alumnoStore.getAlumnos();
+  }
+  }
+};
+
+const onFilter = (value: string) => {
+	valorFilter.value = value;
+	alumnoStore.setPagina(1);
+	alumnoStore.FiltrarAlumno(value);
+}
+
+const limpiarFiltro = () => {
+	valorFilter.value = '';
+	alumnoStore.activeFilter = false;
+	alumnoStore.setPagina(1);
+	currentPage.value = 1;
+	alumnoStore.getAlumnos();
+}
 
 const masInformacion = (datos: Alumno) => {
 	tipoModal.value = 'info';
@@ -94,10 +123,10 @@ const eliminar = (datos: Alumno) => {
     />
   </div> -->
   <div
-		v-if="!alumnoStore.pending && listaAlumnos.length > 0"
+		v-if="!alumnoStore.pending"
 		class="w-full"
 	>
-    <AccionesAlumno :onRegister="registrar"/>
+    <AccionesAlumno :onRegister="registrar" :on-filter="onFilter" :clear-filter="limpiarFiltro"/>
 		<div
 			class="w-full"
 		>
@@ -113,7 +142,13 @@ const eliminar = (datos: Alumno) => {
 							<th class="min-w-[120px]">ACCIONES</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody class="relative">
+						
+						
+						<tr v-if="alumnoStore.pendingTable || !alumnoStore.lista.length">
+                             <td v-if="alumnoStore.pendingTable" colspan="6"><BaseStatusLoading class="w-full py-10" /></td>
+							 <td v-else-if="!alumnoStore.lista.length" colspan="6"><div class="w-full py-10 text-xl font-bold">No se encontro datos</div></td>
+						</tr>
 						<tr v-for="(item, index) in listaAlumnos" :key="index">
 							<td>{{ item.nombre }}</td>
                             <td>{{ item.apellidoPaterno }} {{ item.apellidoMaterno }}</td>
@@ -129,6 +164,15 @@ const eliminar = (datos: Alumno) => {
 						</tr>
 					</tbody>
 				</table>
+
+				<BasePagination
+				 class="my-3"
+				 v-if="listaAlumnos.length"
+                 :totalItems="alumnoStore.total"
+                 :currentPage="alumnoStore.paginado.pagina"
+                 :items-per-page="alumnoStore.paginado.itemsPorPagina"
+                 @change="handlePage"
+                 />
 			</div>
 		</div>
 	</div>

@@ -8,6 +8,7 @@ definePageMeta({
 const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
 const competenciaStore = useCompetenciaStore();
+const examenStore = useExamenStore();
 const existeProfile = ref(0);
 const noHabilitado = ref();
 
@@ -39,6 +40,7 @@ onMounted(() => {
   if(existeProfile.value){
     profileStore.postulanteHabilitado();
     competenciaStore.finalizoCompetencia = false;
+    examenStore.resetExamen();
   }
 })
 

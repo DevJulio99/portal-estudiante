@@ -40,6 +40,12 @@ watch(data, (response) => {
 	}
 });
 
+const reloadDocuments = async() => {
+	await $api.documentos.getDocumentos({
+	lazy: true,
+});
+}
+
 const filterMock = [
 	{
 		id: 0,
@@ -538,5 +544,6 @@ const showUploadModal = ref(false);
 		:show="showUploadModal"
 		:categories="categories"
 		@close="showUploadModal = false"
+		@upload="reloadDocuments"
 	/>
 </template>

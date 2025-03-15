@@ -72,7 +72,7 @@ const onSelect = (id: string, opcion: string) => {
         >Pregunta {{ numeroEnGrupo }} de {{ totalPreguntasGrupo }}</span
       >
       <div
-        v-for="(alternativa, index) in preguntasData"
+        v-for="(alternativa, index) in preguntas"
         class="flex w-full cursor-pointer px-[11px] pt-[10px] pb-[7px] border border-[#B3B3B3] rounded-[10px] gap-2 items-center transition-colors"
         @click="() => onSelect(`option${index + 1}`, alternativa.opcion)"
         :class="alternativa.opcion === respuesta ? 'bg-cyan_5' : ''"

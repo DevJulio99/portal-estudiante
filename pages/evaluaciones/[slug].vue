@@ -313,7 +313,10 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
 
 <template>
   <BaseLayout :rightAside="false" bgGray>
-    <div v-if="!competenciaStore.finalizoCompetencia" class="mb-[84px]">
+    <div v-if="examenStore.pending" class="text-xs text-black py-16">
+			<BaseStatusLoading />
+		</div>
+    <div v-else-if="!competenciaStore.finalizoCompetencia" class="mb-[84px]">
       <BaseBreadcrumbs :items="breadcrumbsItem" />
       <div class="flex flex-wrap justify-between my-5">
         <div
@@ -326,7 +329,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
           :onExpired="EvaluacionExpirada"
           :stop="finishQuestion"
           :onfinish="(data) => timeData = data"
-          :init="false"
+          :init="true"
         />
       </div>
 

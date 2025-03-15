@@ -16,6 +16,7 @@ export interface Alumno {
     apoderado: string;
     idGrado: number;
     habilitadoPrueba: boolean;
+    total: number;
 }
 
 export interface RequestAlumno {
@@ -43,4 +44,17 @@ export interface RegistrarAlumno extends RequestAlumno{
 
 export interface ActualizarAlumno extends RequestAlumno{
     contraseña: string;
+}
+
+export interface PaginadoAlumno {
+    pagina: number;
+    itemsPorPagina: number;
+}
+
+export interface ListaAlumno extends PaginadoAlumno{
+    codigoSede: string;
+}
+
+export interface FiltroAlumno extends ListaAlumno {
+    filtro: string;
 }
