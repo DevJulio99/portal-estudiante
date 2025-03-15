@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-defineProps<{
+withDefaults(defineProps<{
     message: string;
-}>()
+}>(),
+{
+  message: ""
+})
 </script>
 
 <template>
-    <div id="popupMsg" class="py-3 px-4 fixed z-[100] top-[20px] right-[-250px] w-auto h-auto bg-error-dark text-white rounded-lg">
+    <div id="popupMsg" class="py-3 px-4 fixed z-[100] top-[20px] right-[-1000px] w-auto h-auto bg-error-dark text-white rounded-lg">
     <h3>Error</h3>
     <p>{{ message }}</p>
   </div>

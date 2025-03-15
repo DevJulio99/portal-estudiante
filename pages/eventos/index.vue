@@ -277,7 +277,7 @@ const isLargeScreen = useMediaQuery("(min-width: 1200px)");
         <div
           v-for="(category, index) in categories"
           :key="index"
-          class="uppercase bg-violet_20 px-2 py-1 text-violet_100 text-[10px] font-bold leading-3 font-whitney rounded-2xl cursor-pointer tracking-[0.4px]"
+          class="uppercase bg-[#AFC7DA] px-2 py-1 text-secondary text-[10px] font-bold leading-3 font-whitney rounded-2xl cursor-pointer tracking-[0.4px]"
           @click="() => onSelectCategory(category.nombre)"
         >
           {{ category.nombre }}

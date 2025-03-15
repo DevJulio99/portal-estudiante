@@ -79,7 +79,7 @@ const status = () => (stadoFecha == 1 || props.data.finalizado) ? 'bg-green_70' 
     </span>
     <div class="w-full absolute bottom-[15px] left-0 pr-[13px] pl-[10px]">
       <BaseButton
-			styles="!w-full !bg-blue_light text-white rounded-[6px]"
+			styles="!w-full !bg-primary text-white rounded-[6px]"
       v-if="(!data.finalizado && stadoFecha === 1) || tipo == 'resultado'"
       @click="() => onDetail(data.nombreCompetencia)"
 		>

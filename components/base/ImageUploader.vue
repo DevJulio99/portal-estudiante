@@ -63,7 +63,7 @@ const handleFileChange = async () => {
     <input type="file" ref="fileInput" accept="image/*" class="hidden" @change="handleFileChange" />
 
     <BaseButton
-      class="p-2 bg-violet_100 rounded-lg hover:bg-violet_80 !w-10 relative flex items-center justify-center"
+      class="p-2 bg-primary rounded-lg hover:bg-[#1E6657] !w-10 relative flex items-center justify-center"
       @click="fileInput.click()"
     >
       <template v-if="isUploading">

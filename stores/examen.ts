@@ -8,6 +8,7 @@ interface stateEstado {
     bancoRespuestas: BancoRespuesta[];
     error: "nodata"| "other"| null;
     guardadoPendiente: Boolean;
+    pending: boolean;
 }
 
 export const useExamenStore = defineStore("examen", {
@@ -17,7 +18,8 @@ export const useExamenStore = defineStore("examen", {
     respuestaSeleccionada: null,
     bancoRespuestas: [],
     error: null,
-    guardadoPendiente: false
+    guardadoPendiente: false,
+    pending: true
   }),
   actions: {
     resetExamen() {
@@ -27,6 +29,7 @@ export const useExamenStore = defineStore("examen", {
       this.bancoRespuestas = [];
       this.error = null;
       this.guardadoPendiente = false;
+      this.pending = true;
     },
     setError(err: any) {
       this.error = err;

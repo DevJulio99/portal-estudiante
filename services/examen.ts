@@ -19,7 +19,7 @@ export const listarExamen = async () => {
       const bodyError = examenService.error.value.data;
       throw new Error(bodyError ? "nodata" : "other");
     }
-
+    examenStore.pending = false;
     examenService.data.value?.data.length && examenStore.setLista(examenService.data.value.data);
 };
 

@@ -28,7 +28,7 @@ onMounted(() => {
 
 <div class="w-full h-full max-w-[971px] pt-[26px] pr-[26px] pl-[30px] bg-white z-10">
     <div class="w-full max-w-[891px] flex gap-[7px] border border-green_10 border-x-0 border-t-0 pb-2.5 mb-[17px]">
-        <nuxt-icon name="file-lines" class="text-2xl no-margin filter-green20" filled />
+        <nuxt-icon name="file-lines" class="text-2xl no-margin filter-green10" filled />
         <p class="text-blue-3 text-xl leading-[30px]">Resultados del postulante de la Evaluación de Competencias
             Generales</p>
     </div>
@@ -77,8 +77,8 @@ onMounted(() => {
     </div>
 
     <div class="w-full flex justify-center items-center pt-[22px] pb-[25px]">
-        <button class="rounded-md text-black h-[34px] w-full max-w-[147px] font-medium
-        text-sm leading-5 bg-green_20" @click="onClose">Cerrar</button>
+        <button class="rounded-md text-white h-[36px] w-full max-w-[147px] font-bold
+        text-sm leading-5 bg-primary" @click="onClose">Cerrar</button>
     </div>
 </div>
 
@@ -97,7 +97,7 @@ onMounted(() => {
 }
 
 .content-scroll-results::-webkit-scrollbar-thumb{
-    background:  #98FB98; 
+    background:  #287F6B; 
     border-radius: 5px;
 }
 

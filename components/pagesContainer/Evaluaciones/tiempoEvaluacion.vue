@@ -118,7 +118,9 @@ const initInterval = (distance: number) => {
 const formatTime = (time: number) => time < 10 ? `0${time}` : `${time}`;
 
 onMounted(() => {
-  props.init && initTime();
+  setTimeout(() => {
+    props.init && initTime(storeCompetencia.tiempo);
+  }, 0);
 });
 
 onBeforeUpdate(() => {

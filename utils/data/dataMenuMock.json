@@ -193,7 +193,7 @@
     {
         "id": 15,
         "etiqueta": "resultado-competencias",
-        "nombre": "resultado competencias",
+        "nombre": "resultado de evaluaciones",
         "url": "/resultado-competencias",
         "icono": "../public/images/evaluaciones.svg",
         "es_nuevo": false,

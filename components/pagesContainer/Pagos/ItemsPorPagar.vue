@@ -165,7 +165,7 @@ watch(dataPagos, (response) => {
 		<div class="flex justify-between mt-7 items-center">
 			<p class="mb-0 lg:text-[16px] text-[14px] font-extrabold">Monto total:</p>
 			<span
-				class="bg-green_40 text-dark_100 font-nunito py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
+				class="bg-gray text-dark_100 font-nunito py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
 				:class="{ 'bg-white': montoTotalPagar == 0.0 }"
 				>S/ {{ montoTotalPagar.toFixed(2) }}</span
 			>

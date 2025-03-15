@@ -91,7 +91,7 @@ const formatDate = (inputDate: string | null): string => {
 						class="flex flex-wrap gap-[24px] xl:gap-[40px] items-center pl-0 flex-1 justify-end"
 					>
 						<div
-							class="ml-[42px] w-[152px] text-left xl:text-center w-full xl:ml-0 min-[1330px]:w-[200px] min-[1280px]:w-auto text-sm font-nunito text-secondary"
+							class="ml-[42px] w-[152px] text-left xl:text-center lg:w-full xl:ml-0 min-[1330px]:w-[200px] min-[1280px]:w-auto text-sm font-nunito text-neutron80"
 						>
 							{{ item.dateCreated ? formatDate(item.dateCreated) : '' }}
 						</div>
@@ -103,7 +103,7 @@ const formatDate = (inputDate: string | null): string => {
 									!activeResponsive &&
 									item?.type?.toLowerCase() === 'application/pdf'
 								"
-								styles="sticky btn-preview min-h-[46px] top-[22px] !w-full !max-w-[56px] py-3.5 px-4 text-sm"
+								styles="bg-primary hover:bg-[#1E6657] sticky btn-preview min-h-[36px] top-[22px] !w-full !max-w-[56px] py-3.5 px-4 text-sm"
 								@click="handleButtonClick(item)"
 							>
 								<div
@@ -111,22 +111,21 @@ const formatDate = (inputDate: string | null): string => {
 								>
 									Vista previa
 								</div>
-								<div class="flex gap-[9px] items-center">
+								<div class="flex gap-[9px] items-center text-white">
 									<nuxt-icon
 										v-if="!activeResponsive"
 										name="iconEye"
-										filled
-										class="text-[21px]"
+										class="text-[18px]"
 									/>
 								</div>
 							</BaseButton>
 							<BaseButton
-								styles=" min-h-[46px] top-[22px] !w-full !max-w-[56px] lg:!max-w-[136px] py-3.5 px-4 text-sm"
+								styles="bg-primary hover:bg-[#1E6657] text-white min-h-[36px] top-[22px] !w-full !max-w-[56px] lg:!max-w-[136px] py-3.5 px-4 text-sm"
 								@click="handleDownload(item)"
 							>
 								<div class="flex gap-[9px] items-center">
 									<div>
-										<nuxt-icon name="upnDowload" filled class="text-[21px]" />
+										<nuxt-icon name="upnDowload" class="text-[18px]" />
 									</div>
 									<span v-if="!activeResponsive" class="hidden lg:flex gap-0.5">
 										<p>Descargar</p>

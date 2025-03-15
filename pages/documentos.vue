@@ -40,6 +40,12 @@ watch(data, (response) => {
 	}
 });
 
+const reloadDocuments = async() => {
+	await $api.documentos.getDocumentos({
+	lazy: true,
+});
+}
+
 const filterMock = [
 	{
 		id: 0,
@@ -415,65 +421,72 @@ const showUploadModal = ref(false);
 				text="Estamos trabajando en el detalle de este contenido"
 			/> -->
 
-			<div
-				v-else
-				class="flex flex-wrap gap-x-5 min-[1367px]:gap-[52px]"
-			>
-				<BaseSearchInput
-					:value="searchVal"
-					placeholder="Ingrese su búsqueda aquí"
- 					:customClass="`w-full lg:w-[636px] mb-4 xl:mb-10 mt-6 ${isAdmin ? 'xl:!w-[500px]' : ''}`"
-					customClassInput="h-[40px] text-xs md:text-base placeholder:text-xs md:h-auto"
-					@change="changeInputSearch"
-					@on-action="onActionInputSearch"
-					@no-focus="() => eventClick(searchVal, 'Search-Documentos')"
-				/>
-
-				<div
-					class="flex-wrap items-center gap-x-1 gap-y-4 lg:gap-[23px] flex mb-6 min-[1366px]:mb-0"
-				>
-					<div class="flex flex-wrap items-center gap-2 w-max">
-						<span class="hidden md:block font-nunito text-sm font-extrabold"
-							>Filtrar:</span
-						>
-						<BaseVeeSelectV2
-							id="filter"
-							:value="filterId"
-							icon="iconFilter"
-							class="w-[154px] md:w-[149px]"
-							label=""
-							:options="filterMock"
-							responsivePlaceholder="Filtrar"
-							@change="handleChangeSelect"
-						>
-						</BaseVeeSelectV2>
+			<div v-else class="lg:mb-10 mb-4">
+				<template v-if="isAdmin">
+					<div>
+						<BaseSearchInput
+							:value="searchVal"
+							placeholder="Ingrese su búsqueda aquí"
+							:customClass="`w-full lg:w-[636px] mb-4 xl:mb-6 mt-8`"
+							customClassInput="h-[40px] text-xs md:text-base placeholder:text-xs md:h-auto"
+							@change="changeInputSearch"
+							@on-action="onActionInputSearch"
+							@no-focus="() => eventClick(searchVal, 'Search-Documentos')"
+						/>
 					</div>
+				</template>
 
-					<div class="flex flex-wrap items-center gap-2 w-max">
-						<span class="hidden md:block font-nunito text-sm font-extrabold"
-							>Ordenar:</span
-						>
-						<BaseVeeSelectV2
-							id="order"
-							:value="orderId"
-							icon="iconUpDown"
-							class="w-[154px] md:w-[149px]"
-							:options="orderMock"
-							responsivePlaceholder="Ordenar"
-							@change="handleChangeSelect"
-						>
-						</BaseVeeSelectV2>
-					</div>
-					<BaseButton
-						v-if="isAdmin"
-						styles="!bg-[#A1D7FF] min-h-[46px] px-4 py-3.5 text-sm !w-[120px]"
-						@click="showUploadModal = true"
-					>
-						<div class="flex gap-2 items-center">
-							<nuxt-icon name="icon-upload" filled class="text-[18px] text-black" />
-							<span>Subir documento</span>
+				<div class="flex flex-wrap gap-x-5 min-[1367px]:gap-[52px]">
+					<BaseSearchInput
+						v-if="!isAdmin"
+						:value="searchVal"
+						placeholder="Ingrese su búsqueda aquí"
+						:customClass="`w-full lg:w-[636px] mb-4 mt-6`"
+						customClassInput="h-[40px] text-xs md:text-base placeholder:text-xs md:h-auto"
+						@change="changeInputSearch"
+						@on-action="onActionInputSearch"
+						@no-focus="() => eventClick(searchVal, 'Search-Documentos')"
+					/>
+
+					<div class="flex-wrap items-center gap-x-1 gap-y-4 lg:gap-[23px] flex mb-4 min-[1366px]:mb-0">
+						<div class="flex flex-wrap items-center gap-2 w-max">
+							<span class="hidden md:block font-nunito text-sm font-extrabold">Filtrar:</span>
+							<BaseVeeSelectV2
+								id="filter"
+								:value="filterId"
+								icon="iconFilter"
+								class="w-[154px] md:w-[149px]"
+								label=""
+								:options="filterMock"
+								responsivePlaceholder="Filtrar"
+								@change="handleChangeSelect"
+							/>
 						</div>
-					</BaseButton>
+
+						<div class="flex flex-wrap items-center gap-2 w-max">
+							<span class="hidden md:block font-nunito text-sm font-extrabold">Ordenar:</span>
+							<BaseVeeSelectV2
+								id="order"
+								:value="orderId"
+								icon="iconUpDown"
+								class="w-[154px] md:w-[149px]"
+								:options="orderMock"
+								responsivePlaceholder="Ordenar"
+								@change="handleChangeSelect"
+							/>
+						</div>
+
+						<BaseButton
+							v-if="isAdmin"
+							styles="!bg-secondary hover:!bg-[#021033] text-white min-h-[36px] px-4 py-3.5 text-sm !w-max"
+							@click="showUploadModal = true"
+						>
+							<div class="flex gap-2 items-center">
+								<nuxt-icon name="icon-upload" filled class="text-[18px]" />
+								<span>Subir documento</span>
+							</div>
+						</BaseButton>
+					</div>
 				</div>
 			</div>
 
@@ -531,5 +544,6 @@ const showUploadModal = ref(false);
 		:show="showUploadModal"
 		:categories="categories"
 		@close="showUploadModal = false"
+		@upload="reloadDocuments"
 	/>
 </template>

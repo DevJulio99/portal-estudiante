@@ -272,12 +272,12 @@ function setError(msg = "Correo o contraseña incorrecta") {
 
   .inputs-container input[type=text]:hover,
   .inputs-container input[type=password]:hover {
-    border: solid 2px #73B4FE;
+    border: solid 2px #287F6B;
   }
 
   .inputs-container input[type=text]:focus,
   .inputs-container input[type=password]:focus {
-    border: solid 2px #73B4FE;
+    border: solid 2px #1E6657;
   }
 
   .options-container {
@@ -306,7 +306,8 @@ function setError(msg = "Correo o contraseña incorrecta") {
 
   .btn-login {
     border: 0;
-    background-color: #4548AD;
+    background-color: #287F6B;
+    border-radius: 4px;
     color: white;
     padding: 8px;
     width: 100%;
@@ -314,7 +315,7 @@ function setError(msg = "Correo o contraseña incorrecta") {
   }
 
   .btn-login:hover {
-    background-color: #191B6B;
+    background-color: #1E6657;
   }
 
   .register-container {

@@ -16,8 +16,8 @@ export default {
       },
       colors: {
         primary: '#287f6b',
-				'primary-disabled': '#FFE2BE',
-				secondary: '#333333',
+				'primary-disabled': '#C2D1D9',
+				secondary: '#031448',
 				url: '#3817FF',
 				skyBlue: '#00B9FF',
 				yellow: '#FDBF3F',

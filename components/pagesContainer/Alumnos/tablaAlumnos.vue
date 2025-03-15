@@ -10,7 +10,8 @@ const popupDetalleData = ref<Alumno | null>(null);
 const popupDetalleVisible = ref(false);
 const tipoModal = ref<'edit' | 'info' | 'register' | 'delete'>('info');
 const mensajeError = ref('');
-
+const currentPage = ref(1);
+const valorFilter = ref('');
 const alumnoStore = useAlumnoStore();
 
 watch(() => alumnoStore.lista, (response) => {
@@ -26,11 +27,39 @@ watch(() => alumnoStore.error, (error) => {
 	mensajeError.value = error.message;
 	(document as any).getElementById('popupMsg').style.right = '20px';
 	setTimeout(() => {
-		(document as any).getElementById('popupMsg').style.right = '-250px';
+		(document as any).getElementById('popupMsg').style.right = '-1000px';
 	}, 5000);
   }
   
 });
+
+const handlePage = (number: number) => {
+  currentPage.value = number;
+  if(alumnoStore.paginado.pagina !== number){
+	alumnoStore.setPagina(number);
+  if(alumnoStore.activeFilter){
+	alumnoStore.FiltrarAlumno(valorFilter.value);
+  }
+
+  if(alumnoStore.activeList){
+	alumnoStore.getAlumnos();
+  }
+  }
+};
+
+const onFilter = (value: string) => {
+	valorFilter.value = value;
+	alumnoStore.setPagina(1);
+	alumnoStore.FiltrarAlumno(value);
+}
+
+const limpiarFiltro = () => {
+	valorFilter.value = '';
+	alumnoStore.activeFilter = false;
+	alumnoStore.setPagina(1);
+	currentPage.value = 1;
+	alumnoStore.getAlumnos();
+}
 
 const masInformacion = (datos: Alumno) => {
 	tipoModal.value = 'info';
@@ -94,10 +123,10 @@ const eliminar = (datos: Alumno) => {
     />
   </div> -->
   <div
-		v-if="!alumnoStore.pending && listaAlumnos.length > 0"
+		v-if="!alumnoStore.pending"
 		class="w-full"
 	>
-    <AccionesAlumno :onRegister="registrar"/>
+    <AccionesAlumno :onRegister="registrar" :on-filter="onFilter" :clear-filter="limpiarFiltro"/>
 		<div
 			class="w-full"
 		>
@@ -109,11 +138,17 @@ const eliminar = (datos: Alumno) => {
 							<th class="min-w-[120px]">APELLIDOS</th>
 							<th class="min-w-[120px]">TELEFONO</th>
 							<th class="min-w-[120px]">EMAIL</th>
-							<th class="min-w-[120px]">SEXO</th>
+							<th class="min-w-[120px]">GÉNERO</th>
 							<th class="min-w-[120px]">ACCIONES</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody class="relative">
+						
+						
+						<tr v-if="alumnoStore.pendingTable || !alumnoStore.lista.length">
+                             <td v-if="alumnoStore.pendingTable" colspan="6"><BaseStatusLoading class="w-full py-10" /></td>
+							 <td v-else-if="!alumnoStore.lista.length" colspan="6"><div class="w-full py-10 text-xl font-bold">No se encontro datos</div></td>
+						</tr>
 						<tr v-for="(item, index) in listaAlumnos" :key="index">
 							<td>{{ item.nombre }}</td>
                             <td>{{ item.apellidoPaterno }} {{ item.apellidoMaterno }}</td>
@@ -121,14 +156,23 @@ const eliminar = (datos: Alumno) => {
                             <td>{{ item.correo }}</td>
                             <td>{{ item.genero }}</td>
                             <td class="flex justify-center items-center gap-2">
-                                <button class="px-2 py-2 text-white bg-blue_link rounded" @click="() => masInformacion(item)">Info</button>
-                                <button class="px-2 py-2 text-white bg-amber_60 rounded" @click="() => actualizar(item)">Actualizar</button>
-                                <button class="px-2 py-2 text-white bg-error rounded" @click="() => eliminar(item)">Eliminar</button>
+                                <button class="px-2 py-2 text-primary font-bold bg-transparent border border-[#287F6B] rounded hover:bg-[#287F6B]/10" @click="() => masInformacion(item)">Info</button>
+                                <button class="px-2 py-2 text-white font-bold bg-primary hover:bg-[#1E6657] rounded" @click="() => actualizar(item)">Actualizar</button>
+                                <button class="px-2 py-2 text-secondary font-bold bg-transparent border border-secondary hover:bg-secondary/10 rounded" @click="() => eliminar(item)">Eliminar</button>
                             </td>
 							
 						</tr>
 					</tbody>
 				</table>
+
+				<BasePagination
+				 class="my-3"
+				 v-if="listaAlumnos.length"
+                 :totalItems="alumnoStore.total"
+                 :currentPage="alumnoStore.paginado.pagina"
+                 :items-per-page="alumnoStore.paginado.itemsPorPagina"
+                 @change="handlePage"
+                 />
 			</div>
 		</div>
 	</div>
@@ -162,7 +206,7 @@ th {
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 	color: white;
-	background-color: #28A745;
+	background-color: #031448;
 	font-weight: 600;
 	font-size: 16px;
 }
