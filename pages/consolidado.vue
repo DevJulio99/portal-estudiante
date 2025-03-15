@@ -145,7 +145,7 @@ const generatePDF = async () => {
           pdf.setFontSize(12);
           pdf.setFont('helvetica', 'bold');
           pdf.text('INSTITUCIÓN EDUCATIVA', textX, textY);
-          pdf.text('"CODESTI"', textX, textY + 6);
+          pdf.text('"JORGE BASADRE"', textX, textY + 6);
         }
 
         return pdf.output('blob');
