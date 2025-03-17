@@ -13,6 +13,7 @@ class EstadoCompetenciaModule extends FetchFactory<DataResponse<EstadoCompencia[
 	 */
 	async getListarEstado(
 		idPostulante: number,
+		idCompetencia: number,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<EstadoCompencia[]>>,
 	) {
 		return await useAsyncData(() => {
@@ -21,7 +22,7 @@ class EstadoCompetenciaModule extends FetchFactory<DataResponse<EstadoCompencia[
 			};
 			return this.call(
 				'GET',
-				`${this.RESOURCE}/${idPostulante}`,
+				`${this.RESOURCE}/${idPostulante}/${idCompetencia}`,
 				undefined, // body
 				fetchOptions,
 			);

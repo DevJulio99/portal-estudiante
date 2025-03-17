@@ -1,35 +1,38 @@
-export const getEstados = async (idPostulante: number, idCompetencia: number) => {
-    const { $api } = useNuxtApp();
-    const estadoCompetenciaStore = useEstadoCompetenciaStore();
+// export const getEstados = async (idPostulante: number, idCompetencia: number) => {
+//     const { $api } = useNuxtApp();
+// 	const competenciaStore = useCompetenciaStore();
+//     const estadoCompetenciaStore = useEstadoCompetenciaStore();
 
-	try{
-		const listaEstados = await $api.estado.getListarEstado(idPostulante, {lazy: true,})
+// 	try{
+// 		const listaEstados = await $api.estado.getListarEstado(idPostulante, {lazy: true,})
 	   
-	if(listaEstados.error.value){
-	 const bodyError = listaEstados.error.value.data;
-	 throw new Error(bodyError ? "nodata" : "other");
-	}
+// 	if(listaEstados.error.value){
+// 	 const bodyError = listaEstados.error.value.data;
+// 	 throw new Error(bodyError ? "nodata" : "other");
+// 	}
 
-	listaEstados.data.value?.data.length && estadoCompetenciaStore.setLista(listaEstados.data.value.data);
-	}catch(e: any){
-	   if(e.message == 'nodata'){
-		const request = {
-            idCompetencia,
-            idPostulante,
-            estado: "i"
-        };
-
-		await $api.cambiarEstado.registrarEstado(request, {lazy: true});
-        console.log('se registro nuevo estado');
-	   }
-	}
-};
+// 	listaEstados.data.value?.data.length && estadoCompetenciaStore.setLista(listaEstados.data.value.data);
+// 	}catch(e: any){
+// 	   if(e.message == 'nodata'){
+// 		const request = {
+//             idCompetencia,
+//             idPostulante,
+//             estado: "i"
+//         };
+// 		console.log('competenciaSeleccionada', competenciaStore.competenciaSeleccionada);
+// 		console.log('competenciaActual', competenciaStore.competenciaActual);
+// 		await $api.cambiarEstado.registrarEstado(request, {lazy: true});
+//         console.log('se registro nuevo estado');
+// 	   }
+// 	}
+// };
 
 export const ListarEstado = async(idPostulante: number) => {
 	const { $api } = useNuxtApp();
     const estadoCompetenciaStore = useEstadoCompetenciaStore();
+	const competenciaStore = useCompetenciaStore();
 
-	const listaEstados = await $api.estado.getListarEstado(idPostulante, {lazy: true,})
+	const listaEstados = await $api.estado.getListarEstado(idPostulante,competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0, {lazy: true,})
 	listaEstados.data.value?.data.length && estadoCompetenciaStore.setLista(listaEstados.data.value.data);
 }
 
