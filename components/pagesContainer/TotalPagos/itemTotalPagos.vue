@@ -18,22 +18,6 @@ const popupDetalleVisible = ref(false);
 const isMediumScreen = useMediaQuery("(min-width: 768px)");
 const pagoStore = usePagoStore();
 
-const {
-  data: dataPagos,
-  error: errorPagos,
-  pending: loadingPagos,
-} = await $api.pagos.getPagosPorSede(tokenStore.getDataToken.Codigo_Sede, {
-  lazy: true,
-});
-
-watch(dataPagos, (response) => {
-  if (response?.data?.length) {
-    listaPagosPendientes.value = response.data
-  } else if (response?.error) {
-    servicesError.value = response.error;
-  }
-});
-
 const showPopup = (datos: object) => {
 	popupDetalleData.value = datos;
 	popupDetalleVisible.value = true;
@@ -54,16 +38,23 @@ const dateIsExpired = (strFechaDoc: string) => {
 	const fechaActual = new Date();
 	return fechaDocumento < fechaActual;
 };
+
+const handlePage = (number: number) => {
+	if(pagoStore.paginado.pagina !== number){
+		pagoStore.paginado.pagina = number;
+	    pagoStore.listarPagos();
+	}
+};
 </script>
 
 <template>
   <div
-    v-if="loadingPagos"
+    v-if="pagoStore.pending"
     class="w-full h-[200px] md:h-[350px] flex justify-center"
   >
     <BaseStatusLoading />
   </div>
-  <div
+  <!-- <div
     v-else-if="errorPagos"
     class="flex items-center justify-center h-[240px] md:h-[380px]"
   >
@@ -72,7 +63,7 @@ const dateIsExpired = (strFechaDoc: string) => {
       :description="'Inténtalo de nuevo más tarde'"
       :icono="null"
     />
-  </div>
+  </div> -->
   <div
     v-else-if="servicesError"
     class="flex items-center justify-center h-[240px] md:h-[380px]"
@@ -86,8 +77,9 @@ const dateIsExpired = (strFechaDoc: string) => {
       :icono="servicesError?.icono"
     />
   </div>
+  <div v-if="!pagoStore.pending && !pagoStore.lista.length" class="w-full py-10 text-xl font-bold text-center">No se encontro datos</div>
   <div
-		v-if="!loadingPagos && listaPagosPendientes.length > 0"
+		v-if="!pagoStore.pending && pagoStore.lista.length > 0"
 		class="w-full"
 	>
 		<!-- <div v-if="isMediumScreen" class="mb-3">
@@ -110,7 +102,7 @@ const dateIsExpired = (strFechaDoc: string) => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(item, index) in listaPagosPendientes" :key="index">
+						<tr v-for="(item, index) in pagoStore.lista" :key="index">
 							<td>{{ item.documentoPago != '' ? item.documentoPago : '-' }}</td>
 							<td
 								:class="{
@@ -153,6 +145,14 @@ const dateIsExpired = (strFechaDoc: string) => {
 			</div>
 		</div>
 	</div>
+	<BasePagination
+				 class="my-3"
+				 v-if="pagoStore.lista.length"
+                 :totalItems="pagoStore.total"
+                 :currentPage="pagoStore.paginado.pagina"
+                 :items-per-page="pagoStore.paginado.itemsPorPagina"
+                 @change="handlePage"
+    />
   <PagesContainerPagosPopupPaymentDetail
 		v-if="popupDetalleVisible"
 		:data="popupDetalleData"

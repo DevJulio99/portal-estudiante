@@ -46,12 +46,12 @@ export interface ActualizarAlumno extends RequestAlumno{
     contraseña: string;
 }
 
-export interface PaginadoAlumno {
+export interface Paginado {
     pagina: number;
     itemsPorPagina: number;
 }
 
-export interface ListaAlumno extends PaginadoAlumno{
+export interface ListaAlumno extends Paginado{
     codigoSede: string;
 }
 

@@ -13,6 +13,16 @@ const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
 	{ name: 'Total Pagos', current: true, url: '' },
 ];
+
+const pagoStore = usePagoStore();
+
+onMounted(() => {
+	pagoStore.listarPagos();
+})
+
+onBeforeUnmount(() => {
+	pagoStore.resetPagos();
+})
 </script>
 
 <template>
