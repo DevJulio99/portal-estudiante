@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import BaseVeeSelect from '~/components/base/BaseVeeSelect.vue';
 import type { ActualizarAlumno, Alumno, RegistrarAlumno } from '~/types/alumno.types';
 
 const props = withDefaults(defineProps<{
@@ -97,15 +98,21 @@ const onChangeInput = (e: any) => {
     }
 };
 
+const formActual = computed(() => props.tipo == 'register' ? registrarAlumno.value : actualizarAlumno.value);
+
 const guardar = () => {
 
-    if(props.tipo == 'register'){
+    const formGuardar =  props.tipo == 'register' ? registrarAlumno.value : actualizarAlumno.value;
+
+    const formValido = validateForm(formGuardar, ['fotoPerfil', 'observaciones', 'habilitadoPrueba', 'tipoAlumno', 'contraseña']);
+    
+    if(props.tipo == 'register' && formValido == 0){
         console.log('registrarAlumno',registrarAlumno.value);
-        alumnoStore.RegistrarAlumno(registrarAlumno.value);
+        alumnoStore.RegistrarAlumno(formGuardar as RegistrarAlumno);
     }
-    if(props.tipo == 'edit'){
+    if(props.tipo == 'edit' && formValido == 0){
         console.log('actualizarAlumno',actualizarAlumno.value);
-        alumnoStore.ActualizarAlumno(actualizarAlumno.value);
+        alumnoStore.ActualizarAlumno(formGuardar as ActualizarAlumno);
     }
 
 }
@@ -114,6 +121,34 @@ const formatearFechaInput = (fecha: string) => {
    const fecha_ = new Date(fecha);
 
    return fecha_.toISOString().split('T')[0];
+}
+
+const handleChangeSelect = (val: any, id?: string) => {
+  if(id === 'genero'){
+    const genero = getGenero(val.id == 1 ? 'M' : 'F');
+    setSelectData(id, genero.key)
+  }
+}
+
+const setSelectData = (name: string, value: string) => {
+    if (props.tipo == 'register') {
+        registrarAlumno.value = {
+            ...registrarAlumno.value,
+            [name]: value
+        };
+    }
+
+    if (props.tipo == 'edit') {
+        actualizarAlumno.value = {
+            ...actualizarAlumno.value,
+            [name]: value
+        };
+    }
+}
+
+const getGenero = (genero: string = '') => {
+   if(genero.toLocaleLowerCase() === 'm') return {value: 1 , key : 'M'}
+   return genero.toLocaleLowerCase() === 'f' ? {value: 2 , key : 'F'} : {value: 0 , key : ''}
 }
 
 onMounted(async () => {
@@ -144,105 +179,133 @@ onMounted(async () => {
 
 <template>
      <BaseTitle :text="tipo == 'edit' ? 'Actualizar usuario' : 'Registrar usuario'" />
-    <div class="w-full grid grid-cols-2 gap-4 overflow-auto max-h-[300px]">
+    <div class="w-full grid grid-cols-2 gap-4 overflow-auto max-h-[300px] px-2">
         <div>
             <span class="font-bold">Grado</span>
             <select 
                 class="w-full outline-none rounded border border-celestial_white px-2 py-1"
                 name="idGrado"
                 @change="onChangeInput"
-                :value="props.tipo === 'register' ? registrarAlumno.idGrado : actualizarAlumno.idGrado">
+                :value="formActual.idGrado">
                 <option value="" disabled>Seleccione un grado</option>
                 <option v-for="grado in gradoStore.listaGrados" :key="grado.idGrado" :value="grado.idGrado">
                     {{ grado.descripcionGrado }}
                 </option>
             </select>
+            <span v-if="alumnoStore.errorForm.includes('idGrado')" class="text-error">Grado obligatorio</span>
         </div>
         <div>
             <span class="font-bold">Correo</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1" 
-                   @input="onChangeInput" name="correo" :value="props.tipo === 'register' ? registrarAlumno.correo : actualizarAlumno.correo">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" 
+                   @input="onChangeInput" name="correo" :value="formActual.correo">
+                   <span v-if="alumnoStore.errorForm.includes('correo')" class="text-error">Correo obligatorio</span>
         </div>
 
         <div v-if="tipo == 'edit'">
             <span class="font-bold">Contraseña</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1" 
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" 
                    @input="onChangeInput" name="contraseña">
         </div>
 
         <div>
             <span class="font-bold">Nombre</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="nombreUsuario" :value="props.tipo === 'register' ? registrarAlumno.nombreUsuario : actualizarAlumno.nombreUsuario">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="nombreUsuario" :value="formActual.nombreUsuario">
+            <span v-if="alumnoStore.errorForm.includes('nombreUsuario')" class="text-error">Nombre obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Apellido paterno</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="apellidoPaterno" :value="props.tipo === 'register' ? registrarAlumno.apellidoPaterno : actualizarAlumno.apellidoPaterno">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="apellidoPaterno" :value="formActual.apellidoPaterno">
+            <span v-if="alumnoStore.errorForm.includes('apellidoPaterno')" class="text-error">Apellido Paterno obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Apellido materno</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="apellidoMaterno" :value="props.tipo === 'register' ? registrarAlumno.apellidoMaterno : actualizarAlumno.apellidoMaterno">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="apellidoMaterno" :value="formActual.apellidoMaterno">
+            <span v-if="alumnoStore.errorForm.includes('apellidoMaterno')" class="text-error">Apellido Materno obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Teléfono</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="telefono" :value="props.tipo === 'register' ? registrarAlumno.telefono : actualizarAlumno.telefono">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="telefono" :value="formActual.telefono">
+            <span v-if="alumnoStore.errorForm.includes('telefono')" class="text-error">Telefono obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Número de documento</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="numeroDocumento" :value="props.tipo === 'register' ? registrarAlumno.numeroDocumento : actualizarAlumno.numeroDocumento">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="numeroDocumento" :value="formActual.numeroDocumento">
+            <span v-if="alumnoStore.errorForm.includes('numeroDocumento')" class="text-error">Numero de documento obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Fecha de nacimiento</span>
-            <!-- <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="fechaNacimiento" :value="actualizarAlumno.fechaNacimiento"> -->
-            <input class="w-full outline-none rounded border border-celestial_white px-2 py-1" type="date" name="fechaNacimiento"
-            :value="props.tipo === 'register' ? registrarAlumno.fechaNacimiento : actualizarAlumno.fechaNacimiento" @input="onChangeInput"
+            <input class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" type="date" name="fechaNacimiento"
+            :value="formActual.fechaNacimiento" @input="onChangeInput"
             :max="fechaMinima">
+            <span v-if="alumnoStore.errorForm.includes('fechaNacimiento')" class="text-error">Fecha de nacimiento obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Dirección</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="direccion" :value="props.tipo === 'register' ? registrarAlumno.direccion : actualizarAlumno.direccion">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="direccion" :value="formActual.direccion">
+            <span v-if="alumnoStore.errorForm.includes('direccion')" class="text-error">Direccion obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Foto de perfil</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="fotoPerfil" :value="props.tipo === 'register' ? registrarAlumno.fotoPerfil : actualizarAlumno.fotoPerfil">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="fotoPerfil" :value="formActual.fotoPerfil">
         </div>
 
         <div>
             <span class="font-bold">Género</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="genero" :value="props.tipo === 'register' ? registrarAlumno.genero : actualizarAlumno.genero">
+            <!-- <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
+            @input="onChangeInput" name="genero" :value="props.tipo === 'register' ? registrarAlumno.genero : actualizarAlumno.genero"> -->
+            <BaseVeeSelectV2
+				id="genero"
+				:value="getGenero(formActual.genero).value"
+				icon="NavArrowDown"
+				class="w-full"
+                borderDefault="border-celestial_white"
+				label=""
+				:options="[
+	              {
+	              	id: 1,
+	              	name: 'Masculino',
+	              },
+	              {
+	              	id: 2,
+	              	name: 'Femenino',
+	              }
+                ]"
+				@change="handleChangeSelect"
+			/>
+            <span v-if="alumnoStore.errorForm.includes('genero')" class="text-error">Genero obligatorio</span>
         </div>
 
         <div>
             <span class="font-bold">Tipo de alumno</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="tipoAlumno" :value="props.tipo === 'register' ? registrarAlumno.tipoAlumno : actualizarAlumno.tipoAlumno">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="tipoAlumno" :value="formActual.tipoAlumno">
         </div>
 
         <div>
             <span class="font-bold">Observaciones</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="observaciones" :value="props.tipo === 'register' ? registrarAlumno.observaciones : actualizarAlumno.observaciones">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="observaciones" :value="formActual.observaciones">
         </div>
 
         <div>
             <span class="font-bold">Apoderado</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="apoderado" :value="props.tipo === 'register' ? registrarAlumno.apoderado : actualizarAlumno.apoderado">
+            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="apoderado" :value="formActual.apoderado">
+            <span v-if="alumnoStore.errorForm.includes('apoderado')" class="text-error">Apoderado obligatorio</span>
         </div>
 
         <div class="flex gap-3">
@@ -250,6 +313,7 @@ onMounted(async () => {
             <input type="checkbox"
                 @change="onChangeInput"
                 name="habilitadoPrueba"
+                :checked="formActual.habilitadoPrueba"
                 class="w-6 h-6 outline-none border border-celestial_white px-2 py-1">
         </div>
     </div>

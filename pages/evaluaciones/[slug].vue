@@ -64,7 +64,7 @@ const competenciaActual = computed(() => competenciaStore.competenciaSeleccionad
 const preguntaActual = computed(() => examenStore.preguntaActual)
 
 console.log('postulanteStore.data', postulanteStore.data);
-const {data: dataEstados, error: errorEstados} = await $api.estado.getListarEstado(postulanteStore.data?.idPostulante ?? 0, {lazy: true,})
+const {data: dataEstados, error: errorEstados} = await $api.estado.getListarEstado(postulanteStore.data?.idPostulante ?? 0,competenciaActual.value?.id_compentencia ?? 0, {lazy: true,})
 
 
 watch(dataEstados, (estados)  => {

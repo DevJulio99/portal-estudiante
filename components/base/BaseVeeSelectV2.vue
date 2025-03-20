@@ -12,6 +12,7 @@ const props = withDefaults(
 		icon: string;
 		iconStyle?: string;
 		options: any;
+		borderDefault: string;
 	}>(),
 	{
 		disabled: false,
@@ -24,6 +25,7 @@ const props = withDefaults(
 		placeholder: null,
 		responsivePlaceholder: '',
 		options: [],
+		borderDefault: ''
 	},
 );
 const emit = defineEmits(['change']);
@@ -73,7 +75,7 @@ const currentValue = () => {
 	<div class="flex flex-col relative">
 		<div
 			class="relative border-[1px] rounded flex items-center"
-			:class="openSelect ? 'border-turquoise' : ''"
+			:class="openSelect ? 'border-turquoise' : borderDefault"
 		>
 			<div
 				:class="`${customStyle} flex items-center w-full py-1.5 px-3 md:p-3 rounded`"

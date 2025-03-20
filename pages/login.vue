@@ -129,10 +129,10 @@ function setError(msg = "Correo o contraseña incorrecta") {
           </div> -->
           <div class="inputs-container">
             <label for="email">USUARIO</label>
-            <input type="text" name="email" @input="changeEl">
+            <input type="text" name="email" @input="changeEl" @keypress.enter="handleFormSubmit">
 
             <label for="password">CONTRASEÑA</label>
-            <input type="password" name="password" @input="changeEl">
+            <input type="password" name="password" @input="changeEl" @keypress.enter="handleFormSubmit">
 
             <!-- <div class="options-container">
               <div>

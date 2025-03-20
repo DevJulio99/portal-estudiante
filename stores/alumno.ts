@@ -16,6 +16,8 @@ interface alumnoStoreStatus {
 	total: number;
 	activeList: boolean;
 	activeFilter: boolean;
+	errorForm: string[];
+	tipoModal: 'success' | 'error';
 }
 export const useAlumnoStore = defineStore('alumnoStore', {
 	state: (): alumnoStoreStatus => ({
@@ -32,12 +34,22 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 		},
 		total: 0,
 		activeList: true,
-		activeFilter: false
+		activeFilter: false,
+		errorForm: [],
+		tipoModal: 'success'
 	}),
 	actions: {
 		setLista(data: Alumno[]){
            this.lista = data;
         },
+		setErrorForm(data: string[]){
+			this.errorForm = data;
+			if(data.length) this.tipoModal = 'error';
+		},
+		setError(status: boolean, message: string){
+            this.error = { status, message };
+			if(status) this.tipoModal = 'error';
+		},
 		setPagina(pagina: number){
            this.paginado.pagina = pagina;
 		},
@@ -48,6 +60,7 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			status: false,
 			message: ''
 		   }
+		   this.errorForm = [];
 		},
 		async getAlumnos(){
 			const tokenStore = useTokenStore();
@@ -79,6 +92,7 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			}
 
 			if(listaAlumnos.error.value){
+				this.tipoModal = 'error';
 				this.pendingTable = false;
 				this.lista = [];
 				if(listaAlumnos.error.value.statusCode !== 404){
@@ -102,12 +116,18 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			const registrarAlumnos = await $api.alumno.registrarAlumno(request);
 
 			if(!registrarAlumnos.error.value){
+				this.tipoModal = 'success';
+				this.error = {
+					status: true,
+					message: 'Se registro Correctamente'
+				};
 				this.pending = true;
 				this.lista = [];
 				this.getAlumnos()
 			}
 
 			if(registrarAlumnos.error.value){
+				this.tipoModal = 'error';
 				this.error = {
 					status: true,
 					message: (registrarAlumnos.error.value.data as any).message
@@ -126,12 +146,18 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			const actualizarAlumnos = await $api.alumno.actualizarAlumno(request);
 
 			if(!actualizarAlumnos.error.value){
+				this.tipoModal = 'success';
+				this.error = {
+					status: true,
+					message: 'Se actualizo Correctamente'
+				};
 				this.pending = true;
 				this.lista = [];
 				this.getAlumnos()
 			}
 
 			if(actualizarAlumnos.error.value){
+				this.tipoModal = 'error';
 				this.error = {
 					status: true,
 					message: (actualizarAlumnos.error.value.data as any).message
@@ -150,12 +176,18 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			const eliminarAlumnos = await $api.alumno.eliminarAlumno(numeroDocumento);
 
 			if(!eliminarAlumnos.error.value){
+				this.tipoModal = 'success';
+				this.error = {
+					status: true,
+					message: 'Se elimino Correctamente'
+				};
 				this.pending = true;
 				this.lista = [];
 				this.getAlumnos()
 			}
 
 			if(eliminarAlumnos.error.value){
+				this.tipoModal = 'error';
 				this.error = {
 					status: true,
 					message: (eliminarAlumnos.error.value.data as any).message
@@ -196,6 +228,7 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			}
 			//console.log('filtroAlumnos',filtroAlumnos)
 			if(filtroAlumnos.error.value){
+				this.tipoModal = 'error';
 				this.pendingTable = false;
 				this.lista = [];
 				if(filtroAlumnos.error.value.statusCode !== 404){

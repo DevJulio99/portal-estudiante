@@ -68,6 +68,7 @@ const masInformacion = (datos: Alumno) => {
 };
 
 const hidePopup = () => {
+	alumnoStore.setErrorForm([]);
     popupDetalleData.value = null;
 	popupDetalleVisible.value = false;
 	const body: HTMLElement | null = document.querySelector('body');
@@ -182,7 +183,7 @@ const eliminar = (datos: Alumno) => {
         :data="popupDetalleData"
 		:onClose="hidePopup"
 	/>
-	<PopUpMensaje :message="mensajeError"/>
+	<PopUpMensaje :message="mensajeError" :type="alumnoStore.tipoModal"/>
 </template>
 <style lang="postcss" scoped>
 .box-table {

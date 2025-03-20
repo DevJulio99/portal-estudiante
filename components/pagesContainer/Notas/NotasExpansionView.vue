@@ -129,6 +129,13 @@ async function actionExpansion(option: Option) {
 		currentOption.value?.id ?? 0,
 	);
 }
+
+onMounted(() => {
+	actionExpansion({
+		id: 1,
+		name: 'Detalle',
+    });
+})
 </script>
 
 <template aria-label="NotasExpansionView">
