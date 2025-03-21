@@ -1,4 +1,5 @@
 import { object } from "yup";
+import { useMsgPopUpStore } from "~/stores/msgPopup";
 
 export const decryptJWT = (token: string) => {
     const parts = token.split('.');
@@ -74,7 +75,7 @@ export const convertArrayInObject = (arrays: string[][]) => {
 
 export const validateForm = (form: object, optional: string[]) => {
    const alumnoStore = useAlumnoStore();
-   const errorPopupStore = useErrorPopUpStore();
+   const msgPopupStore = useMsgPopUpStore();
    const arraysForm = Object.entries(form);
    const noOptional = arraysForm.filter(x => !optional.includes(x[0]));
    const valid = ['correo'];
@@ -105,8 +106,7 @@ export const validateForm = (form: object, optional: string[]) => {
     alumnoStore.msgError = convertArrayInObject(arrayErrors);
     alumnoStore.setErrorForm(keysErrorData);
     //alumnoStore.setError(true, hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos')
-    errorPopupStore.tipoModal = 'error';
-		errorPopupStore.setError(true, hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos');
+		msgPopupStore.setError(true, hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos', 'error');
    }
 
    if(!keysErrorData.length){

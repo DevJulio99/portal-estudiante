@@ -15,6 +15,10 @@ const alumnoStore = useAlumnoStore();
 onMounted(() => {
     alumnoStore.getAlumnos();
 })
+
+onBeforeUnmount(() => {
+  alumnoStore.resetAlumnos();
+})
 </script>
 <template>
 

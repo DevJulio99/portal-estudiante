@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import type { Paginado } from '~/types/alumno.types';
 import type { PagosPendientesData } from '~/types/pagos.types';
+import { useMsgPopUpStore } from './msgPopup';
 
 interface PagoStore {
 	idPago: number;
@@ -59,9 +60,9 @@ export const usePagoStore = defineStore('PagoStore', {
 
 			if(servicePagos.error.value){
 				this.lista = []
-				const errorPopupStore = useErrorPopUpStore();
+				const msgPopupStore = useMsgPopUpStore();
 				console.log('servicePagos.error.value', servicePagos.error.value.data)
-				errorPopupStore.setError(true, (servicePagos.error.value.data as any)?.message);
+				msgPopupStore.setError(true, (servicePagos.error.value.data as any)?.message, 'error');
 			}
 
 			this.pending = false;
