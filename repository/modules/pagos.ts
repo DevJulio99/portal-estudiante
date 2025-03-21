@@ -1,7 +1,7 @@
 import { type FetchOptions } from 'ofetch';
 import type { AsyncDataOptions } from '#app';
 import FetchFactory from '../factory';
-import type { PagosPendientesData } from '~/types/pagos.types';
+import type { ListaPagos, PagosPendientesData } from '~/types/pagos.types';
 import type { DataResponse } from '~/types/services.types';
 
 class PagosModule extends FetchFactory<DataResponse<PagosPendientesData[]>> {
@@ -33,7 +33,7 @@ class PagosModule extends FetchFactory<DataResponse<PagosPendientesData[]>> {
 	}
 
 	async getPagosPorSede(
-		codigoSede: string,
+		body: ListaPagos,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<PagosPendientesData[]>>,
 	) {
 		return await useAsyncData(
@@ -42,9 +42,9 @@ class PagosModule extends FetchFactory<DataResponse<PagosPendientesData[]>> {
 					headers: {},
 				};
 				return this.call(
-					'GET',
-					`${this.RESOURCE}listar-pago-sede/${codigoSede}`,
-					undefined,
+					'POST',
+					`${this.RESOURCE}listar-pago-sede`,
+					body,
 					fetchOptions,
 				);
 			},

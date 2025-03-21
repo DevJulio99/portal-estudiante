@@ -102,17 +102,17 @@ const formActual = computed(() => props.tipo == 'register' ? registrarAlumno.val
 
 const guardar = () => {
 
-    const formGuardar =  props.tipo == 'register' ? registrarAlumno.value : actualizarAlumno.value;
+    const formAlumno =  props.tipo == 'register' ? registrarAlumno.value : actualizarAlumno.value;
 
-    const formValido = validateForm(formGuardar, ['fotoPerfil', 'observaciones', 'habilitadoPrueba', 'tipoAlumno', 'contraseña']);
+    const formValido = validateForm(formAlumno, ['fotoPerfil', 'observaciones', 'habilitadoPrueba', 'tipoAlumno', 'contraseña']);
     
-    if(props.tipo == 'register' && formValido == 0){
+    if(props.tipo == 'register' && formValido){
         console.log('registrarAlumno',registrarAlumno.value);
-        alumnoStore.RegistrarAlumno(formGuardar as RegistrarAlumno);
+        alumnoStore.RegistrarAlumno(formAlumno as RegistrarAlumno);
     }
-    if(props.tipo == 'edit' && formValido == 0){
+    if(props.tipo == 'edit' && formValido){
         console.log('actualizarAlumno',actualizarAlumno.value);
-        alumnoStore.ActualizarAlumno(formGuardar as ActualizarAlumno);
+        alumnoStore.ActualizarAlumno(formAlumno as ActualizarAlumno);
     }
 
 }
@@ -192,13 +192,13 @@ onMounted(async () => {
                     {{ grado.descripcionGrado }}
                 </option>
             </select>
-            <span v-if="alumnoStore.errorForm.includes('idGrado')" class="text-error">Grado obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('idGrado')" class="text-error">{{alumnoStore?.msgError?.idGrado}}</span>
         </div>
         <div>
             <span class="font-bold">Correo</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" 
                    @input="onChangeInput" name="correo" :value="formActual.correo">
-                   <span v-if="alumnoStore.errorForm.includes('correo')" class="text-error">Correo obligatorio</span>
+                   <span v-if="alumnoStore.errorForm.includes('correo')" class="text-error">{{alumnoStore?.msgError?.correo}}</span>
         </div>
 
         <div v-if="tipo == 'edit'">
@@ -211,35 +211,35 @@ onMounted(async () => {
             <span class="font-bold">Nombre</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
             @input="onChangeInput" name="nombreUsuario" :value="formActual.nombreUsuario">
-            <span v-if="alumnoStore.errorForm.includes('nombreUsuario')" class="text-error">Nombre obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('nombreUsuario')" class="text-error">{{alumnoStore?.msgError?.nombreUsuario}}</span>
         </div>
 
         <div>
             <span class="font-bold">Apellido paterno</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
             @input="onChangeInput" name="apellidoPaterno" :value="formActual.apellidoPaterno">
-            <span v-if="alumnoStore.errorForm.includes('apellidoPaterno')" class="text-error">Apellido Paterno obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('apellidoPaterno')" class="text-error">{{alumnoStore?.msgError?.apellidoPaterno}}</span>
         </div>
 
         <div>
             <span class="font-bold">Apellido materno</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
             @input="onChangeInput" name="apellidoMaterno" :value="formActual.apellidoMaterno">
-            <span v-if="alumnoStore.errorForm.includes('apellidoMaterno')" class="text-error">Apellido Materno obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('apellidoMaterno')" class="text-error">{{alumnoStore?.msgError?.apellidoMaterno}}</span>
         </div>
 
         <div>
             <span class="font-bold">Teléfono</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
             @input="onChangeInput" name="telefono" :value="formActual.telefono">
-            <span v-if="alumnoStore.errorForm.includes('telefono')" class="text-error">Telefono obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('telefono')" class="text-error">{{alumnoStore?.msgError?.telefono}}</span>
         </div>
 
         <div>
             <span class="font-bold">Número de documento</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
             @input="onChangeInput" name="numeroDocumento" :value="formActual.numeroDocumento">
-            <span v-if="alumnoStore.errorForm.includes('numeroDocumento')" class="text-error">Numero de documento obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('numeroDocumento')" class="text-error">{{alumnoStore?.msgError?.numeroDocumento}}</span>
         </div>
 
         <div>
@@ -247,14 +247,14 @@ onMounted(async () => {
             <input class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" type="date" name="fechaNacimiento"
             :value="formActual.fechaNacimiento" @input="onChangeInput"
             :max="fechaMinima">
-            <span v-if="alumnoStore.errorForm.includes('fechaNacimiento')" class="text-error">Fecha de nacimiento obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('fechaNacimiento')" class="text-error">{{alumnoStore?.msgError?.fechaNacimiento}}</span>
         </div>
 
         <div>
             <span class="font-bold">Dirección</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
             @input="onChangeInput" name="direccion" :value="formActual.direccion">
-            <span v-if="alumnoStore.errorForm.includes('direccion')" class="text-error">Direccion obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('direccion')" class="text-error">{{alumnoStore?.msgError?.direccion}}</span>
         </div>
 
         <div>
@@ -265,8 +265,6 @@ onMounted(async () => {
 
         <div>
             <span class="font-bold">Género</span>
-            <!-- <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1"
-            @input="onChangeInput" name="genero" :value="props.tipo === 'register' ? registrarAlumno.genero : actualizarAlumno.genero"> -->
             <BaseVeeSelectV2
 				id="genero"
 				:value="getGenero(formActual.genero).value"
@@ -286,7 +284,7 @@ onMounted(async () => {
                 ]"
 				@change="handleChangeSelect"
 			/>
-            <span v-if="alumnoStore.errorForm.includes('genero')" class="text-error">Genero obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('genero')" class="text-error">{{alumnoStore?.msgError?.genero}}</span>
         </div>
 
         <div>
@@ -305,7 +303,7 @@ onMounted(async () => {
             <span class="font-bold">Apoderado</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
             @input="onChangeInput" name="apoderado" :value="formActual.apoderado">
-            <span v-if="alumnoStore.errorForm.includes('apoderado')" class="text-error">Apoderado obligatorio</span>
+            <span v-if="alumnoStore.errorForm.includes('apoderado')" class="text-error">{{alumnoStore?.msgError?.apoderado}}</span>
         </div>
 
         <div class="flex gap-3">

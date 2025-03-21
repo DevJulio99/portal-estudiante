@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { Alumno, PaginadoAlumno } from '~/types/alumno.types';
+import type { Alumno, Paginado } from '~/types/alumno.types';
 import type { RegistrarAlumno, ActualizarAlumno, FiltroAlumno } from '~/types/alumno.types';
 
 interface errorAlumno {
@@ -7,17 +7,22 @@ interface errorAlumno {
 	message: string;
 }
 
+interface ErrorCampo {
+	[key: string]: string
+}
+
 interface alumnoStoreStatus {
     lista: Alumno[];
 	pending: boolean;
 	pendingTable: boolean;
 	error: errorAlumno;
-	paginado: PaginadoAlumno;
+	paginado: Paginado;
 	total: number;
 	activeList: boolean;
 	activeFilter: boolean;
 	errorForm: string[];
 	tipoModal: 'success' | 'error';
+	msgError: ErrorCampo | null;
 }
 export const useAlumnoStore = defineStore('alumnoStore', {
 	state: (): alumnoStoreStatus => ({
@@ -36,7 +41,8 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 		activeList: true,
 		activeFilter: false,
 		errorForm: [],
-		tipoModal: 'success'
+		tipoModal: 'success',
+		msgError: null
 	}),
 	actions: {
 		setLista(data: Alumno[]){
@@ -96,108 +102,130 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 				this.pendingTable = false;
 				this.lista = [];
 				if(listaAlumnos.error.value.statusCode !== 404){
-					this.error = {
-						status: true,
-						message: (listaAlumnos.error.value.data as any).message
-					};
+					const errorPopupStore = useErrorPopUpStore();
+					errorPopupStore.tipoModal = 'error';
+					errorPopupStore.setError(true, (listaAlumnos.error.value.data as any).message)
+					// this.error = {
+					// 	status: true,
+					// 	message: (listaAlumnos.error.value.data as any).message
+					// };
+
 				}
 			}
 			this.pending = false;
 		},
 		async RegistrarAlumno(request: RegistrarAlumno) {
 			const { $api } = useNuxtApp();
-			this.error = {
-				status: false,
-				message: ''
-			};
+			const errorPopupStore = useErrorPopUpStore();
+			// this.error = {
+			// 	status: false,
+			// 	message: ''
+			// };
+			errorPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			const registrarAlumnos = await $api.alumno.registrarAlumno(request);
 
 			if(!registrarAlumnos.error.value){
-				this.tipoModal = 'success';
-				this.error = {
-					status: true,
-					message: 'Se registro Correctamente'
-				};
+				//this.tipoModal = 'success';
+				errorPopupStore.tipoModal = 'success';
+				// this.error = {
+				// 	status: true,
+				// 	message: 'Se registro Correctamente'
+				// };
+				errorPopupStore.setError(true, 'Se registro Correctamente')
 				this.pending = true;
 				this.lista = [];
 				this.getAlumnos()
 			}
 
 			if(registrarAlumnos.error.value){
-				this.tipoModal = 'error';
-				this.error = {
-					status: true,
-					message: (registrarAlumnos.error.value.data as any).message
-				};
+				// this.tipoModal = 'error';
+				// this.error = {
+				// 	status: true,
+				// 	message: (registrarAlumnos.error.value.data as any).message
+				// };
+				errorPopupStore.tipoModal = 'error';
+				errorPopupStore.setError(true, (registrarAlumnos.error.value.data as any).message)
 			}
 		},
 		async ActualizarAlumno(request: ActualizarAlumno) {
 			const { $api } = useNuxtApp();
-			this.error = {
-				status: false,
-				message: ''
-			};
+			const errorPopupStore = useErrorPopUpStore();
+			// this.error = {
+			// 	status: false,
+			// 	message: ''
+			// };
+			errorPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			const actualizarAlumnos = await $api.alumno.actualizarAlumno(request);
 
 			if(!actualizarAlumnos.error.value){
-				this.tipoModal = 'success';
-				this.error = {
-					status: true,
-					message: 'Se actualizo Correctamente'
-				};
+				// this.tipoModal = 'success';
+				// this.error = {
+				// 	status: true,
+				// 	message: 'Se actualizo Correctamente'
+				// };
+				errorPopupStore.tipoModal = 'success';
+				errorPopupStore.setError(true, 'Se actualizo Correctamente')
 				this.pending = true;
 				this.lista = [];
 				this.getAlumnos()
 			}
 
 			if(actualizarAlumnos.error.value){
-				this.tipoModal = 'error';
-				this.error = {
-					status: true,
-					message: (actualizarAlumnos.error.value.data as any).message
-				};
+				// this.tipoModal = 'error';
+				// this.error = {
+				// 	status: true,
+				// 	message: (actualizarAlumnos.error.value.data as any).message
+				// };
+				errorPopupStore.tipoModal = 'error';
+				errorPopupStore.setError(true, (actualizarAlumnos.error.value.data as any).message)
 			}
 		},
 		async EliminarAlumno(numeroDocumento: string) {
 			const { $api } = useNuxtApp();
-			this.error = {
-				status: false,
-				message: ''
-			};
+			const errorPopupStore = useErrorPopUpStore();
+			// this.error = {
+			// 	status: false,
+			// 	message: ''
+			// };
+			errorPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			const eliminarAlumnos = await $api.alumno.eliminarAlumno(numeroDocumento);
 
 			if(!eliminarAlumnos.error.value){
-				this.tipoModal = 'success';
-				this.error = {
-					status: true,
-					message: 'Se elimino Correctamente'
-				};
+				// this.tipoModal = 'success';
+				// this.error = {
+				// 	status: true,
+				// 	message: 'Se elimino Correctamente'
+				// };
+				errorPopupStore.tipoModal = 'success';
+				errorPopupStore.setError(true, 'Se elimino Correctamente')
 				this.pending = true;
 				this.lista = [];
 				this.getAlumnos()
 			}
 
 			if(eliminarAlumnos.error.value){
-				this.tipoModal = 'error';
-				this.error = {
-					status: true,
-					message: (eliminarAlumnos.error.value.data as any).message
-
-				};
+				// this.tipoModal = 'error';
+				// this.error = {
+				// 	status: true,
+				// 	message: (eliminarAlumnos.error.value.data as any).message
+				// };
+				errorPopupStore.tipoModal = 'error';
+				errorPopupStore.setError(true, (eliminarAlumnos.error.value.data as any).message)
 			}
 		},
 		async FiltrarAlumno(value: string) {
 			const { $api } = useNuxtApp();
 			const tokenStore = useTokenStore();
+			const errorPopupStore = useErrorPopUpStore();
 			this.pendingTable = true;
 			this.lista = [];
 			this.activeFilter = true;
@@ -228,14 +256,16 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			}
 			//console.log('filtroAlumnos',filtroAlumnos)
 			if(filtroAlumnos.error.value){
-				this.tipoModal = 'error';
+				//this.tipoModal = 'error';
 				this.pendingTable = false;
 				this.lista = [];
 				if(filtroAlumnos.error.value.statusCode !== 404){
-					this.error = {
-						status: true,
-						message: (filtroAlumnos.error.value.data as any).message
-					};
+					// this.error = {
+					// 	status: true,
+					// 	message: (filtroAlumnos.error.value.data as any).message
+					// };
+				    errorPopupStore.tipoModal = 'error';
+				    errorPopupStore.setError(true, (filtroAlumnos.error.value.data as any).message)
 				}
 			}
 		},	

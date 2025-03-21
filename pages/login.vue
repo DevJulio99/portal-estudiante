@@ -13,6 +13,7 @@ const dataLog = ref<ResponseLogin | null>();
 const errorLog = ref<boolean>(false);
 const errorMsg = ref<string>("");
 const pendingLogin = ref<boolean>(false);
+const textLogin = ref<string>('Iniciar sesión');
 
 const callLogin = async () =>
   await $api.login.login(userLogin.value.email, userLogin.value.password, {
@@ -27,9 +28,13 @@ async function handleFormSubmit() {
 
   if (!isvalid) setError("Complete todos los campos");
   if (isvalid) {
+    textLogin.value = 'Ingresando...';
     const { data, error, pending } = await callLogin();
     // console.log('data.value', data.value)
-    if (error.value) setError();
+    if (error.value){
+      setError();
+      textLogin.value = 'Iniciar sesión';
+    }
     console.log("error", error.value);
     setTimeout(() => {
       data.value && (dataLog.value = data.value);
@@ -144,7 +149,7 @@ function setError(msg = "Correo o contraseña incorrecta") {
             </div> -->
 
             <div class="buttons-container">
-              <button class="btn-login" @click="handleFormSubmit">Iniciar sesión</button>
+              <button class="btn-login" @click="handleFormSubmit">{{ textLogin }}</button>
             </div>
           </div>
           <!-- <div class="register-container">

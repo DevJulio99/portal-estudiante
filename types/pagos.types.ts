@@ -1,3 +1,5 @@
+import type { Paginado } from "./alumno.types";
+
 interface AmountDetail {
 	description: string;
 	fee: string;
@@ -82,9 +84,14 @@ export interface PagosPendientesData {
 	detalle: string;
 	imagen: string;
 	anio: number;
+	total: number;
 }
 
 export interface ImagenPago {
 	idPago: number;
 	imagen: string;
+}
+
+export interface ListaPagos extends Paginado {
+	codigoSede: string;
 }

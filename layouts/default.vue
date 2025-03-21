@@ -1,9 +1,23 @@
 <script setup lang="ts">
+import PopUpMensaje from '~/components/pagesContainer/Alumnos/PopUpMensaje.vue';
 import { getProfile } from '~/services/profile';
 const router = useRouter();
 const tokenStore = useTokenStore();
+const errorPopupStore = useErrorPopUpStore();
+const timeoutId = ref<any>(null);
 
 console.log('tokenStore accessToken', tokenStore.accessToken);
+
+watch(() => errorPopupStore.error, (error) => {
+  if(error.status){
+	clearTimeout(timeoutId.value);
+  errorPopupStore.error.status = false;
+	(document as any).getElementById('popupMsg').style.right = '20px';
+	timeoutId.value = setTimeout(() => {
+		(document as any).getElementById('popupMsg').style.right = '-1000px';
+	}, 5000);
+  }
+});
 
 const unWatch = watch(
     () => [
@@ -46,4 +60,5 @@ if(tokenStore.getDataToken && tokenStore.getDataToken.Id_Alumno && tokenStore.ac
   <div class="h-full" v-if="!tokenStore.pending && router.currentRoute.value.name == 'login'">
     <slot></slot>
   </div>
+  <PopUpMensaje :message="errorPopupStore.error.message" :type="errorPopupStore.tipoModal"/>
 </template>

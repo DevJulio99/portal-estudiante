@@ -34,20 +34,84 @@ export const getUrls = (data: any[]) => {
   return urls
 }
 
+export const stringForm = {
+  correo: 'Correo',
+  nombreUsuario: 'Nombre',
+  apellidoPaterno: 'Apellido Paterno',
+  apellidoMaterno: 'Apellido Materno',
+  telefono: 'Telefono',
+  numeroDocumento: 'Numero de documento',
+  fechaNacimiento: 'Fecha de Nacimiento',
+  direccion: 'Direccion',
+  fotoPerfil: 'Foto de perfil',
+  genero: 'Genero',
+  tipoAlumno: 'Tipo de alumno',
+  apoderado: 'Apoderado',
+  idGrado: 'Grado'
+}
+
+export const getMessageError = (key: string, tipo: 'hidden' | 'valid', value = '') => {
+  if(tipo == 'hidden'){
+    return `${stringForm[key as keyof typeof stringForm]} es obligatorio.`
+  }
+  if(tipo == 'valid'){
+     if(key == 'correo'){
+      if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) return `${stringForm[key as keyof typeof stringForm]} no es valido.`
+     }
+  }
+}
+
+export const convertArrayInObject = (arrays: string[][]) => {
+  let newobject = {}
+  for(let i = 0; i < arrays.length; i ++){
+    newobject = {
+      ...newobject,
+      [arrays[i][0]]: arrays[i][1]
+    }
+  }
+  return newobject
+}
+
 export const validateForm = (form: object, optional: string[]) => {
    const alumnoStore = useAlumnoStore();
+   const errorPopupStore = useErrorPopUpStore();
    const arraysForm = Object.entries(form);
    const noOptional = arraysForm.filter(x => !optional.includes(x[0]));
+   const valid = ['correo'];
+   const validatesString = noOptional.filter(x => typeof(x[1]) == "string" && x[1].trim().length > 0 && valid.includes(x[0]));
+   //console.log('validatesString', validatesString);
+   
    const hiddenData = noOptional.filter(x => typeof(x[1]) == "string" ? x[1].trim().length <=0 : (typeof(x[1]) == "number" ? x[1] <= 0 : false))
-   let keysHiddenData = [];
-   //console.log('noHidden', noHidden);
+   let keysErrorData = [];
+
 
    for(let i = 0; i < hiddenData.length; i ++){
-    keysHiddenData.push(hiddenData[i][0]);
+    const mensaje = getMessageError(hiddenData[i][0], 'hidden');
+    hiddenData[i][1] = mensaje;
+    keysErrorData.push(hiddenData[i][0]);
    }
-   if(keysHiddenData.length){
-    alumnoStore.setErrorForm(keysHiddenData);
-    alumnoStore.setError(true, 'Tienes que completar los campos')
+
+   for(let i = 0; i < validatesString.length; i ++){
+    const mensaje = getMessageError(validatesString[i][0], 'valid', validatesString[i][1]);
+    //console.log('mensaje', mensaje)
+    validatesString[i][1] = mensaje;
+    mensaje && keysErrorData.push(validatesString[i][0]);
    }
-   return keysHiddenData.length
+   
+   if(keysErrorData.length){
+    //console.log('hiddenData', hiddenData)
+    //console.log('validatesString', validatesString)
+    const arrayErrors = [...hiddenData, ...validatesString];
+    alumnoStore.msgError = convertArrayInObject(arrayErrors);
+    alumnoStore.setErrorForm(keysErrorData);
+    //alumnoStore.setError(true, hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos')
+    errorPopupStore.tipoModal = 'error';
+		errorPopupStore.setError(true, hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos');
+   }
+
+   if(!keysErrorData.length){
+    alumnoStore.msgError = null;
+    alumnoStore.setErrorForm([]);
+   }
+   return Boolean(!keysErrorData.length)
 }
