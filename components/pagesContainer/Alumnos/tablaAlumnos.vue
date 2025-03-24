@@ -2,18 +2,15 @@
 import type { Alumno } from '~/types/alumno.types';
 import ModalAlumno from './ModalAlumno.vue';
 import AccionesAlumno from './AccionesAlumno.vue';
-import PopUpMensaje from './PopUpMensaje.vue';
 
 const servicesError: Ref<any> = ref(null);
 const listaAlumnos = ref<Alumno[]>([]);
 const popupDetalleData = ref<Alumno | null>(null);
 const popupDetalleVisible = ref(false);
 const tipoModal = ref<'edit' | 'info' | 'register' | 'delete'>('info');
-const mensajeError = ref('');
 const currentPage = ref(1);
 const valorFilter = ref('');
 const alumnoStore = useAlumnoStore();
-const timeoutId = ref<any>(null);
 
 watch(() => alumnoStore.lista, (response) => {
   console.log('alumno data', response);
@@ -21,18 +18,6 @@ watch(() => alumnoStore.lista, (response) => {
 	popupDetalleVisible.value = false;
   }
   listaAlumnos.value = response;
-});
-
-watch(() => alumnoStore.error, (error) => {
-  if(error.status){
-	clearTimeout(timeoutId.value);
-	mensajeError.value = error.message;
-	(document as any).getElementById('popupMsg').style.right = '20px';
-	timeoutId.value = setTimeout(() => {
-		(document as any).getElementById('popupMsg').style.right = '-1000px';
-	}, 5000);
-  }
-  
 });
 
 const handlePage = (number: number) => {
@@ -185,7 +170,6 @@ const eliminar = (datos: Alumno) => {
         :data="popupDetalleData"
 		:onClose="hidePopup"
 	/>
-	<!-- <PopUpMensaje :message="mensajeError" :type="alumnoStore.tipoModal"/> -->
 </template>
 <style lang="postcss" scoped>
 .box-table {

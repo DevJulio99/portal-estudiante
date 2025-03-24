@@ -11,7 +11,7 @@ interface ErrorPopUpStore {
 	tipoModal: 'success' | 'error';
 }
 
-export const useErrorPopUpStore = defineStore('PopUpErrorStore', {
+export const useMsgPopUpStore = defineStore('PopUpMsgStore', {
 	state: (): ErrorPopUpStore => ({
 		error: {
             status: false,
@@ -20,9 +20,9 @@ export const useErrorPopUpStore = defineStore('PopUpErrorStore', {
         tipoModal: 'success'
     }),
 	actions: {
-		setError(status: boolean, message: string){
+		setError(status: boolean, message: string, tipoModal: 'success' | 'error' = 'success'){
             this.error = { status, message };
-			if(status) this.tipoModal = 'error';
+			this.tipoModal = tipoModal;
 		},
 	},
 });

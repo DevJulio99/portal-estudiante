@@ -63,7 +63,8 @@ const pendingNotas = ref<boolean>(false);
 // }
 
 function getFinalAverage(notas: NotaBimestre[]) {
-	return ({} as NotaBimestre);
+	const promedioFinal = notas.find(x => x.tipoNota == 'Promedio Final');
+	return promedioFinal ?? {};
 }
 
 // const {
@@ -152,9 +153,11 @@ function onExpansionNota(
 	indexCurso: number,
 	responseData: any,
 ) {
-				const dataNota = {
+	           const datanotas = responseData.value.data.filter(x => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso && x.descripcionPeriodo == cursosTotalData.value[indexCurso].dataCurso.periodo);
+
+			   const dataNota = {
 					...cursosTotalData.value[indexCurso],
-					dataNotas: responseData.value.data.filter(x => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso && x.descripcionPeriodo == cursosTotalData.value[indexCurso].dataCurso.periodo),
+					dataNotas: datanotas,
 					loading: false,
 					error: null,
 				};

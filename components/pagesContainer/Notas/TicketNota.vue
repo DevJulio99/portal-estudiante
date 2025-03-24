@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
 	<div
-		v-if="item.tipoNota !== 'PF'"
+		v-if="item.tipoNota !== 'PF' && item.tipoNota !== 'Promedio Final'"
 		aria-label="TicketNotas"
 		class="tckt-nota relative w-full flex flex-wrap items-center justify-center gap-1 py-2 px-1 border border-disable text-sm rounded-sm shadow-sm"
 	>

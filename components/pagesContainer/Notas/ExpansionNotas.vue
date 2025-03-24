@@ -137,7 +137,7 @@ function actionExpansion(title: string) {
 								class="flex items-center justify-center w-[46px] text-sm font-extrabold"
 							>
 								{{
-									item.statusCurso == 'Finalizado' ? finalAverage?.nota : '-'
+									finalAverage?.nota ?? '-'
 								}}
 							</div>
 						</div>
