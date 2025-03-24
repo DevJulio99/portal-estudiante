@@ -12,6 +12,7 @@ export default {
 		telegraf: ['telegraf'],
 		whitney: ['whitney'],
 		nunito: ['nunito'],
+		grotaRounded: ['grotaRounded'],
 		robotoCondensed: ['robotoCondensed'],
       },
       colors: {

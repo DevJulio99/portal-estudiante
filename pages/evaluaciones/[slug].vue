@@ -11,6 +11,7 @@ import Opciones from "~/components/pagesContainer/Evaluaciones/opciones.vue";
 import { FinalizarCompetencia, RegistrarEstado } from "~/services/estadoCompetencia";
 import type { Competencia } from "~/types/competencia.types";
 import { getExamenes } from "~/services/examen";
+import InterfazPreguntas from "~/components/pagesContainer/Evaluaciones/interfazPreguntas.vue";
 
 definePageMeta({
   middleware: "auth",
@@ -24,6 +25,7 @@ const { $api } = useNuxtApp();
 const postulanteStore = usePostulanteStore();
 const competenciaStore = useCompetenciaStore();
 const examenStore = useExamenStore();
+const preguntaStore = usePreguntaStore();
 
 const title = `${route.params.slug}`;
 const preguntaRespondida = ref(false);
@@ -52,7 +54,7 @@ const responsesData = ref<any[]>([]);
 
 const competencia = ref<Competencia | null>();
 const tiempoCompetencia = ref<number>(0);
-const opcionSeleccionada = ref<string>('');
+//const opcionSeleccionada = ref<string>('');
 const preguntaActualNumero = ref<number>(1);
 
 let breadcrumbsItem = [
@@ -62,6 +64,7 @@ let breadcrumbsItem = [
 
 const competenciaActual = computed(() => competenciaStore.competenciaSeleccionada)
 const preguntaActual = computed(() => examenStore.preguntaActual)
+const opcionSeleccionada = computed(() => preguntaStore.opcionSeleccionada)
 
 console.log('postulanteStore.data', postulanteStore.data);
 const {data: dataEstados, error: errorEstados} = await $api.estado.getListarEstado(postulanteStore.data?.idPostulante ?? 0,competenciaActual.value?.id_compentencia ?? 0, {lazy: true,})
@@ -86,6 +89,7 @@ watch(() => examenStore.lista, (examenes)  => {
   if(examenes.length){
     console.log('examenes', examenes);
     totalQuestions.value = examenes.length;
+    preguntaStore.totalPreguntas = examenes.length;
     examenStore.setpreguntaActual();
   }
 });
@@ -142,7 +146,8 @@ const onResponse = (id: string, option: string) => {
   // if(isRegister >= 0) {
   //   responsesData.value[isRegister] = {...responsesData.value[isRegister], response: option};
   // }
-  opcionSeleccionada.value = option;
+  preguntaStore.setOpcionSeleccionada(option)
+  //opcionSeleccionada.value = option;
   savedAnswer.value = true;
   // currentSelect.value = option;
   // wasNotSaved.value = true;
@@ -176,7 +181,8 @@ const ultimaPregunta = () => {
        respuestaSeleccionada: opcionSeleccionada.value
       }
       examenStore.setBancoRespuesta(data);
-      opcionSeleccionada.value = '';
+      //opcionSeleccionada.value = '';
+      preguntaStore.setOpcionSeleccionada('');
     }
 }
 
@@ -210,13 +216,15 @@ const onBack = (resumen: ResumenPregunta) => {
 const onNext = (resumen: ResumenPregunta) => {
   opcionSeleccionada.value.trim().length && guardarRespuesta();
   onActionQuestion(resumen);
-  opcionSeleccionada.value = '';
+  //opcionSeleccionada.value = '';
+  preguntaStore.setOpcionSeleccionada('');
   examenStore.setpreguntaActual(resumen.currentQuestion);
 }
 
 const onSelectPage = (page: number) => {
-  opcionSeleccionada.value = '';
-  examenStore.setpreguntaActual(page);
+  //opcionSeleccionada.value = '';
+  preguntaStore.setOpcionSeleccionada('')
+  //examenStore.setpreguntaActual(page);
 }
 
 const EvaluacionExpirada = () => {
@@ -284,6 +292,7 @@ setTimeout(() => {
 onBeforeUnmount(() => {
   postulanteStore.setHabilitado(0);
   competenciaStore.resetCompetencia();
+  preguntaStore.setPregunta(1);
 });
 
 const imagenCargada = ref(false);
@@ -369,6 +378,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
             :numeroEnGrupo="numeroEnGrupo"
             :totalPreguntasGrupo="totalPreguntasGrupo"
           />
+          <InterfazPreguntas />
         </div>
         <!-- <div class="w-full flex justify-end mt-[11px]">
           <BaseButton

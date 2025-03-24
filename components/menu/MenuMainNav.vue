@@ -47,7 +47,7 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 };
 
 onMounted(() => {
-  if (tokenStore.getDataToken.Role.toLowerCase() == "admin") {
+  if (tokenStore?.getDataToken?.Role?.toLowerCase() == "admin") {
     const newMainMenu = {
       data: dataMenuAdmin,
       pending: false,
@@ -56,7 +56,7 @@ onMounted(() => {
     menuStore.setMainMenu(newMainMenu);
   }
 
-  if (tokenStore.getDataToken.Role.toLowerCase() == "user") {
+  if (tokenStore?.getDataToken?.Role?.toLowerCase() == "user") {
     const newMainMenu = {
       data: dataMenuUser,
       pending: false,
