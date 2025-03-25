@@ -191,7 +191,7 @@ const resetArrowsTooptip = () => {
 
 const formatDate = (dateString: string) => {
   const [datePart, timePart] = dateString.split(' ');
-  const [day, month, year] = datePart.split('/');
+  const [month, day, year] = datePart.split('/');
 
   const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timePart}`;
 

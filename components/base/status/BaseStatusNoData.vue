@@ -7,7 +7,7 @@ const props = defineProps<{
 const errIcono = props.icono?.trim();
 </script>
 <template>
-	<div class="text-xs flex flex-col justify-center items-center text-secondary">
+	<div class="text-xs flex flex-col justify-center items-center text-dark_100">
 		<img
 			v-if="errIcono"
 			:src="errIcono"

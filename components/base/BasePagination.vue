@@ -172,7 +172,7 @@ const showPage = (val: number) => {
 
 <style lang="postcss" scoped>
 .pagination-container {
-	@apply flex items-center justify-center;
+	@apply flex items-center justify-center font-nunito;
 }
 .active-page {
 	@apply bg-primary text-white font-bold w-[40px] h-[40px] rounded-md;
