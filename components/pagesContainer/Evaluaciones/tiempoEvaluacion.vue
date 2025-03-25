@@ -138,33 +138,32 @@ onBeforeUpdate(() => {
 <template>
   <div class="w-fit text-center">
     <div id="time-test"></div>
-    <span class="text-[10px] font-semibold">Tiempo restante</span>
-    <div class="flex gap-[5px] items-baseline">
+    <div class="flex gap-[5px] text-gray_80 items-center">
       <div class="time-ev">
+        <p>Hora</p>
         <div>
-          <span id="hour" :class="littleTime ? 'text-error' : 'text-green_70'"
+          <span id="hour"
             >{{ timeDefect?.hour ?? '00' }}</span
           >
         </div>
-        <p>Hora</p>
       </div>
-      <div>:</div>
+      <div class="relative top-[6px]">:</div>
       <div class="time-ev">
+        <p>Min</p>
         <div>
-          <span id="min" :class="littleTime ? 'text-error' : 'text-green_70'"
+          <span id="min"
             >{{ timeDefect?.min ?? '00' }}</span
           >
         </div>
-        <p>Min</p>
       </div>
-      <div>:</div>
+      <div class="relative top-[6px]">:</div>
       <div class="time-ev">
+        <p>Seg</p>
         <div>
-          <span id="seg" :class="littleTime ? 'text-error' : 'text-green_70'"
+          <span id="seg"
             >{{ timeDefect?.seg ?? '00' }}</span
           >
         </div>
-        <p>Seg</p>
       </div>
     </div>
   </div>
@@ -172,10 +171,10 @@ onBeforeUpdate(() => {
 
 <style scoped>
 .time-ev div {
-  @apply bg-white text-base font-semibold flex items-center justify-center border-[0.5px] border-blue_light rounded-[3px] w-[27px] h-[24px];
+  @apply bg-white font-grotaRounded text-2xl font-semibold flex items-center justify-center shadow-xl rounded-[3px] py-1 px-2;
 }
 
 .time-ev p {
-  @apply text-blue_light text-[10px] font-semibold leading-[15px];
+  @apply text-blue_light text-[8px] font-semibold leading-[15px];
 }
 </style>

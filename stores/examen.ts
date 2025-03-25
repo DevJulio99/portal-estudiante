@@ -3,6 +3,7 @@ import type { BancoRespuesta, Examen, Respuesta } from "~/types/examen.types";
 
 interface stateEstado {
     lista: Examen[];
+    preguntasRespondidas: number[];
     preguntaActual: Examen | null;
     respuestaSeleccionada: string | null;
     bancoRespuestas: BancoRespuesta[];
@@ -14,6 +15,7 @@ interface stateEstado {
 export const useExamenStore = defineStore("examen", {
   state: (): stateEstado => ({
     lista: [],
+    preguntasRespondidas: [],
     preguntaActual: null,
     respuestaSeleccionada: null,
     bancoRespuestas: [],
@@ -36,6 +38,7 @@ export const useExamenStore = defineStore("examen", {
     },
     setLista(lista: Examen[]) {
       this.lista = lista;
+      this.setPreguntasRespondidas(lista);
     },
     setpreguntaActual(pagina?: number){
       const pagina_ = pagina ?? 1;
@@ -62,16 +65,26 @@ export const useExamenStore = defineStore("examen", {
       if(this.bancoRespuestas.length){
          const respuesta = this.bancoRespuestas.findIndex(x => x.numeroPregunta === pregunta?.preguntas.numeroPregunta);
          if(respuesta >= 0){
-          pregunta && this.setRespuestaRespondida(this.bancoRespuestas[respuesta].respuestaSeleccionada)
+          pregunta && this.setRespuestaRespondida(this.bancoRespuestas[respuesta].respuestaSeleccionada);
          } else {
           pregunta?.examenGenerado.respuestaSeleccionada && this.setRespuestaRespondida(pregunta.examenGenerado.respuestaSeleccionada)
          }
+         this.setPreguntasRespondidas(this.lista);
       } else {
         pregunta?.examenGenerado.respuestaSeleccionada && this.setRespuestaRespondida(pregunta.examenGenerado.respuestaSeleccionada)
       }
     },
     setRespuestaRespondida(opcion: string){
       this.respuestaSeleccionada = opcion;
+    },
+    setPreguntasRespondidas(lista: Examen[]){
+      const preguntas = lista.filter(x => x.examenGenerado.respuestaSeleccionada.trim().length && 
+      (x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'a' || 
+      x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'b' ||
+      x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'c' || 
+      x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'd'))
+
+      this.preguntasRespondidas = [...new Set(preguntas.map(x => x.preguntas.numeroPregunta).concat(this.bancoRespuestas.map(x => x.numeroPregunta)))]
     },
     async setBancoRespuesta(opcion: BancoRespuesta){
       const repeat = this.bancoRespuestas.findIndex(x => x.numeroPregunta == opcion.numeroPregunta);
@@ -111,14 +124,14 @@ export const useExamenStore = defineStore("examen", {
       }
       return preguntas
     },
-    preguntasRespondidas: (state) => {
-      const preguntas = state.lista.filter(x => x.examenGenerado.respuestaSeleccionada.trim().length && 
-      (x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'a' || 
-      x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'b' ||
-      x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'c' || 
-      x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'd'))
+    // preguntasRespondidas: (state) => {
+    //   const preguntas = state.lista.filter(x => x.examenGenerado.respuestaSeleccionada.trim().length && 
+    //   (x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'a' || 
+    //   x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'b' ||
+    //   x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'c' || 
+    //   x.examenGenerado.respuestaSeleccionada.toLocaleLowerCase() === 'd'))
 
-      return [...new Set(preguntas.map(x => x.preguntas.numeroPregunta).concat(state.bancoRespuestas.map(x => x.numeroPregunta)))]
-    }
+    //   return [...new Set(preguntas.map(x => x.preguntas.numeroPregunta).concat(state.bancoRespuestas.map(x => x.numeroPregunta)))]
+    // }
   }
 });

@@ -42,11 +42,11 @@ const onSelect = (id: string, opcion: string) => {
   <div class="relative w-fit">
     <div class="absolute left-[-42px] top-[15px]">
       <div
-        class="btn-show relative flex justify-center items-center w-[28px] h-[31px] bg-[#3A5475] rounded-md cursor-pointer"
+        class="btn-show relative flex justify-center items-center w-[28px] h-[31px] bg-primary rounded-md cursor-pointer"
         @click="() => (showQuestions = !showQuestions)"
       >
         <div
-          class="w-max tooltp absolute text-[8px] top-[-34px] py-2 px-3 bg-[#3A5475] rounded-md text-white"
+          class="w-max tooltp absolute text-[8px] top-[-34px] py-2 px-3 bg-primary rounded-md text-white"
         >
           {{ showQuestions ? "Ocultar preguntas" : "Ver preguntas" }}
         </div>
