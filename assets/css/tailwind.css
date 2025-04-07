@@ -91,6 +91,30 @@
     font-display: swap;
   }
 
+  @font-face {
+    font-family: "grotaRounded";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../fonts/GrotaRoundedLight.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "grotaRounded";
+    font-style: normal;
+    font-weight: 550;
+    src: url("../fonts/GrotaRoundedBlack.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "grotaRounded";
+    font-style: normal;
+    font-weight: 700;
+    src: url("../fonts/GrotaRoundedExtraBold.otf") format("opentype");
+    font-display: swap;
+  }
+
   html {
     @apply font-nunito
   }
@@ -118,14 +142,14 @@
 }
 
 .content-ev::-webkit-scrollbar-thumb {
-  background:  #3A5475 ; 
+  background:  #287f6b; 
   border-radius: 5px;
 }
 
  @-moz-document url-prefix() {
   .content-ev {
     scrollbar-width: thin;
-    scrollbar-color: #3A5475 #D9D9D9;
+    scrollbar-color: #287f6b #D9D9D9;
    }
  }
 

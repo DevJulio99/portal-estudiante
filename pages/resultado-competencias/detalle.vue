@@ -41,46 +41,52 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="w-full max-w-[1083px] bg-white rounded-[10px] pt-[22px] pl-[25px] pb-[39px] pr-[19px]">
-    <div
-        class="w-full bg-green_10 rounded-[10px] flex justify-between items-center pt-[12px] pl-[19px] pb-[16px] pr-[15px]">
-        <div class="flex gap-2.5 items-center text-[#0c2520]">
-            <nuxt-icon name="Chalkboard" class="text-[50px] no-margin" />
-            <span>
-                <p class="font-semibold text-xl leading-[30px]">Puntaje total de evaluación: {{resultadoEvaluacion?.[0]?.puntaje}} pts</p>
-                <p class="font-semibold text-sm leading-[21px]">*Puntaje mínimo aprobatorio: {{resultadoEvaluacion?.[0]?.competencia?.puntajeMinimoAprobatorio}} pts</p>
-            </span>
-        </div>
-        <div v-if="estadoEvaluacion !== '0'" 
-        class="flex py-2.5 px-[9.5px] gap-[6px] rounded-[10px] items-center h-[46px] shadow-md"
-        :class="{
-            'bg-[#FFF3CD] text-[#664D03]': estadoEvaluacion == '2',
-            'bg-[#b8eec4] text-[#155724]': estadoEvaluacion == '1'
-        }">
-            <nuxt-icon name="book-mark" class="text-[26px] no-margin" />
-            <p class="text-base font-semibold">Condición: {{estadoEvaluacion == '1' ? 'Aprobado': 'Desaprobado'}}</p>
-        </div>
-    </div>
+    <BaseLayout :rightAside="false" bgWhite>
+        <BaseTitle :text="`Resultados del curso: ${ competenciaStore.competenciaSeleccionada?.nombreCompetencia }`" />
 
-    <div v-if="pending" class="text-xs text-black py-16">
-			<BaseStatusLoading />
-	</div>
+        <div class="w-full max-w-[1083px] bg-white rounded-[10px] pt-[22px] pl-[25px] pb-[39px] pr-[19px]">
+            <div class="w-full bg-[#F5F5F5] rounded-2xl p-4 flex justify-between items-center shadow-lg">
+                <div class="flex gap-4 items-center text-[#064E3B]">
+                    <img src="@/assets/icons/exam-results.svg" class="w-[60px] no-margin" />
+                    <div>
+                        <p class="font-bold text-2xl leading-7 text-[#065F46]">Puntaje obtenido: {{ resultadoEvaluacion?.[0]?.puntaje }} pts</p>
+                        <p class="text-base leading-6 font-medium text-[#065F46]">
+                            *Puntaje mínimo requerido: {{ resultadoEvaluacion?.[0]?.competencia?.puntajeMinimoAprobatorio }} pts
+                        </p>
+                    </div>
+                </div>
 
-    <div class="w-full" v-else-if="!errorEstados">
-        <div class="flex flex-wrap gap-[29px] mt-6 justify-center" v-if="resultadoEvaluacion.length">
-            <Card v-for="data in resultadoEvaluacion" :data="data" 
-                  :competencia="competenciaStore.competenciaSeleccionada" :approved="data.puntaje >= data.competencia.puntajeMinimoAprobatorio"/>
+                <div v-if="estadoEvaluacion !== '0'"
+                    class="flex items-center gap-2 py-2 px-4 rounded-xl shadow-md"
+                    :class="{
+                    'bg-[#FEF3C7] text-[#92400E]': estadoEvaluacion == '2',
+                    'bg-[#A7F3D0] text-[#065F46]': estadoEvaluacion == '1'
+                    }">
+                    <nuxt-icon :name="estadoEvaluacion == '1' ? 'circle-check' : 'circle-x-mark'" class="text-2xl" />
+                    <p class="text-base font-semibold">Situación: {{ estadoEvaluacion == '1' ? 'Aprobado' : 'Desaprobado' }}</p>
+                </div>
+            </div>
+
+            <div v-if="pending" class="text-xs text-black py-16">
+                    <BaseStatusLoading />
+            </div>
+
+            <div class="w-full" v-else-if="!errorEstados">
+                <div class="flex flex-wrap gap-[29px] mt-6 justify-center" v-if="resultadoEvaluacion.length">
+                    <Card v-for="data in resultadoEvaluacion" :data="data" 
+                        :competencia="competenciaStore.competenciaSeleccionada" :approved="data.puntaje >= data.competencia.puntajeMinimoAprobatorio"/>
+                </div>
+            
+                <div class="flex justify-center items-center gap-[21px] mt-10">
+                    <button
+                        class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm bg-secondary text-white h-[36px] font-semibold"
+                        @click="back"
+                        >Volver</button>
+                    <button class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm 
+                                    h-[36px] bg-primary text-white font-semibold" @click="abrirModal">Visualizar resultados</button>
+                </div>
+            </div>
         </div>
-    
-        <div class="flex justify-center items-center gap-[21px] mt-10">
-            <button
-                class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm bg-secondary text-white h-[36px] font-semibold"
-                @click="back"
-                >Volver</button>
-            <button class="flex items-center justify-center w-full max-w-[220px] rounded-md text-sm 
-                            h-[36px] bg-primary text-white font-semibold" @click="abrirModal">Visualizar resultados</button>
-        </div>
-    </div>
-</div>
+    </BaseLayout>
 <ModalResultado v-if="mostrarModal" :on-close="cerraModal"/>
 </template>

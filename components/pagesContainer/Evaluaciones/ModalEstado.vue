@@ -28,13 +28,16 @@ const examenStore = useExamenStore();
 
 const pendientes = ref<number>(0);
 const respondidas = ref<number>(0);
+const preguntasRespondidas = computed(() => examenStore.preguntasRespondidas)
+const preguntasPendientes = examenStore.lista.length - preguntasRespondidas.value.length;
 
-watch(() => examenStore.preguntasRespondidas, (preguntas)  => {
-  if(preguntas.length){
-    pendientes.value = examenStore.lista.length - preguntas.length;
-    respondidas.value = preguntas.length;
-  }
-});
+// watch(() => examenStore.preguntasRespondidas, (preguntas)  => {
+//   console.log('preguntas', preguntas)
+//   if(preguntas.length){
+//     pendientes.value = examenStore.lista.length - preguntas.length;
+//     respondidas.value = preguntas.length;
+//   }
+// });
 
 const onBack = () => {
   props.onClose();
@@ -83,12 +86,12 @@ const onNext = () => {
       <span
         v-if="!wasNotSaved"
         class="w-full text-center block font-normal text-base text-gray1"
-        >Preguntas respondidas: {{ respondidas.valueOf() }}
+        >Preguntas respondidas: {{ preguntasRespondidas.length }}
       </span>
       <span
         v-if="!wasNotSaved"
         class="w-full text-center block font-normal text-base text-gray1 mb-[14px]"
-        >Preguntas en blanco: {{ pendientes.valueOf() }}</span
+        >Preguntas en blanco: {{ preguntasPendientes }}</span
       >
 
       <!-- <div
@@ -124,7 +127,7 @@ const onNext = () => {
       </div>
 
       <div v-if="!success" class="text-center text-neutron80 text-base font-medium mb-[14px]">
-          Sera redirigido a la vista de competencias
+          Será redirigido a la vista de evaluaciones
       </div>
 
       <!-- <div
