@@ -356,7 +356,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
             <div
               class="content-ev overflow-auto h-[425px] pr-[37px] font-sm font-light text-justify"
             >
-              <div v-html="preguntaActual?.preguntas.textoSuperior"></div>
+              <div>{{preguntaActual?.preguntas.textoSuperior}}</div>
               
               <div v-if="preguntaActual?.preguntas.textoImagen" class="flex justify-center">
                 <img

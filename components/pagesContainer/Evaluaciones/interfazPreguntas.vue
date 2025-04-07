@@ -28,7 +28,7 @@ const mostrar = () => {
 }">
       <div class="w-full flex justify-center items-center gap-2 py-2 border border-green_30 border-x-0 border-t-0">
       <span v-if="mostrarInterfaz">Respuestas</span>
-      <nuxt-icon name="double-arrow-right" filled class="no-margin filter-primary cursor-pointer" @click="mostrar"/>
+      <nuxt-icon :name="mostrarInterfaz ? 'double-arrow-right' : 'double-arrow-left'" filled class="no-margin filter-primary cursor-pointer" @click="mostrar"/>
     </div>
     <div class="w-full p-5">
       <div class="w-full flex flex-wrap justify-center gap-[5px] xl:w-auto grow">

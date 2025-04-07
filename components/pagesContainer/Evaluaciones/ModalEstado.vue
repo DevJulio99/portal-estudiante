@@ -127,7 +127,7 @@ const onNext = () => {
       </div>
 
       <div v-if="!success" class="text-center text-neutron80 text-base font-medium mb-[14px]">
-          Sera redirigido a la vista de competencias
+          Será redirigido a la vista de evaluaciones
       </div>
 
       <!-- <div

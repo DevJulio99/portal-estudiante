@@ -43,8 +43,8 @@ export const useExamenStore = defineStore("examen", {
     setpreguntaActual(pagina?: number){
       const pagina_ = pagina ?? 1;
       const pregunta = this.lista.find(x => x.preguntas.numeroPregunta == pagina_) ?? null;
-      const preguntaGrupo = this.lista.find(x => x.preguntas.grupo === pregunta?.preguntas.grupo 
-        && (x.preguntas.textoSuperior.trim().length || x.preguntas.textoInferior.trim().length));
+      const preguntaGrupo = pregunta?.preguntas.grupo ? this.lista.find(x => x.preguntas.grupo === pregunta?.preguntas.grupo 
+        && (x.preguntas.textoSuperior.trim().length || x.preguntas.textoInferior.trim().length)) : null;
      
       if(pregunta && pregunta?.preguntas.grupo === preguntaGrupo?.preguntas.grupo && preguntaGrupo){
         this.preguntaActual = {

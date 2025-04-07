@@ -53,7 +53,7 @@ const onSelect = (id: string, opcion: string) => {
         <nuxt-icon
           filled
           :class="`text-2xl cursor-pointer`"
-          name="upn-icon-nav-arrow-white-left"
+          :name="showQuestions ? 'upn-icon-nav-arrow-white-right' : 'upn-icon-nav-arrow-white-left'"
         />
       </div>
     </div>

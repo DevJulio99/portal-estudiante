@@ -94,8 +94,16 @@
   @font-face {
     font-family: "grotaRounded";
     font-style: normal;
-    font-weight: 500;
-    src: url("../fonts/GrotaRoundedBlack.otf") format("otf");
+    font-weight: 400;
+    src: url("../fonts/GrotaRoundedLight.otf") format("opentype");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "grotaRounded";
+    font-style: normal;
+    font-weight: 550;
+    src: url("../fonts/GrotaRoundedBlack.otf") format("opentype");
     font-display: swap;
   }
 
@@ -103,7 +111,7 @@
     font-family: "grotaRounded";
     font-style: normal;
     font-weight: 700;
-    src: url("../fonts/GrotaRoundedExtraBold.otf") format("otf");
+    src: url("../fonts/GrotaRoundedExtraBold.otf") format("opentype");
     font-display: swap;
   }
 

@@ -171,7 +171,7 @@ onBeforeUpdate(() => {
 
 <style scoped>
 .time-ev div {
-  @apply bg-white font-grotaRounded text-2xl font-semibold flex items-center justify-center shadow-xl rounded-[3px] py-1 px-2;
+  @apply bg-white font-robotoCondensed text-2xl font-bold flex items-center justify-center shadow-xl rounded-[3px] py-1 px-2;
 }
 
 .time-ev p {

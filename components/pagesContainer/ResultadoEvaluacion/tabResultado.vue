@@ -18,13 +18,13 @@ const preguntas = dividirArreglo(props.resultado.preguntas,10);
 </script>
 <template>
   <div>
-    <div class="flex gap-0.5">
+    <!-- <div class="flex gap-0.5">
       <div
         class="bg-primary rounded-t-lg font-medium pr-[18px] pl-[19px] pt-[3px] pb-[2px] text-white transition-colors text-sm leading-[21px] bg-gray-21 cursor-pointer"
       >
         {{ resultado.competencia.nombreCompetencia }}
       </div>
-    </div>
+    </div> -->
 
     <div
       class="w-full border border-green_10 rounded-lg pt-[22px] pr-[28px] pb-[17px] pl-[29px]"
@@ -35,32 +35,32 @@ const preguntas = dividirArreglo(props.resultado.preguntas,10);
         >
           Resumen de la evaluación:
         </p>
-        <button
+        <div
           class="rounded-[10px] border text-sm leading-[21px] font-semibold px-3.5 h-[35px] flex gap-[6px] justify-center items-center"
           :class="{
-            'border-error text-error': resultado.puntaje < resultado.competencia.puntajeMinimoAprobatorio,
-            'border-green_40 text-green_40' : resultado.puntaje >= resultado.competencia.puntajeMinimoAprobatorio
+            'border-[#92400E] text-[#92400E]': resultado.puntaje < resultado.competencia.puntajeMinimoAprobatorio,
+            'border-[#065F46] text-[#065F46]' : resultado.puntaje >= resultado.competencia.puntajeMinimoAprobatorio
           }"
           >
-          <nuxt-icon name="book-mark" class="text-[26px] no-margin" 
+          <nuxt-icon name="birreteIcon" class="text-[18px] no-margin" 
                      :class="{
-                       'filter-text-green40': resultado.puntaje >= resultado.competencia.puntajeMinimoAprobatorio,
-                       'filter-text-error': resultado.puntaje < resultado.competencia.puntajeMinimoAprobatorio
-                     }" filled />
+                       'text-[#065F46]': resultado.puntaje >= resultado.competencia.puntajeMinimoAprobatorio,
+                       'text-[#92400E]': resultado.puntaje < resultado.competencia.puntajeMinimoAprobatorio
+                     }" />
           <p>
-            Condición:
+            Situación:
             {{
               resultado.puntaje >= resultado.competencia.puntajeMinimoAprobatorio
                 ? "Aprobado"
                 : "Desaprobado"
             }}
           </p>
-        </button>
+        </div>
       </div>
 
-      <div class="flex justify-center mb-9">
+      <div class="flex justify-center mb-9 rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.15)]">
         <div
-          class="flex items-center rounded-[10px] border-[0.9px] border-white filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] h-[83px]"
+          class="flex items-center text-center rounded-[10px] border-[0.9px] border-white filter h-[83px]"
         >
           <div class="pl-[15px] pr-[23px]">
             <p class="text-xs leading-[18px] font-medium mb-2 text-gray-16">
@@ -134,7 +134,7 @@ const preguntas = dividirArreglo(props.resultado.preguntas,10);
         >
           <div v-for="(arregloPreguntas, i_pre) in preguntas">
             <div
-              class="bg-green_20 flex justify-center items-center gap-[35px] h-[54px]"
+              class="bg-[#d4e4f1] flex justify-center items-center gap-[35px] h-[40px]"
             >
               <div
               v-for="(pregunta, i) in arregloPreguntas"

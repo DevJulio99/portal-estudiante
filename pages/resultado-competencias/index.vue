@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
 
 <template>
   <BaseLayout :rightAside="false" bgWhite>
-    <BaseTitle text="resultado evaluaciones" />
+    <BaseTitle text="Resultado de evaluaciones" />
     <div class="bg-cyan_40 p-4 rounded font-nunito border border-cyan_80 border-l-[10px]">
       Para consultar los resultados, acceda a la sección correspondiente de cada evaluación.
     </div>
