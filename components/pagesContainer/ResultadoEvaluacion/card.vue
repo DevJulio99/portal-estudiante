@@ -14,18 +14,16 @@ const valueStroke = !props.data ? 0 : 100 - props.data.puntaje;
 </script>
 
 <template>
-    <div v-if="data" class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#F8FAFC] to-[#F1F5F9] shadow-2xl">
-        <div class="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-[#60A5FA] to-transparent opacity-20"></div>
-
+    <div v-if="data" class="relative rounded-3xl overflow-hidden bg-[#edf9f6] shadow-2xl">
         <div class="flex flex-col lg:flex-row">
-            <div class="relative lg:w-1/3 p-10 bg-[#EFF6FF] flex items-center justify-center">
+            <div class="relative lg:w-1/3 p-10 bg-[#daf3ec] flex items-center justify-center">
                 <svg viewBox="0 0 36 36" class="w-[140px] h-[140px]">
                     <path
                         class="fill-none stroke-[#22C55E] stroke-[4.2]"
                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                        class="circle-percentage stroke-[#EF4444]"
+                        class="circle-percentage stroke-[#F15656]"
                         :stroke-dasharray="`${valueStroke}, 100`"
                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
@@ -55,7 +53,7 @@ const valueStroke = !props.data ? 0 : 100 - props.data.puntaje;
                         <span class="ml-auto text-base font-semibold text-[#111827]">{{ data.correctas }}</span>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div class="w-6 h-6 rounded-full bg-[#EF4444] aspect-square"></div>
+                        <div class="w-6 h-6 rounded-full bg-[#F15656] aspect-square"></div>
                         <p class="text-base text-[#475569]">Incorrectas:</p>
                         <span class="ml-auto text-base font-semibold text-[#111827]">{{ data.incorrectas }}</span>
                     </div>
