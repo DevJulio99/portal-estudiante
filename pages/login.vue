@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getProfile } from "~/services/profile";
-import type { ResponseCatpcha } from "~/types/captcha.types";
 import type { ResponseLogin } from "~/types/login.types";
 
 const userLogin = ref({
@@ -8,7 +7,6 @@ const userLogin = ref({
   password: "",
 });
 const tokenStore = useTokenStore();
-const captchaStore = useCaptcha();
 const router = useRouter();
 const { $api } = useNuxtApp();
 const dataLog = ref<ResponseLogin | null>();
@@ -16,17 +14,9 @@ const errorLog = ref<boolean>(false);
 const errorMsg = ref<string>("");
 const pendingLogin = ref<boolean>(false);
 const textLogin = ref<string>('Iniciar sesión');
-const captchaCode = ref('');
-const validCaptchaVal = ref<boolean>(false);
 
-watch(() => captchaStore.error, (err) => {
-   if(err){
-    setError("CAPTCHA no válido.");
-   }
-})
-
-const callLogin = async (captchaId: string, captchaCode: string) =>
-  await $api.login.login(userLogin.value.email, userLogin.value.password, captchaId, captchaCode, {
+const callLogin = async () =>
+  await $api.login.login(userLogin.value.email, userLogin.value.password, {
     lazy: true,
   });
 
@@ -35,23 +25,14 @@ async function handleFormSubmit() {
   const isvalid = Object.values(userLogin.value).every(
     (x) => x.trim().length > 0
   );
-  const captchaId = captchaStore.data?.captchaId;
 
   if (!isvalid) setError("Complete todos los campos");
-  if(!captchaId) setError("CAPTCHA no válido.");
-  if (isvalid && captchaId) {
+  if (isvalid) {
     textLogin.value = 'Ingresando...';
-    const { data, error, pending } = await callLogin(captchaId, captchaCode.value);
+    const { data, error, pending } = await callLogin();
     // console.log('data.value', data.value)
     if (error.value){
-      const dataErr = error.value.data as any;
-      if(dataErr.code == 'PS-EVAL-4000'){
-        setError();
-      }
-      if(dataErr.code == 'PS-EVAL-4001'){
-        setError("CAPTCHA no válido.");
-      }
-      
+      setError();
       textLogin.value = 'Iniciar sesión';
     }
     console.log("error", error.value);
@@ -90,15 +71,6 @@ function setError(msg = "Correo o contraseña incorrecta") {
    (document.getElementById('popuperr') as HTMLDivElement).classList.remove('show');
   }, 5000);
 }
-
-const validCaptcha = async() => {
-  if(captchaCode.value.replaceAll(/\s+/g, '').length < 4) return
-  captchaStore.data && await captchaStore.validarCaptcha(captchaStore.data.captchaId, captchaCode.value);
-}
-
-onMounted(() => {
-  captchaStore.generarCaptcha();
-})
 
 </script>
 
@@ -176,35 +148,8 @@ onMounted(() => {
               </div>
             </div> -->
 
-            <div class="flex flex-wrap justify-center mt-10">
-              <div class="w-full flex flex-wrap justify-center">
-                <BaseStatusLoading class="w-full" v-if="captchaStore.loading"/>
-                <div v-else-if="captchaStore.data" class="flex flex-wrap justify-center gap-3">
-                 <img :src="captchaStore.data.captchaImage" alt="CAPTCHA">
-                 <button aria-label="Recargar CAPTCHA" @click="() => {
-                  captchaCode = '';
-                  captchaStore.refrescarCaptcha()
-                 }">
-                  <nuxt-icon
-                   name="icon-refresh"
-                   class="text-[24px] no-margin filter-green"
-                 />
-                 </button>
-                </div>
-              </div>
-              <form @submit.prevent="validCaptcha" class="w-full flex flex-wrap justify-center">
-              <input v-model="captchaCode"  @input="captchaCode = captchaCode.toUpperCase()" placeholder="Ingrese el CAPTCHA" id="captchaCode" type="text" maxlength="4" />
-
-             <button class="bg-primary rounded text-white p-3" type="submit" :disabled="captchaStore.loading">
-               Validar CAPTCHA
-            </button>
-
-              
-            </form>
-            </div>
-
             <div class="buttons-container">
-              <button class="btn-login" @click="handleFormSubmit" :disabled="!captchaStore.captchaValido">{{ textLogin }}</button>
+              <button class="btn-login" @click="handleFormSubmit">{{ textLogin }}</button>
             </div>
           </div>
           <!-- <div class="register-container">
@@ -224,9 +169,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-  .filter-green {
-    filter: brightness(0) saturate(100%) invert(40%) sepia(64%) saturate(347%) hue-rotate(116deg) brightness(94%) contrast(103%);
-  }
   .popup-error {
     transform: translateX(-50%);
     transition: opacity 0.5s ease, bottom 0.5s ease;
@@ -365,11 +307,6 @@ onMounted(() => {
   .buttons-container {
     margin-top: 40px; 
     text-align: center;
-  }
-
-  .buttons-container button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 
   .btn-login {

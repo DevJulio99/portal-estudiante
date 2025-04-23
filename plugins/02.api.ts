@@ -20,7 +20,6 @@ import ImagenPagoModule from '~/repository/modules/ImagePago';
 import AlumnoModule from '~/repository/modules/Alumno';
 import DocumentoAddModule from '~/repository/modules/DocumentoAdd';
 import GradosModule from '~/repository/modules/Grados';
-import CaptchaModule from '~/repository/modules/Captcha';
 
 
 interface IApiInstance {
@@ -45,7 +44,6 @@ interface IApiInstance {
 	alumno: AlumnoModule;
 	agregarDocumento: DocumentoAddModule;
 	grados: GradosModule;
-	captcha: CaptchaModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -78,7 +76,6 @@ export default defineNuxtPlugin(() => {
 		alumno: new AlumnoModule(apiFecther),
 		agregarDocumento: new DocumentoAddModule(apiFecther),
 		grados: new GradosModule(apiFecther),
-		captcha: new CaptchaModule(apiFecther)
 	};
 
 	return {
