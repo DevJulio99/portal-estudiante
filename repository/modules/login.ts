@@ -13,6 +13,8 @@ class LoginModule extends FetchFactory<ResponseLogin> {
 	async login(
 		email: string,
 		password: string,
+		captchaId: string,
+		captchaCode: string,
 		asyncDataOptions?: AsyncDataOptions<ResponseLogin>,
 	) {
 		return await useAsyncData(
@@ -20,7 +22,7 @@ class LoginModule extends FetchFactory<ResponseLogin> {
 				const fetchOptions: FetchOptions<'json'> = {
 					headers: {},
                     body: {
-                     email,password
+                     email, password, captchaId, captchaCode
                     }
 				};
 				return this.call(
