@@ -24,10 +24,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return navigateTo("/login", { replace: true });
     }
 
-    if(isAuth){
-      tokenStore.pending = false;
-    }
-
     if(isTotalPagos && !isAdmin){
       return navigateTo("/inicio", { replace: true });
     }
