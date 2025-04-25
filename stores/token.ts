@@ -20,6 +20,9 @@ export const useTokenStore = defineStore('tokenStore', {
             this.refreshToken = refreshToken;
             this.logued = true;
 			this.pending = true;
+			setTimeout(() => {
+				this.pending = false;
+			}, 1000);
 		},
         clearTokens() {
             localStorage.removeItem('access');
