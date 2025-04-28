@@ -9,7 +9,7 @@ export interface Course {
 }
 
 export interface RequestCourse{
-    descripcion: string;
+    descripcionCurso: string;
     creditos: number;
     modalidad: string;
     nivel: string;
@@ -21,6 +21,7 @@ export interface RegistrarCurso extends RequestCourse {
 
 export interface ActualizarCurso extends RequestCourse {
     idCurso: number;
+    codigoSede: string;
 }
 
 export interface Paginado {

@@ -21,7 +21,7 @@ const fechaMinima = computed(() => {
 });
 /*
 export interface RequestCourse{
-    descripcion: string;
+    descripcionCurso: string;
     creditos: number;
     modalidad: string;
     nivel: string;
@@ -32,7 +32,7 @@ export interface RegistrarCurso extends RequestCourse {
 }
 */
 const registrarCurso = ref<RegistrarCurso>({
-    descripcion: '',
+    descripcionCurso: '',
     creditos: 0,
     modalidad: '',
     nivel: '',
@@ -40,10 +40,11 @@ const registrarCurso = ref<RegistrarCurso>({
 });
 const actualizarCurso = ref<ActualizarCurso>({
     idCurso: 0,
-    descripcion: '',
+    descripcionCurso: '',
     creditos: 0,
     modalidad: '',
     nivel: '',
+    codigoSede: tokenStore.getDataToken.Codigo_Sede
 });
 
 const onChangeInput = (e: any) => {
@@ -109,13 +110,6 @@ const formatearFechaInput = (fecha: string) => {
    return fecha_.toISOString().split('T')[0];
 }
 
-const handleChangeSelect = (val: any, id?: string) => {
-  if(id === 'genero'){
-    const genero = getGenero(val.id == 1 ? 'M' : 'F');
-    setSelectData(id, genero.key)
-  }
-}
-
 const setSelectData = (name: string, value: string) => {
     if (props.tipo == 'register') {
         registrarCurso.value = {
@@ -132,25 +126,47 @@ const setSelectData = (name: string, value: string) => {
     }
 }
 
-const getGenero = (genero: string = '') => {
-   if(genero.toLocaleLowerCase() === 'm') return {value: 1 , key : 'M'}
-   return genero.toLocaleLowerCase() === 'f' ? {value: 2 , key : 'F'} : {value: 0 , key : ''}
+
+const handleChangeSelect = (val: any, id: string) => {
+    setSelectData(getValSelect(val, id).key, getValSelect(val, id).val);
+}
+
+const getValSelect = (val: any, id: string) => {
+    if(id == 'modalidad'){
+      return {
+        key: 'modalidad',
+        val: val.name
+      }
+    }
+
+    if(id == 'nivel'){
+        return {
+        key: 'nivel',
+        val: val.name
+      }
+    }
+
+    return {
+        key: '',
+        val: ''
+      }
 }
 
 onMounted(async () => {
     console.log('tokenStore.getDataToken', tokenStore.getDataToken)
     if(props.tipo == 'edit' && props.data){
-        actualizarCurso.value.descripcion = props.data?.descripcion;
+        actualizarCurso.value.descripcionCurso = props.data?.descripcion;
         actualizarCurso.value.creditos = props.data?.creditos;
         actualizarCurso.value.modalidad = props.data?.modalidad;
         actualizarCurso.value.nivel = props.data?.nivel;
+        actualizarCurso.value.idCurso = props.data.idCurso;
     }
 });
 </script>
 
 <template>
      <BaseTitle :text="tipo == 'edit' ? 'Actualizar curso' : 'Registrar curso'" />
-    <div class="w-full grid grid-cols-2 gap-4 overflow-auto max-h-[300px] px-2">
+    <div class="w-full grid grid-cols-2 gap-4 overflow-auto px-2 pb-[110px]">
         <!-- <div>
             <span class="font-bold">Grado</span>
             <select 
@@ -168,8 +184,8 @@ onMounted(async () => {
         <div>
             <span class="font-bold">Nombre del curso</span>
             <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" 
-                   @input="onChangeInput" name="descripcion" :value="formActual.descripcion">
-                   <span v-if="cursoStore.errorForm.includes('descripcion')" class="text-error">{{cursoStore?.msgError?.descripcion}}</span>
+                   @input="onChangeInput" name="descripcionCurso" :value="formActual.descripcionCurso">
+                   <span v-if="cursoStore.errorForm.includes('descripcionCurso')" class="text-error">{{cursoStore?.msgError?.descripcionCurso}}</span>
         </div>
 
         <!-- <div v-if="tipo == 'edit'">
@@ -187,15 +203,53 @@ onMounted(async () => {
 
         <div>
             <span class="font-bold">Modalidad</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-            @input="onChangeInput" name="modalidad" :value="formActual.modalidad">
+            <!-- <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="modalidad" :value="formActual.modalidad"> -->
+            <BaseVeeSelectV2
+				id="modalidad"
+				:value="formActual.modalidad"
+				icon="NavArrowDown"
+				class="w-full"
+                borderDefault="border-celestial_white"
+				label=""
+				:options="[
+	              {
+	              	id: 'Presencial',
+	              	name: 'Presencial',
+	              },
+	              {
+	              	id: 'Virtual',
+	              	name: 'Virtual',
+	              }
+                ]"
+				@change="(e) => handleChangeSelect(e, 'modalidad')"
+			/>
             <span v-if="cursoStore.errorForm.includes('modalidad')" class="text-error">{{cursoStore?.msgError?.modalidad}}</span>
         </div>
 
         <div>
             <span class="font-bold">Nivel</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-            @input="onChangeInput" name="nivel" :value="formActual.nivel">
+            <!-- <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
+            @input="onChangeInput" name="nivel" :value="formActual.nivel"> -->
+            <BaseVeeSelectV2
+				id="nivel"
+				:value="formActual.nivel"
+				icon="NavArrowDown"
+				class="w-full"
+                borderDefault="border-celestial_white"
+				label=""
+				:options="[
+	              {
+	              	id: 'Primaria',
+	              	name: 'Primaria',
+	              },
+	              {
+	              	id: 'Secundaria',
+	              	name: 'Secundaria',
+	              }
+                ]"
+				@change="(e) => handleChangeSelect(e, 'nivel')"
+			/>
             <span v-if="cursoStore.errorForm.includes('nivel')" class="text-error">{{cursoStore?.msgError?.nivel}}</span>
         </div>
     </div>

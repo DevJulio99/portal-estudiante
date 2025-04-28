@@ -107,6 +107,7 @@ const showPage = (val: number) => {
 					}"
 				>
 					<button
+					    v-if="currentPage >= totalPages - 2 && totalPages > 5 ? (i + 1 > 1) : true"
 						class="w-[40px]"
 						:aria-label="`Ir a la página ${i + 1}`"
 						@click.prevent="goTo(i + 1)"
