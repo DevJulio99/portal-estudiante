@@ -159,25 +159,20 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
           <div v-else>
             <div v-for="(arregloPreguntas, i_pre) in preguntasResponsive">
-            <div
-              class="bg-[#d4e4f1] grid grid-cols-2 justify-center items-center gap-[35px] h-[40px]"
-            >
-              <div
-              v-for="(pregunta, i) in arregloPreguntas"
-                class="w-full text-gray15-color w-[45px] flex items-center justify-center text-xs leading-[18px] font-semibold"
-              >
-                N° {{ i + (i_pre > 0 ? i_pre * 3 : 1) }}
+              <div class="bg-[#d4e4f1] grid grid-cols-2 justify-center items-center gap-[35px] h-[40px]">
+                <div v-for="(pregunta, i) in arregloPreguntas"
+                    class="w-full text-gray15-color w-[45px] flex items-center justify-center text-xs leading-[18px] font-semibold">
+                  N° {{ (i_pre * 2) + i + 1 }}
+                </div>
+              </div>
+              <div class="grid grid-cols-2 justify-center items-center gap-[35px] h-[85px]">
+                <div v-for="(fila, i) in arregloPreguntas"
+                    class="w-full flex justify-center">
+                  <nuxt-icon :name="fila.estado === 1 ? 'circle-check' : (fila.estado === 2 ? 'circle-x-mark' : 'circle-question')" 
+                            class="text-[26px] no-margin" filled />
+                </div>
               </div>
             </div>
-            <div class="grid grid-cols-2 justify-center items-center gap-[35px] h-[85px]">
-              <div
-              v-for="(fila, i) in arregloPreguntas"
-                class="w-full flex justify-center"
-              >
-              <nuxt-icon  :name="fila.estado === 1 ? 'circle-check' : (fila.estado === 2 ? 'circle-x-mark' : 'circle-question')" class="text-[26px] no-margin" filled />
-              </div>
-            </div>
-          </div>
           </div>
         </div>
       </div>
