@@ -6,11 +6,6 @@ defineProps<{
 const hidePayment = ref(true);
 const handleVisibility = () => {
 	hidePayment.value = false;
-	// if (window.dataLayer) {
-	// 	window.dataLayer.push({
-	// 		event: 'Click/VerPagos-Home',
-	// 	});
-	// }
 };
 </script>
 <template>
@@ -28,6 +23,6 @@ const handleVisibility = () => {
 			<nuxt-icon name="eyeIcon" />
 			<span class="underline">Ver pendientes del mes</span>
 		</button>
-		<CardHomePagos v-else :codAlumno="codAlumno" />
+		<CardHomePagos v-else />
 	</CardHome>
 </template>

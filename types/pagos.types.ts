@@ -67,10 +67,10 @@ export interface PaymentOrderLinkData {
 }
 
 export interface PendingPaymentsHomeData {
-	total: number;
-	countAT: number;
-	countPV: number;
-	countV: number;
+	pagosVencidos: number;
+	pagosPorVencer: number;
+	pagosATiempo: number;
+	montoTotalPendiente: number;
 }
 
 export interface PagosPendientesData {

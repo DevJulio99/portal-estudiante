@@ -22,6 +22,7 @@ import DocumentoAddModule from '~/repository/modules/DocumentoAdd';
 import GradosModule from '~/repository/modules/Grados';
 import CaptchaModule from '~/repository/modules/Captcha';
 import GestionCursosModule from '~/repository/modules/GestionCursos';
+import PagosPendientesHomeModule from '~/repository/modules/pagosPendHome';
 
 
 interface IApiInstance {
@@ -48,6 +49,7 @@ interface IApiInstance {
 	grados: GradosModule;
 	captcha: CaptchaModule;
 	gestionCursos: GestionCursosModule;
+	pagosPendientesHome: PagosPendientesHomeModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -81,7 +83,8 @@ export default defineNuxtPlugin(() => {
 		agregarDocumento: new DocumentoAddModule(apiFecther),
 		grados: new GradosModule(apiFecther),
 		captcha: new CaptchaModule(apiFecther),
-		gestionCursos: new GestionCursosModule(apiFecther)
+		gestionCursos: new GestionCursosModule(apiFecther),
+		pagosPendientesHome: new PagosPendientesHomeModule(apiFecther),
 	};
 
 	return {
