@@ -46,9 +46,7 @@ const eventClick = () => {
         menuStore.menuNav ? 'Cerrar menu navegación' : 'Abrir menu navegación'
       "
       class="h-[24px] w-[24px] mr-2 md:hidden"
-      @click="() => {
-        menuStore.toggleMenuNav();
-      }"
+      @click="menuStore.toggleMenuNav"
     >
       <nuxt-icon
         v-if="!menuStore.menuNav"
