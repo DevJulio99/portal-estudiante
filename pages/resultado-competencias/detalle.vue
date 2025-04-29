@@ -42,10 +42,10 @@ onBeforeUnmount(() => {
 
 <template>
     <BaseLayout :rightAside="false" bgWhite>
-        <BaseTitle :text="`Resultados del curso: ${ competenciaStore.competenciaSeleccionada?.nombreCompetencia }`" />
+        <BaseTitle class="text-center lg:text-start" :text="`Resultados del curso: ${ competenciaStore.competenciaSeleccionada?.nombreCompetencia }`" />
 
         <div class="w-full max-w-[1083px] bg-white rounded-[10px] pt-[22px] pl-[25px] pb-[39px] pr-[19px]">
-            <div class="w-full bg-[#F5F5F5] rounded-2xl p-4 flex justify-between items-center shadow-lg">
+            <div class="flex-wrap justify-center gap-4 lg:flex-nowrap lg:gap-0 w-full bg-[#F5F5F5] rounded-2xl p-4 flex lg:justify-between items-center shadow-lg">
                 <div class="flex gap-4 items-center text-[#064E3B]">
                     <img src="@/assets/icons/exam-results.svg" class="w-[60px] no-margin" />
                     <div>
