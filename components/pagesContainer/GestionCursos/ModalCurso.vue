@@ -37,7 +37,7 @@ onMounted(() => {
         'h-full max-w-[971px]' : type != 'delete',
         'h-min max-w-[450px]' : type == 'delete',
       }">
-    <div class="relative">
+    <div class="relative h-full">
         <span class="absolute top-[-10px] right-0" @click="onClose">
 				<nuxt-icon
 					name="closeIcon"

@@ -91,7 +91,7 @@ const currentValue = () => {
 				<nuxt-icon
 					:name="icon"
 					filled
-					:class="`absolute text-[24px] right-[12px] ${iconStyle}`"
+					:class="`absolute text-[24px] h-[24px] right-[12px] ${iconStyle} ${openSelect ? 'rotate-180' : ''}`"
 				/>
 			</div>
 			<div

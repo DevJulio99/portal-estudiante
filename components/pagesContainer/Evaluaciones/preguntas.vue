@@ -183,7 +183,7 @@ const onPageSelect = (page: number) => {
 
     </div>
     </div> -->
-    <div class="w-full flex justify-end gap-4 py-2 px-5">
+    <div class="fixed left-0 bottom-0 bg-white lg:relative w-full flex justify-end gap-4 py-2 px-5">
       <BaseButton
         styles="!w-full max-w-[145px] text-white rounded-[6px]"
         :color="BtnColor.secondary"

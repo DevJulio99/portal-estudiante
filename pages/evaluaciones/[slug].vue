@@ -327,14 +327,15 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
 		</div>
     <div v-else-if="!competenciaStore.finalizoCompetencia" class="mb-[84px]">
       <BaseBreadcrumbs :items="breadcrumbsItem" />
-      <div class="flex flex-wrap justify-between my-5">
+      <div class="flex-col-reverse lg:flex-row gap-2 lg:gap-0 flex flex-wrap justify-between my-5">
         <div
-          class="text-xl font-bold pb-2 border border-gray_50 border-x-0 border-t-0 flex items-center"
+          class="w-full text-center lg:text-start lg:w-auto text-xl font-bold pb-2 border border-gray_50 border-x-0 border-t-0 flex items-center"
         >
           <p>Evaluación de {{ preguntaActual?.preguntas.tipoEvaluacion }}</p>
         </div>
 
         <TiempoEvaluacion
+          customClass="w-full flex justify-center lg:w-fit"
           :onExpired="EvaluacionExpirada"
           :stop="finishQuestion"
           :onfinish="(data) => timeData = data"
@@ -346,7 +347,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
 
         class="relative bg-white shadow-[0_4px_4px_#8c8c8c40] rounded-[6px] pt-[13px] pr-[29px] pb-[17px] pl-[19px]"
       >
-        <div class="w-full flex gap-[25px]">
+        <div class="w-full flex flex-wrap lg:flex-nowrap gap-[25px]">
           <div class="w-full">
             <div
               class="w-full text-cyan_80 font-base font-semibold mb-5 font-grotesk"
@@ -354,7 +355,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
               {{ preguntaActual?.preguntas.textoTitulo }}
             </div>
             <div
-              class="content-ev overflow-auto h-[425px] pr-[37px] font-sm font-light text-justify"
+              class="content-ev overflow-auto h-auto lg:h-[425px] lg:pr-[37px] font-sm font-light text-justify"
             >
               <div>{{preguntaActual?.preguntas.textoSuperior}}</div>
               

@@ -69,7 +69,11 @@ onMounted(() => {
 
 <template>
   <nav
-    v-on-click-outside.bubble="menuStore.closeMenuNav"
+    v-on-click-outside.bubble="() => {
+      if(!menuStore.toogleActive){
+        menuStore.closeMenuNav();
+      }
+    }"
     class="main-nav"
     :class="{ block: menuStore.menuNav, hidden: !menuStore.menuNav }"
   >

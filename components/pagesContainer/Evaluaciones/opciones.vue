@@ -42,7 +42,7 @@ const onSelect = (id: string, opcion: string) => {
   <div class="relative w-fit">
     <div class="absolute left-[-42px] top-[15px]">
       <div
-        class="btn-show relative flex justify-center items-center w-[28px] h-[31px] bg-primary rounded-md cursor-pointer"
+        class="hidden lg:flex btn-show relative justify-center items-center w-[28px] h-[31px] bg-primary rounded-md cursor-pointer"
         @click="() => (showQuestions = !showQuestions)"
       >
         <div
@@ -59,7 +59,7 @@ const onSelect = (id: string, opcion: string) => {
     </div>
     <div
       :class="`flex flex-wrap gap-[11px] max-h-[469px] transition-all overflow-hidden ${
-        showQuestions ? 'w-[577px]' : 'w-0 h-0'
+        showQuestions ? 'lg:w-[577px]' : 'w-0 h-0'
       }`"
     >
       <span class="w-full block text-sm font-semibold mb-[15px]"
