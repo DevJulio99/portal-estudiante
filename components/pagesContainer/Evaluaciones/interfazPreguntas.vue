@@ -8,6 +8,7 @@ const preguntaActual = computed(() => preguntaStore.preguntaActual)
 const totalPreguntas = computed(() => preguntaStore.totalPreguntas)
 const preguntasRespondidas = computed(() => examenStore.preguntasRespondidas)
 const respuestasPendientes = computed(() => preguntaStore.respuestasPendientes)
+const resumenActivo = computed(() => preguntaStore.resumenActivo)
 
 const onPageSelect = (page: number) => {
   preguntaStore.setOpcionSeleccionada('');
@@ -38,7 +39,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)');
         <div
           class="w-[43px] transition-colors cursor-pointer rounded-lg py-2 flex justify-center items-center"
           :class="`${
-            preguntaActual === i + 1
+            (preguntaActual === i + 1 && !resumenActivo)
               ? 'bg-blue_light text-white'
               : preguntasRespondidas.includes(i + 1)
               ? 'bg-green_60 text-white'

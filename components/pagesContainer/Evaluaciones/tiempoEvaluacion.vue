@@ -26,6 +26,7 @@ const props = withDefaults(
 
 const littleTime = ref(true);
 const wasStopped = ref(false);
+const intervalTime = ref();
 const stopTime = ref({
   countDownData: 0,
   now: 0
@@ -52,7 +53,7 @@ const initTime = (countDownDate_?: number, now_?: number) => {
   // var currentDate = new Date();
   // now_ && currentDate.setTime(now_);
 // Update the count down every 1 second
-var x = setInterval(function() {
+intervalTime.value = setInterval(function() {
   var current =  new Date();
   // Get today's date and time
   var now =  current.getTime();
@@ -86,7 +87,7 @@ var x = setInterval(function() {
 
   // If the count down is over, write some text
   if (distance < 0) {
-    clearInterval(x);
+    clearInterval(intervalTime.value);
     elememtHour.innerHTML = '00';
     elememtMin.innerHTML = '00';
     elememtSeg.innerHTML = '00';
@@ -95,7 +96,7 @@ var x = setInterval(function() {
   }
 
   if(props.stop){
-    clearInterval(x);
+    clearInterval(intervalTime.value);
     // console.log('distance', distance);
     // console.log('countDownDate', countDownDate);
     // console.log('now', now);
@@ -111,10 +112,6 @@ var x = setInterval(function() {
   }
   }
 }, 1000);
-}
-
-const initInterval = (distance: number) => {
-
 }
 
 const formatTime = (time: number) => time < 10 ? `0${time}` : `${time}`;
@@ -134,6 +131,10 @@ onBeforeUpdate(() => {
   if(props.stop){
     wasStopped.value = true;
   }
+})
+
+onBeforeUnmount(() => {
+  clearInterval(intervalTime.value);
 })
 </script>
 
