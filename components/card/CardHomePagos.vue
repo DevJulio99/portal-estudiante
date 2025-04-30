@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { PendingPaymentsHomeData } from '~/types/pagos.types';
-import checkBox from '~/assets/icons/CheckBoxCircle.svg'
+import checkBox from '~/assets/icons/CheckboxCircle.svg'
 
 const { $api } = useNuxtApp();
 
