@@ -25,6 +25,18 @@
     },
     {
         "id": 3,
+        "etiqueta": "cursos",
+        "nombre": "cursos",
+        "url": "/cursos",
+        "icono": "../public/images/pagos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    },
+    {
+        "id": 4,
         "etiqueta": "documentos",
         "nombre": "documentos",
         "url": "/documentos",

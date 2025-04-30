@@ -1,30 +1,29 @@
 <script lang="ts" setup>
 import type { PendingPaymentsHomeData } from '~/types/pagos.types';
-import obligacionesPagadasMock from "~/utils/data/dataObligacionesPagadas.json";
+import checkBox from '~/assets/icons/CheckBoxCircle.svg'
+
 const { $api } = useNuxtApp();
 
-const props = defineProps<{
-	codAlumno: string | undefined;
-}>();
+const tokenStore = useTokenStore();
 
 const servicesData = ref<PendingPaymentsHomeData>();
 const servicesError: Ref<any> = ref(null);
-const pendingServices = ref(true);
 
-// const {
-// 	data: dataServices,
-// 	error: errorServices,
-// 	pending: pendingServices,
-// } = await $api.pagosPendHome.getPagosPendientes(props.codAlumno, {
-// 	lazy: true,
-// });
-// watch(dataServices, (response) => {
-// 	if (response?.flag) {
-// 		servicesData.value = response?.data[0] || [];
-// 	} else if (response?.error) {
-// 		servicesError.value = response.error;
-// 	}
-// });
+const {
+	data: dataServices,
+	error: errorServices,
+	pending: pendingServices,
+} = await $api.pagosPendientesHome.getResumenPagosPorAlumno(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), {
+	lazy: true,
+});
+
+watch(dataServices, (response) => {
+	if (response?.data?.length) {
+		servicesData.value = response?.data[0] || [];
+	} else if (response?.error) {
+		servicesError.value = response.error;
+	}
+});
 
 onMounted(() => {
 	pendingServices.value = false;
@@ -35,7 +34,7 @@ onMounted(() => {
 		<div v-if="pendingServices" class="text-xs text-black mt-6 mb-4">
 			<BaseStatusLoading />
 		</div>
-		<!-- <div v-else-if="errorServices || servicesError">
+		<div v-else-if="errorServices || servicesError">
 			<BaseStatusError
 				:text="
 					servicesError?.titulo || 'Lo sentimos, no pudimos cargar tus pagos'
@@ -45,57 +44,57 @@ onMounted(() => {
 				"
 				:icono="servicesError?.icono"
 			/>
-		</div> -->
-		<div v-else-if="servicesData?.total == 0">
+		</div>
+		<div v-else-if="servicesData?.montoTotalPendiente == 0">
 			<BaseStatusError
-				:text="servicesError?.titulo || '¡Muy Bien!'"
+				:text="servicesError?.titulo || '¡Muy bien!'"
 				:description="
 					servicesError?.descripcion || 'Sin pagos pendientes este mes'
 				"
-				:icono="'https://adminmi.upn.edu.pe/assets/7679a111-0454-4766-a8d0-6082c9d81347.svg'"
+				:icono="checkBox"
 			/>
 		</div>
 		<div v-else class="font-nunito">
 			<p class="text-sm text-center">Pendientes del mes</p>
 			<p class="text-[21px] text-center font-extrabold mb-1">
-				S/ {{ servicesData?.total.toFixed(2) }}
+				S/ {{ servicesData?.montoTotalPendiente.toFixed(2) }}
 			</p>
 			<div class="flex flex-wrap justify-center">
 				<div
 					v-if="
-						(servicesData?.countAT || 0) > 0 &&
-						servicesData?.countPV == 0 &&
-						servicesData?.countV == 0
+						(servicesData?.pagosATiempo || 0) > 0 &&
+						servicesData?.pagosPorVencer == 0 &&
+						servicesData?.pagosVencidos == 0
 					"
-					class="flex items-center text-[13px] text-[#1762CA] font-extrabold"
+					class="flex items-center text-[13px] text-[#1762CA] font-extrabold gap-1"
 				>
-					<nuxt-icon class="text-[18px]" filled name="payHomeTime" />
+					<nuxt-icon class="text-[18px]" filled name="paymentTime" />
 					<span
-						>{{ String(servicesData?.countAT).padStart(2, '0') }} a tiempo</span
+						>{{ String(servicesData?.pagosATiempo).padStart(2, '0') }} a tiempo</span
 					>
 				</div>
 				<div
-					v-if="(servicesData?.countV || 0) > 0"
+					v-if="(servicesData?.pagosVencidos || 0) > 0"
 					class="flex items-center text-[13px] text-[#DC3545] font-extrabold gap-1"
 				>
-					<nuxt-icon class="text-[18px]" filled name="payHomeWarning" />
+					<nuxt-icon class="text-[16px]" filled name="paymentWarning" />
 					<span
-						>{{ String(servicesData?.countV).padStart(2, '0') }}
-						{{ (servicesData?.countV || 0) > 1 ? 'vencidas' : 'vencida' }}</span
+						>{{ String(servicesData?.pagosVencidos).padStart(2, '0') }}
+						{{ (servicesData?.pagosVencidos || 0) > 1 ? 'vencidos' : 'vencido' }}</span
 					>
 				</div>
 				<div
-					v-if="(servicesData?.countPV || 0) > 0"
+					v-if="(servicesData?.pagosPorVencer || 0) > 0"
 					class="flex items-center text-[13px] text-[#985108] font-extrabold"
 				>
 					<span
-						v-if="!(servicesData?.countV === 0)"
+						v-if="!(servicesData?.pagosVencidos === 0)"
 						class="text-[20px] mx-2 text-black"
 						>+</span
 					>
-					<nuxt-icon class="text-[18px]" filled name="payHomeAlarm" />
+					<nuxt-icon class="text-[20px]" filled name="paymentAlarm" />
 					<span
-						>{{ String(servicesData?.countPV).padStart(2, '0') }} por
+						>{{ String(servicesData?.pagosPorVencer).padStart(2, '0') }} por
 						vencer</span
 					>
 				</div>

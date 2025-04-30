@@ -13,12 +13,14 @@ const props = withDefaults(
   stop?: boolean;
   onfinish?: (time: timeEvaluation) => void;
   timeDefect?: timeEvaluation;
+  customClass?: string;
 }>(),
 {
   init: true,
   stop: false,
   onfinish: () => {},
-  onExpired: () => {}
+  onExpired: () => {},
+  customClass: ''
 }
 );
 
@@ -136,7 +138,7 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <div class="w-fit text-center">
+  <div class="w-fit text-center" :class="customClass">
     <div id="time-test"></div>
     <div class="flex gap-[5px] text-gray_80 items-center">
       <div class="time-ev">

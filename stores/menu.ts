@@ -12,6 +12,7 @@ export const useMenuStore = defineStore('menuStore', {
 			menuNav: false,
 			menuProfile: false,
 			menuInfo: false,
+			toogleActive: false,
 			mainMenuData: {
 				data: null,
 				pending: false,
@@ -55,11 +56,15 @@ export const useMenuStore = defineStore('menuStore', {
 			this.menuNav = false;
 		},
 		toggleMenuNav() {
+			this.toogleActive = true;
 			this.menuNav = !this.menuNav;
 			if (this.menuProfile || this.menuInfo) {
 				this.menuProfile = false;
 				this.menuInfo = false;
 			}
+			setTimeout(() => {
+				this.toogleActive = false;
+			}, 0);
 		},
 		closeMenuProfile() {
 			this.menuProfile = false;
