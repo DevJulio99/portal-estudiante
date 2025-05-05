@@ -174,13 +174,14 @@ const ultimaPregunta = () => {
     
     finishQuestion.value = true;
     finalizedBefore.value = true;
-    showModal.value = true;
+    preguntaStore.setResumenActivo(true);
     if(opcionSeleccionada.value.trim().length){
       const data = {
        numeroPregunta: totalQuestions.value,
        respuestaSeleccionada: opcionSeleccionada.value
       }
       examenStore.setBancoRespuesta(data);
+      examenStore.setpreguntaActual(totalQuestions.value);
       //opcionSeleccionada.value = '';
       preguntaStore.setOpcionSeleccionada('');
     }
@@ -193,7 +194,7 @@ const getValueOption = () => {
 
 const onNextFinish = () => {
   finishQuestion.value = true;
-  showModal.value = true;
+  preguntaStore.setResumenActivo(true);
 }
 
 const resetRespuesta = () => {
@@ -236,7 +237,7 @@ const EvaluacionExpirada = () => {
       respondidas: 0,
       idsAnswered: []
     });
-  showModal.value = true;
+    preguntaStore.setResumenActivo(true);
   !competenciaStore.finalizoCompetencia && FinalizarCompetencia(false);
   setTimeout(() => {
     router.push('/evaluaciones');
@@ -247,7 +248,7 @@ const OnNextNotSave = () => {
    // console.log('paso sin guardar');
    forceNext.value = true;
    wasNotSaved.value = false;
-   showModal.value = false;
+   preguntaStore.setResumenActivo(false);
 }
 
 const onAskNext = () => {
@@ -258,7 +259,7 @@ const onAskNext = () => {
 const finalizarCompetencia = () => {
   //finishAllQuestions = true
   !competenciaStore.finalizoCompetencia && FinalizarCompetencia();
-  showModal.value = false;
+  preguntaStore.setResumenActivo(false);
 }
 
 onMounted(() => {
@@ -293,6 +294,7 @@ onBeforeUnmount(() => {
   postulanteStore.setHabilitado(0);
   competenciaStore.resetCompetencia();
   preguntaStore.setPregunta(1);
+  preguntaStore.setResumenActivo(false);
 });
 
 const imagenCargada = ref(false);
@@ -395,14 +397,14 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
 
 
       <ModalEstado
-        :show="showModal"
+        :show="preguntaStore.resumenActivo"
         :resumen="summaryEvaluation"
         :success="finishQuestion"
         :was-not-saved="wasNotSaved"
         :next-not-save="OnNextNotSave"
         :on-close="
           () => {
-            showModal = false;
+            preguntaStore.setResumenActivo(false);
             finishQuestion = false;
           }
         "

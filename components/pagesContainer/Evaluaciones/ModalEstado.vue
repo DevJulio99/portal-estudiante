@@ -91,7 +91,7 @@ const onNext = () => {
       <span
         v-if="!wasNotSaved"
         class="w-full text-center block font-normal text-base text-gray1 mb-[14px]"
-        >Preguntas en blanco: {{ preguntasPendientes }}</span
+        >Preguntas en blanco: {{ examenStore.lista.length - preguntasRespondidas.length }}</span
       >
 
       <!-- <div

@@ -4,7 +4,8 @@ export const usePreguntaStore = defineStore('preguntaStore', {
         totalPreguntas: 0,
         respuestasPendientes : [] as number[],
 		preguntaActual: 1,
-        opcionSeleccionada: ''
+        opcionSeleccionada: '',
+		resumenActivo: false
 	}),
 	actions: {
         setTotalPreguntas(total: number) {
@@ -18,6 +19,9 @@ export const usePreguntaStore = defineStore('preguntaStore', {
 		},
         setOpcionSeleccionada(opcion: string){
             this.opcionSeleccionada = opcion;
-        }
+        },
+		setResumenActivo(activo: boolean){
+            this.resumenActivo = activo;
+		}
 	},
 });
