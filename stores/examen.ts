@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import type { BancoRespuesta, Examen, Respuesta } from "~/types/examen.types";
+import type { ErrorResponsePortal } from "~/types/services.types";
 
 interface stateEstado {
     lista: Examen[];
@@ -7,7 +8,7 @@ interface stateEstado {
     preguntaActual: Examen | null;
     respuestaSeleccionada: string | null;
     bancoRespuestas: BancoRespuesta[];
-    error: "nodata"| "other"| null;
+    error: ErrorResponsePortal | null;
     guardadoPendiente: Boolean;
     pending: boolean;
 }

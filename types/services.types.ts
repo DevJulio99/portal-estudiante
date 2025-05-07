@@ -67,6 +67,13 @@ export interface ErrorResponse {
 	descripcion: string;
 }
 
+export interface ErrorResponsePortal {
+    success: boolean;
+    code: string;
+    message: string;
+    validations: string[];
+}
+
 export type DataResponse<T> = {
 	message: string;
 	flag: boolean;

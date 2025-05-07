@@ -56,6 +56,9 @@ async function handleFormSubmit() {
     }
     console.log("error", error.value);
     setTimeout(() => {
+      if(error.value){
+        unWatch();
+      }
       data.value && (dataLog.value = data.value);
       pendingLogin.value = pending.value;
     }, 0);
