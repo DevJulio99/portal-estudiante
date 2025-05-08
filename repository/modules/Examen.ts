@@ -1,7 +1,7 @@
 import { type FetchOptions } from 'ofetch';
 import type { AsyncDataOptions } from '#app';
 import FetchFactory from '../factory';
-import type { DataResponse } from '~/types/services.types';
+import type { DataResponse, ErrorResponsePortal } from '~/types/services.types';
 import type { ActualizarRespuesta, Examen, GenerarExamen } from '~/types/examen.types';
 
 class ExamenModule extends FetchFactory<DataResponse<Examen[]>> {
@@ -15,7 +15,7 @@ class ExamenModule extends FetchFactory<DataResponse<Examen[]>> {
 		body: GenerarExamen,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<Examen[]>>,
 	) {
-		return await useAsyncData(() => {
+		return await useAsyncData<DataResponse<Examen[]> ,ErrorResponsePortal>(() => {
 			const fetchOptions: FetchOptions<'json'> = {
 				headers: {},
 			};

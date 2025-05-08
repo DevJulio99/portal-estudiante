@@ -4,6 +4,7 @@ const props = defineProps<{
 	description?: string;
 	icono?: string | null;
 	defaultIcon?: string | null;
+	classImg?: string | null;
 }>();
 const errIcono = props.icono?.trim();
 </script>
@@ -14,6 +15,7 @@ const errIcono = props.icono?.trim();
 			:src="errIcono"
 			alt="icon-error"
 			class="w-[24px] h-[24px]"
+			:class="classImg"
 		/>
 		<nuxt-icon
 			v-else

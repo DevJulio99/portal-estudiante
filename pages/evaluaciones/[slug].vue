@@ -12,6 +12,7 @@ import { FinalizarCompetencia, RegistrarEstado } from "~/services/estadoCompeten
 import type { Competencia } from "~/types/competencia.types";
 import { getExamenes } from "~/services/examen";
 import InterfazPreguntas from "~/components/pagesContainer/Evaluaciones/interfazPreguntas.vue";
+import exclamation from "@/assets/icons/circle-exclamation.svg";
 
 definePageMeta({
   middleware: "auth",
@@ -327,7 +328,16 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
     <div v-if="examenStore.pending" class="text-xs text-black py-16">
 			<BaseStatusLoading />
 		</div>
-    <div v-else-if="!competenciaStore.finalizoCompetencia" class="mb-[84px]">
+    <div v-if="examenStore.error" class="p-5 font-telegraf h-full flex justify-center items-center">
+      <BaseStatusError
+      class="relative top-[-80px]"
+				:text="examenStore.error.message ?? 'Ocurrio un error'"
+        description="Por favor, intenta más tarde."
+				:icono="exclamation"
+        class-img="w-[40px] h-[40px]"
+			/>
+    </div>
+    <div v-else-if="!competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error" class="mb-[84px]">
       <BaseBreadcrumbs :items="breadcrumbsItem" />
       <div class="flex-col-reverse lg:flex-row gap-2 lg:gap-0 flex flex-wrap justify-between my-5">
         <div
@@ -419,7 +429,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
     </div>
 
     <Preguntas
-        v-if="!competenciaStore.finalizoCompetencia"
+        v-if="!competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error"
         :cantidad="totalQuestions"
         :onBack="onBack"
         :onNext="onNext"
