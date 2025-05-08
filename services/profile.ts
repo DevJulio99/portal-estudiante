@@ -13,7 +13,7 @@ export const getProfile = async (codAlum: string) => {
 	});
     //console.log('data getProfile', data.value)
 
-	watch(data, (response) => {
+	const unWatch = watch(data, (response) => {
         console.log('response profile', response);
 		if (response?.data.length) {
 			profileStore.setProfileData({
@@ -33,5 +33,6 @@ export const getProfile = async (codAlum: string) => {
 				},
 			});
 		}
+		unWatch();
 	});
 };

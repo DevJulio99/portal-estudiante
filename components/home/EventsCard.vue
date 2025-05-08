@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TagStyle } from '~/types/helper.types';
 import type { EventData } from '~/types/events.types';
+import debounce from 'lodash.debounce'
 
 const { $api } = useNuxtApp();
 const router = useRouter();
@@ -8,12 +9,22 @@ const router = useRouter();
 const serviceError: Ref<any> = ref(null);
 const newsData = ref<EventData[]>([]);
 
-const { data, error, pending } = await $api.eventos.getEventos(
+const eventResponse = ref();
+const pendingval = ref(true);
+
+const fetchEvents = async () => {
+  const { data, error, pending } = await $api.eventos.getEventos(
 	{
 		lazy: true,
 	},
-);
-watch(data, (response) => {
+  );
+  pendingval.value = pending.value;
+  eventResponse.value = data.value || []
+}
+
+const debouncedFetch = debounce(fetchEvents, 500) 
+
+watch(eventResponse, (response) => {
 	if (response?.data?.length) {
 		newsData.value = response?.data.slice(0, 2);
 	} else if (response?.error) {
@@ -24,6 +35,10 @@ watch(data, (response) => {
 const eventClick = (id: string, title: string, tag: string) => {
 	router.replace(`eventos/${id}`);
 };
+
+onMounted(() => {
+	debouncedFetch();
+})
 </script>
 
 <template>
@@ -33,7 +48,7 @@ const eventClick = (id: string, title: string, tag: string) => {
 		width="w-full xl:w-2/3"
 		icon="eventIcon"
 	>
-		<div v-if="pending" class="text-xs text-black mt-6 mb-4">
+		<div v-if="pendingval" class="text-xs text-black mt-6 mb-4">
 			<BaseStatusLoading />
 		</div>
 		<div

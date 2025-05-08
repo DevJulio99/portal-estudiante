@@ -27,6 +27,7 @@ export const getExamenes = async () => {
   const { $api } = useNuxtApp();
   const postulanteStore = usePostulanteStore();
   const competenciaStore = useCompetenciaStore();
+  const examenStore = useExamenStore();
 
   try {
     await listarExamen();
@@ -43,6 +44,11 @@ export const getExamenes = async () => {
         request,
         { lazy: true }
       );
+
+      if(generarExamen.error.value?.data){
+         examenStore.error = generarExamen.error.value?.data;
+         examenStore.pending = false;
+      }
 
       if (!generarExamen.error.value) {
         listarExamen();

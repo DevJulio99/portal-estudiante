@@ -44,6 +44,7 @@ withDefaults(defineProps<Props>(), {
 			]"
 		>
 			<main
+			class="h-full"
 				:class="
 					pageHome ? `pt-0 px-0 lg:px-0 ` : `py-8 px-3 lg:px-7 ` + stylesMain
 				"
