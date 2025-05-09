@@ -9,20 +9,6 @@ const props = withDefaults(
 )
 const captchaStore = useCaptcha();
 const msgPopupStore = useMsgPopUpStore();
-const textBnt = ref("Validar CAPTCHA");
-
-const validCaptcha = async () => {
-  if (!captchaStore.captchaValido) {
-    if (captchaStore.captchaModel.replaceAll(/\s+/g, "").length < 4) return;
-    textBnt.value = "Validando...";
-    captchaStore.data &&
-      (await captchaStore.validarCaptcha(
-        captchaStore.data.captchaId,
-        captchaStore.captchaModel
-      ));
-    textBnt.value = "Validar CAPTCHA";
-  }
-};
 
 function setError(msg = "") {
   msgPopupStore.setErrorBottom(true, msg);
@@ -45,6 +31,21 @@ watch(
     }
   }
 );
+
+watch(() => captchaStore.captchaModel, async(value, oldVal) => {
+  const trimedNew = value.replaceAll(/\s+/g, '').toLocaleLowerCase();
+  const trimedOld = oldVal.replaceAll(/\s+/g, '').toLocaleLowerCase();
+
+  if (value.replaceAll(/\s+/g, '').length < 4) {
+    captchaStore.captchaValido = false;
+    return;
+  }
+  if(trimedNew === trimedOld) return;
+  if(captchaStore.data) await captchaStore.validarCaptcha(
+        captchaStore.data.captchaId,
+        captchaStore.captchaModel
+  ) 
+})
 </script>
 
 <template>
@@ -68,7 +69,6 @@ watch(
       </div>
     </div>
     <form
-      @submit.prevent="validCaptcha"
       class="fmr-captcha w-full flex flex-wrap justify-center"
     >
       <input
@@ -81,14 +81,6 @@ watch(
         type="text"
         maxlength="4"
       />
-
-      <button
-        class="bg-primary rounded text-white p-3 w-full max-w-[155px]"
-        type="submit"
-        :disabled="captchaStore.loading"
-      >
-        {{ textBnt }}
-      </button>
     </form>
   </div>
 </template>
