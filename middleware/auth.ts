@@ -24,10 +24,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return navigateTo("/login", { replace: true });
     }
 
-    if(isAuth){
-      tokenStore.pending = false;
-    }
-
     if(isTotalPagos && !isAdmin){
       return navigateTo("/inicio", { replace: true });
     }
@@ -38,6 +34,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     if(!isAdmin && rutasAdmin.includes(to.fullPath) && !rutasCompartidas.includes(to.fullPath)){
       return navigateTo("/inicio", { replace: true });
+    }
+
+    if(isAuth){
+      tokenStore.pending = false;
     }
 
     if(!isEvaluaciones){

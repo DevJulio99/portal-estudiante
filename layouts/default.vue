@@ -63,4 +63,5 @@ if(tokenStore.getDataToken && tokenStore.getDataToken.Id_Alumno && tokenStore.ac
     <slot></slot>
   </div>
   <PopUpMensaje :message="msgPopupStore.error.message" :type="msgPopupStore.tipoModal"/>
+  <BasePopUpBottom />
 </template>

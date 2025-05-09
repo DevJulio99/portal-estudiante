@@ -11,6 +11,7 @@ const fileInput = ref(null);
 const isUploading = ref(false);
 const isUploaded = ref(false);
 const pagoStore = usePagoStore();
+const imageLoaderStore = useImageLoaderStore();
 
 const generateSignature = async () => {
   const stringToSign = `folder=${folderName}&timestamp=${timestamp}${apiSecret}`;
@@ -64,7 +65,9 @@ const handleFileChange = async () => {
 
     <BaseButton
       class="p-2 bg-primary rounded-lg hover:bg-[#1E6657] !w-10 relative flex items-center justify-center"
-      @click="fileInput.click()"
+      @click="() => {
+        if(imageLoaderStore.enabledButton) fileInput.click();
+      }"
     >
       <template v-if="isUploading">
         <BaseStatusLoading />
