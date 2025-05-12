@@ -135,7 +135,8 @@ async function processRequestsNotas(curso: Curso, status: boolean) {
 		}
 	});
 	cursosTotalData.value = notasData;
-	requestQueueNota.value.push(() => initCallNotas(curso, status));
+	const cursoDesplegado = cursosTotalData.value.find(x => x.codCurso === curso.codCurso)?.dataNotas.length ?? 0;
+	cursoDesplegado == 0 && requestQueueNota.value.push(() => initCallNotas(curso, status));
 	if (requestQueueNota.value.length === 1) {
 		while (requestQueueNota.value.length > 0) {
 			const currentFunction = requestQueueNota.value[0];

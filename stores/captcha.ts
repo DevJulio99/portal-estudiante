@@ -6,6 +6,7 @@ interface captchaState {
     data: ResponseCatpcha | null;
     captchaValido: boolean;
     error: boolean;
+    captchaModel: string;
 }
 
 export const useCaptcha = defineStore('useCaptcha', {
@@ -13,13 +14,15 @@ export const useCaptcha = defineStore('useCaptcha', {
         loading: true,
         data: null,
         captchaValido: false,
-        error: false
+        error: false,
+        captchaModel: ''
     }),
     actions: {
         setData(data: ResponseCatpcha){
            this.data = {...data, captchaImage: `data:image/png;base64,${data.captchaImage}`};
         },
         async generarCaptcha(){
+            this.captchaModel = '';
             this.loading = true;
             this.captchaValido = false;
             const response = await useNuxtApp().$api.captcha.generateCaptcha();
@@ -49,6 +52,7 @@ export const useCaptcha = defineStore('useCaptcha', {
         async refrescarCaptcha(){
             this.data = null;
             this.error = false;
+            this.captchaModel = '';
             this.generarCaptcha();
         }
     },

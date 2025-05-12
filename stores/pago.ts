@@ -9,6 +9,7 @@ interface PagoStore {
 	lista: PagosPendientesData[];
 	paginado: Paginado;
 	total: number;
+	imagenRegistrada: boolean;
 }
 
 export const usePagoStore = defineStore('PagoStore', {
@@ -21,7 +22,8 @@ export const usePagoStore = defineStore('PagoStore', {
 				pagina : 1,
 				itemsPorPagina : 2
 			},
-			total: 0
+			total: 0,
+			imagenRegistrada: false
 		};
 	},
 	actions: {
@@ -81,7 +83,10 @@ export const usePagoStore = defineStore('PagoStore', {
 			const serviceImagenPago = await $api.imagenPago.registrarImagenPago(
 				request
 			  );
-			
+			this.imagenRegistrada = true;
+			setTimeout(() => {
+				this.imagenRegistrada = false;
+			}, 0);
             this.limpiarPago();
 			if(serviceImagenPago.data.value?.error) return	
             
