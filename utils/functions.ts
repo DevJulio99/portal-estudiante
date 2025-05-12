@@ -115,3 +115,11 @@ export const validateForm = (form: object, optional: string[]) => {
    }
    return Boolean(!keysErrorData.length)
 }
+
+export const toggleHiddenScroll = () => {
+  const miElemento = document.querySelector('body');
+  if (miElemento) {
+    const valOverflow = miElemento.style.overflow;
+    miElemento.style.overflow  =  (valOverflow == '' || valOverflow == 'auto') ? 'hidden' : 'auto';
+  }
+}

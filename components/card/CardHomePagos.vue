@@ -24,10 +24,6 @@ watch(dataServices, (response) => {
 		servicesError.value = response.error;
 	}
 });
-
-onMounted(() => {
-	pendingServices.value = false;
-});
 </script>
 <template>
 	<div>

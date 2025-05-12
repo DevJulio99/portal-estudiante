@@ -4,6 +4,7 @@ import type { HorarioData } from '~/types/cursos.types';
 const { $api } = useNuxtApp();
 const tokenStore = useTokenStore();
 
+const allDataHorario = ref<HorarioData[]>([]);
 const dataHorario = ref<HorarioData[]>([]);
 const user = useUserStoreAuth();
 const elementHorario = ref<HTMLDivElement | null>(null);
@@ -55,9 +56,15 @@ const {
 
 watch(horarioDataResponse, (response) => {
 	if (response?.data.length) {
-		dataHorario.value = response.data.filter((item) => {
-			return Number(item.horario.diaNumero) === visibleDay.value;
-		});
+		const repeatDay = allDataHorario.value.filter(x => Number(x.horario.diaNumero) === visibleDay.value);
+		if(!repeatDay.length){
+			allDataHorario.value = [...dataHorario.value, ...response.data.filter((item) => {
+			   return Number(item.horario.diaNumero) === visibleDay.value;
+		    })];
+			dataHorario.value = response.data.filter((item) => {
+			   return Number(item.horario.diaNumero) === visibleDay.value;
+		    });
+		}
 	}
 	if (response?.error) {
 		servicesError.value = response.error;
@@ -82,7 +89,7 @@ function callCurrentDayClass() {
 	fechaSession2.value = `${currentDay.getFullYear()}-${
 		currentDay.getMonth() + 1
 	}-${currentDay.getDate()}T23:00:00Z`;
-	callHorarioRango();
+	getDataClass();	
 }
 
 function callNextDayClass() {
@@ -96,7 +103,18 @@ function callNextDayClass() {
 	fechaSession2.value = `${nextDay.getFullYear()}-${
 		nextDay.getMonth() + 1
 	}-${nextDay.getDate()}T23:00:00Z`;
-	callHorarioRango();
+	getDataClass();	
+}
+
+const getDataClass = () => {
+	const dataClass = allDataHorario.value.filter(x => Number(x.horario.diaNumero) === visibleDay.value);
+	if(!dataClass.length){
+		callHorarioRango();
+	}else {
+		dataHorario.value = allDataHorario.value.filter((item) => {
+			return Number(item.horario.diaNumero) === visibleDay.value;
+		})
+	}
 }
 
 const handleScroll = (e: any) => {
@@ -113,7 +131,6 @@ const handleScroll = (e: any) => {
 
 onMounted(() => {
 	elementHorario.value?.addEventListener('scroll', handleScroll);
-	pending.value = false;
 });
 
 onUnmounted(() => {
