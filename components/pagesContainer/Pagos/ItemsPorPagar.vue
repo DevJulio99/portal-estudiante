@@ -11,9 +11,11 @@ const listaPagosPendientes = ref<PagosPendientesData[]>([]);
 const popupDetalleData = ref();
 const popupDetalleVisible = ref(false);
 const servicesError: Ref<any> = ref(null);
+const popupCaptcha = ref(false);
 // const loadingPagos = ref(true);
 const tokenStore = useTokenStore();
 const pagoStore = usePagoStore();
+const imageLoaderStore = useImageLoaderStore();
 
 const showPopup = (datos: object) => {
 	popupDetalleData.value = datos;
@@ -38,6 +40,7 @@ const dateIsExpired = (strFechaDoc: string) => {
 
 const SubirImagen = (idPago: number) => {
 	pagoStore.setPago(idPago);
+	popupCaptcha.value = true;
 }
 
 const montoTotalPagar = computed(() => {
@@ -61,6 +64,10 @@ watch(dataPagos, (response) => {
 		servicesError.value = response.error;
 	}
 });
+
+onMounted(() => {
+	imageLoaderStore.enabledButton = false;
+})
 </script>
 <template aria-label="TableItemsPorPagar">
 	<div
@@ -176,6 +183,7 @@ watch(dataPagos, (response) => {
 		:data="popupDetalleData"
 		:closePopup="hidePopup"
 	/>
+	<PagesContainerPagosModalCaptcha v-if="popupCaptcha" @close="popupCaptcha = false"/>
 </template>
 
 <style lang="postcss" scoped>

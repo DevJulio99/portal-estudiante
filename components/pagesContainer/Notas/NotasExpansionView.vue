@@ -79,13 +79,13 @@ async function actionExpansion(option: Option) {
 		currentOption.value = null;
 		openExpansion.value = !openExpansion.value;
 
-		pendingAsistencia.value = true;
+		//pendingAsistencia.value = true;
 		serviceAsistencia.value = null;
 		serviceNotas.value = null;
-		pendingNotas.value = true;
+		//pendingNotas.value = true;
 	}
 
-	if(option.id == 2 && currentOption.value){
+	if(option.id == 2 && currentOption.value && !dataAsistencia.value.length){
 		const { data, error, pending } = await callAsistencias(parseInt(tokenStore.getDataToken.Id_Alumno), props.item.periodo, props.item.codCurso, new Date().getFullYear());
 		setTimeout(() => {
 			serviceAsistencia.value = data.value;
@@ -103,7 +103,7 @@ async function actionExpansion(option: Option) {
         });
 	}
 
-	if(option.id == 3 && currentOption.value){
+	if(option.id == 3 && currentOption.value && !dataNotasBimestre.value.length){
 		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre'/*props.item.periodo*/, new Date().getFullYear());
 		setTimeout(() => {
 			serviceNotas.value = data.value;

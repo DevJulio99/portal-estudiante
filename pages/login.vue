@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getProfile } from "~/services/profile";
-import type { ResponseCatpcha } from "~/types/captcha.types";
 import type { ResponseLogin } from "~/types/login.types";
 
 const userLogin = ref({
@@ -9,15 +8,12 @@ const userLogin = ref({
 });
 const tokenStore = useTokenStore();
 const captchaStore = useCaptcha();
+const msgPopupStore = useMsgPopUpStore();
 const router = useRouter();
 const { $api } = useNuxtApp();
 const dataLog = ref<ResponseLogin | null>();
-const errorLog = ref<boolean>(false);
-const errorMsg = ref<string>("");
 const pendingLogin = ref<boolean>(false);
 const textLogin = ref<string>('Iniciar sesión');
-const captchaCode = ref('');
-const validCaptchaVal = ref<boolean>(false);
 
 watch(() => captchaStore.error, (err) => {
    if(err){
@@ -31,7 +27,6 @@ const callLogin = async (captchaId: string, captchaCode: string) =>
   });
 
 async function handleFormSubmit() {
-  errorLog.value = false;
   const isvalid = Object.values(userLogin.value).every(
     (x) => x.trim().length > 0
   );
@@ -41,12 +36,13 @@ async function handleFormSubmit() {
   if(!captchaId) setError("CAPTCHA no válido.");
   if (isvalid && captchaId) {
     textLogin.value = 'Ingresando...';
-    const { data, error, pending } = await callLogin(captchaId, captchaCode.value);
+    const { data, error, pending } = await callLogin(captchaId, captchaStore.captchaModel);
     // console.log('data.value', data.value)
     if (error.value){
       const dataErr = error.value.data as any;
       if(dataErr.code == 'PS-EVAL-4000'){
         setError();
+        refreshCaptcha();
       }
       if(dataErr.code == 'PS-EVAL-4001'){
         setError("CAPTCHA no válido.");
@@ -85,18 +81,17 @@ function changeEl(ev: any) {
 }
 
 function setError(msg = "Correo o contraseña incorrecta") {
-  errorLog.value = true;
-  errorMsg.value = msg;
   dataLog.value = null;
-  (document.getElementById('popuperr') as HTMLDivElement).classList.add('show');
-  setTimeout(() => {
-   (document.getElementById('popuperr') as HTMLDivElement).classList.remove('show');
-  }, 5000);
+  msgPopupStore.setErrorBottom(true, msg);
 }
 
 const validCaptcha = async() => {
-  if(captchaCode.value.replaceAll(/\s+/g, '').length < 4) return
-  captchaStore.data && await captchaStore.validarCaptcha(captchaStore.data.captchaId, captchaCode.value);
+  if(captchaStore.captchaModel.replaceAll(/\s+/g, '').length < 4) return
+  captchaStore.data && await captchaStore.validarCaptcha(captchaStore.data.captchaId, captchaStore.captchaModel);
+}
+
+const refreshCaptcha = () => {
+  captchaStore.refrescarCaptcha();
 }
 
 onMounted(() => {
@@ -179,32 +174,7 @@ onMounted(() => {
               </div>
             </div> -->
 
-            <div class="flex flex-wrap justify-center mt-10">
-              <div class="w-full flex flex-wrap justify-center">
-                <BaseStatusLoading class="w-full" v-if="captchaStore.loading"/>
-                <div v-else-if="captchaStore.data" class="flex flex-wrap justify-center gap-3">
-                 <img :src="captchaStore.data.captchaImage" alt="CAPTCHA">
-                 <button aria-label="Recargar CAPTCHA" @click="() => {
-                  captchaCode = '';
-                  captchaStore.refrescarCaptcha()
-                 }">
-                  <nuxt-icon
-                   name="icon-refresh"
-                   class="text-[24px] no-margin filter-green"
-                 />
-                 </button>
-                </div>
-              </div>
-              <form @submit.prevent="validCaptcha" class="w-full flex flex-wrap justify-center">
-              <input v-model="captchaCode"  @input="captchaCode = captchaCode.toUpperCase()" placeholder="Ingrese el CAPTCHA" id="captchaCode" type="text" maxlength="4" />
-
-             <button class="bg-primary rounded text-white p-3" type="submit" :disabled="captchaStore.loading">
-               Validar CAPTCHA
-            </button>
-
-              
-            </form>
-            </div>
+            <BaseCaptchaForm />
 
             <div class="buttons-container">
               <button class="btn-login" @click="handleFormSubmit" :disabled="!captchaStore.captchaValido">{{ textLogin }}</button>
@@ -221,24 +191,11 @@ onMounted(() => {
       <div class="right-container"></div>
     </div>
   </div>
-  <div class="w-full text-center font-nunito popup-error bg-error fixed text-white block p-4 z-[1000] bottom-[-100px] left-[50%] opacity-0" id="popuperr">
-    <p>{{ errorMsg }}</p>
-  </div>
 </template>
 
 <style scoped>
   .filter-green {
     filter: brightness(0) saturate(100%) invert(40%) sepia(64%) saturate(347%) hue-rotate(116deg) brightness(94%) contrast(103%);
-  }
-  .popup-error {
-    transform: translateX(-50%);
-    transition: opacity 0.5s ease, bottom 0.5s ease;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .popup-error.show {
-    bottom: 0px;
-    opacity: 1;
   }
 
   .main-container {
