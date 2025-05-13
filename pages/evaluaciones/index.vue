@@ -12,6 +12,11 @@ const examenStore = useExamenStore();
 const existeProfile = ref(0);
 const noHabilitado = ref();
 
+let breadcrumbsItem = [
+  { name: 'Inicio', current: false, url: '/inicio' },
+  { name: "Evaluaciones", current: true, url: "/evaluaciones" }
+];
+
 if(profileStore.profileData.data){
   existeProfile.value = 1;
 }
@@ -48,6 +53,8 @@ onMounted(() => {
 
 <template>
   <BaseLayout :rightAside="false" bgWhite>
+    <BaseBreadcrumbs :items="breadcrumbsItem" />
+
     <BaseTitle text="evaluaciones" />
     <div class="bg-cyan_40 p-4 rounded font-nunito border border-cyan_80 border-l-[10px]">
       <strong>¡La sección para rendir la evaluación de los cursos ya está

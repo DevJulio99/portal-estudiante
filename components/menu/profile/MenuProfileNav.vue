@@ -41,6 +41,7 @@ async function signOut() {
 	menuStore.closeMenuProfile();
 	menuStore.resetMainMenuData();
 	alumnoStore.resetAlumnos();
+	useCaptcha().resetCaptcha();
 	router.push('/login');
 	// if (window.dataLayer) {
 	// 	window.dataLayer.push({

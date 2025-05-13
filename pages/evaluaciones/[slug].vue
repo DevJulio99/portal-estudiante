@@ -67,20 +67,17 @@ const competenciaActual = computed(() => competenciaStore.competenciaSeleccionad
 const preguntaActual = computed(() => examenStore.preguntaActual)
 const opcionSeleccionada = computed(() => preguntaStore.opcionSeleccionada)
 
-console.log('postulanteStore.data', postulanteStore.data);
 const {data: dataEstados, error: errorEstados} = await $api.estado.getListarEstado(postulanteStore.data?.idPostulante ?? 0,competenciaActual.value?.id_compentencia ?? 0, {lazy: true,})
 
 
 watch(dataEstados, (estados)  => {
   if(estados?.data.length){
-    console.log('estados', estados);
     getExamenes();
   }
 });
 
 const unWatchEstado = watch(errorEstados, async(err: any)  => {
   if(err?.data?.success == false){
-    console.log('err', err?.data)
     await RegistrarEstado(postulanteStore.data?.idPostulante ?? 0, competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0);
     unWatchEstado();
   }
@@ -88,7 +85,6 @@ const unWatchEstado = watch(errorEstados, async(err: any)  => {
 
 watch(() => examenStore.lista, (examenes)  => {
   if(examenes.length){
-    console.log('examenes', examenes);
     totalQuestions.value = examenes.length;
     preguntaStore.totalPreguntas = examenes.length;
     examenStore.setpreguntaActual();
@@ -325,6 +321,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
 
 <template>
   <BaseLayout :rightAside="false" bgGray>
+    <BaseBreadcrumbs :items="breadcrumbsItem" />
     <div v-if="examenStore.pending" class="text-xs text-black py-16">
 			<BaseStatusLoading />
 		</div>
@@ -338,7 +335,6 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
 			/>
     </div>
     <div v-else-if="!competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error" class="mb-[84px]">
-      <BaseBreadcrumbs :items="breadcrumbsItem" />
       <div class="flex-col-reverse lg:flex-row gap-2 lg:gap-0 flex flex-wrap justify-between my-5">
         <div
           class="w-full text-center lg:text-start lg:w-auto text-xl font-bold pb-2 border border-gray_50 border-x-0 border-t-0 flex items-center"
