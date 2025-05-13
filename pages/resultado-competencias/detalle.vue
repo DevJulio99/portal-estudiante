@@ -15,10 +15,15 @@ const resultadoEvaluacion = ref<ResultadoEvaluacion[]>([]);
 const mostrarModal = ref(false);
 const router = useRouter();
 
+let breadcrumbsItem = [
+  { name: 'Inicio', current: false, url: '/inicio' },
+  { name: "Resultado de evaluaciones", current: false, url: "/resultado-competencias" },
+  { name: "Detalle", current: true, url: "" }
+];
+
 const {data: dataResultados, error: errorEstados, pending} = await $api.resultadoCompetencia.listarCompetencias(postulanteStore.data?.idPostulante ?? 0, competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0, {lazy: true,})
 
 watch(dataResultados, (lista)  => {
-    console.log('response resultados', lista)
   if(lista?.data.length){
     resultadoEvaluacion.value = lista.data;
     competenciaStore.setResultados(lista.data);
@@ -42,6 +47,8 @@ onBeforeUnmount(() => {
 
 <template>
     <BaseLayout :rightAside="false" bgWhite>
+        <BaseBreadcrumbs :items="breadcrumbsItem" />
+
         <BaseTitle class="text-center lg:text-start" :text="`Resultados del curso: ${ competenciaStore.competenciaSeleccionada?.nombreCompetencia }`" />
 
         <div class="w-full max-w-[1083px] bg-white rounded-[10px] pt-[22px] pl-[25px] pb-[39px] pr-[19px]">

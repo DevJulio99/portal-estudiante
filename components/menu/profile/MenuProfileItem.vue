@@ -55,7 +55,7 @@ const eventClick = () => {
 			<nuxt-icon
 				v-else
 				name="profileIcon"
-				class="text-[20px] md:group-hover:text-white"
+				class="text-[20px] md:group-hover:text-white row-span-2"
 			/>
 			<span
 				v-if="!isLargeScreen && !profileStore.profileData.pending"

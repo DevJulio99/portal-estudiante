@@ -21,7 +21,8 @@ export const useCaptcha = defineStore('useCaptcha', {
         setData(data: ResponseCatpcha){
            this.data = {...data, captchaImage: `data:image/png;base64,${data.captchaImage}`};
         },
-        async generarCaptcha(){
+        async generarCaptcha(forzar = false){
+            if (!forzar && this.data?.captchaId) return;
             this.captchaModel = '';
             this.loading = true;
             this.captchaValido = false;
@@ -54,6 +55,9 @@ export const useCaptcha = defineStore('useCaptcha', {
             this.error = false;
             this.captchaModel = '';
             this.generarCaptcha();
+        },
+        resetCaptcha() {
+            this.$reset();
         }
     },
 });

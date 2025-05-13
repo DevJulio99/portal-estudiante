@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
 			<main
 			class="h-full"
 				:class="
-					pageHome ? `pt-0 px-0 lg:px-0 ` : `py-8 px-3 lg:px-7 ` + stylesMain
+					pageHome ? `pt-0 px-0 lg:px-0 ` : `py-6 px-3 lg:px-7 ` + stylesMain
 				"
 			>
 				<slot></slot>

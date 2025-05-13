@@ -40,6 +40,7 @@ const dateIsExpired = (strFechaDoc: string) => {
 
 const SubirImagen = (idPago: number) => {
 	pagoStore.setPago(idPago);
+	toggleHiddenScroll();
 	popupCaptcha.value = true;
 }
 
@@ -183,7 +184,10 @@ onMounted(() => {
 		:data="popupDetalleData"
 		:closePopup="hidePopup"
 	/>
-	<PagesContainerPagosModalCaptcha v-if="popupCaptcha" @close="popupCaptcha = false"/>
+	<PagesContainerPagosModalCaptcha v-if="popupCaptcha" @close="() => {
+		toggleHiddenScroll();
+		popupCaptcha = false
+	}"/>
 </template>
 
 <style lang="postcss" scoped>

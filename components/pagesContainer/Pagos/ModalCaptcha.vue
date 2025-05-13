@@ -72,7 +72,7 @@ watch(() => pagoStore.imagenRegistrada, (registrata) => {
 });
 
 onMounted(() => {
-    captchaStore.generarCaptcha();
+    captchaStore.generarCaptcha(true);
 })
 </script>
 
@@ -80,8 +80,9 @@ onMounted(() => {
   <div
     class="z-50 fixed w-full h-full top-0 left-0 flex justify-center items-center bg-black_transparent"
   >
-    <div class="absolute w-full h-full bg-blue" @click="onClose"></div>
-    <div class="z-10 bg-white rounded-lg w-full max-w-[500px] px-10 py-10">
+    <div class="absolute w-full h-full bg-blue"></div>
+    <div class="relative z-10 bg-white rounded-lg w-full max-w-[500px] px-10 py-10">
+      <nuxt-icon name="CloseCircle" class="absolute top-2 right-5 text-3xl cursor-pointer" filled @click="onClose"/>
       <input type="file" ref="fileInput" accept="image/*" class="hidden" @change="handleFileChange" />
       <div class="flex flex-wrap gap-2 items-center">
         <button

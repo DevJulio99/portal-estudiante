@@ -25,10 +25,10 @@ const eventClick = (url: string, title: string) => {
 <template>
 	<nav aria-label="Breadcrumbs">
 		<ol class="flex items-center">
-			<li v-for="item in items" :key="item.name" class="breadcrumbs-item flex">
+			<li v-for="item in items" :key="item.name" class="breadcrumbs-item flex text-sm">
 				<span
 					v-if="!item.current && !item.url"
-					class="font-nunito text-sm md:text-base"
+					class="font-nunito text-sm"
 				>
 					{{ item.name }}
 				</span>
@@ -40,7 +40,7 @@ const eventClick = (url: string, title: string) => {
 				>
 					{{ item.name }}
 				</NuxtLink>
-				<span v-else class="font-nunito font-extrabold text-sm md:text-base">
+				<span v-else class="font-nunito font-extrabold text-sm">
 					{{ item.name }}
 				</span>
 			</li>
@@ -53,6 +53,6 @@ const eventClick = (url: string, title: string) => {
 	@apply hover:underline font-nunito;
 }
 .breadcrumbs-item:not(:last-child) {
-	@apply after:content-[url(/assets/icons/chevronRightBlack.svg)] after:mx-[10px] md:after:mx-[24px] items-center;
+	@apply after:content-[url(/assets/icons/chevronRightBlack.svg)] after:mx-[10px] items-center;
 }
 </style>
