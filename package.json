@@ -27,6 +27,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@vueuse/core": "^10.11.1",
     "@vueuse/nuxt": "^10.11.1"
   }

@@ -82,7 +82,8 @@ onMounted(() => {
   >
     <div class="absolute w-full h-full bg-blue"></div>
     <div class="relative z-10 bg-white rounded-lg w-full max-w-[500px] px-10 py-10">
-      <nuxt-icon name="CloseCircle" class="absolute top-2 right-5 text-3xl cursor-pointer" filled @click="onClose"/>
+      <nuxt-icon name="CloseCircle" class="absolute top-4 right-4 text-3xl cursor-pointer" @click="onClose"/>
+      <div class="font-robotoCondensed text-2xl pb-4">AGREGAR IMAGEN</div>
       <input type="file" ref="fileInput" accept="image/*" class="hidden" @change="handleFileChange" />
       <div class="flex flex-wrap gap-2 items-center">
         <button
