@@ -162,7 +162,7 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .main-nav {
-  @apply absolute w-full md:relative md:block md:border-r-[1px] md:border-[#D9D9D9] md:w-[156px] bg-white shadow-bgBox md:shadow-none md:bg-[#FAFAFA] md:min-h-[calc(100vh_-_64px)] top-[64px] pt-5 z-20;
+  @apply fixed w-full md:relative md:block md:border-r-[1px] md:border-[#D9D9D9] md:w-[156px] bg-white shadow-bgBox md:shadow-none md:bg-[#FAFAFA] md:min-h-[calc(100vh_-_64px)] top-[64px] pt-5 z-20;
 }
 
 .text-styles {
