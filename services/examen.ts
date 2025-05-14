@@ -46,7 +46,7 @@ export const getExamenes = async () => {
       );
 
       if(generarExamen.error.value?.data){
-         examenStore.error = generarExamen.error.value?.data;
+         examenStore.error = generarExamen.error.value.data;
          examenStore.pending = false;
       }
 

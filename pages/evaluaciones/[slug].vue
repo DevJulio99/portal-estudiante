@@ -27,6 +27,7 @@ const postulanteStore = usePostulanteStore();
 const competenciaStore = useCompetenciaStore();
 const examenStore = useExamenStore();
 const preguntaStore = usePreguntaStore();
+const estadoStore = useEstadoCompetenciaStore();
 
 const title = `${route.params.slug}`;
 const preguntaRespondida = ref(false);
@@ -72,12 +73,20 @@ const {data: dataEstados, error: errorEstados} = await $api.estado.getListarEsta
 
 watch(dataEstados, (estados)  => {
   if(estados?.data.length){
-    getExamenes();
+    estadoStore.lista = estados.data;
+    !examenStore.lista.length && getExamenes();
   }
 });
 
-const unWatchEstado = watch(errorEstados, async(err: any)  => {
-  if(err?.data?.success == false){
+const unWatchEstado = watch([errorEstados, () => examenStore.lista], async(err: any)  => {
+  const errorEstado = err?.[0]?.data;
+  const listaExamen = err?.[1]?.length;
+
+  if(errorEstado?.success == false && listaExamen === 0){
+    getExamenes();
+  }
+
+  if(errorEstado?.success == false && listaExamen > 0){
     await RegistrarEstado(postulanteStore.data?.idPostulante ?? 0, competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0);
     unWatchEstado();
   }
@@ -109,28 +118,6 @@ const totalPreguntasGrupo = computed(() => {
   const grupo = preguntaActual.value?.preguntas.grupo;
   return examenStore.lista.filter((e) => e.preguntas.grupo === grupo).length;
 });
-
-// const unWatch = watch(error, (err: any)  => {
-//   console.log('err', err?.data)
-//   if(!err?.data?.success){
-//     generarExamen();
-//     unWatch();
-//   }
-// });
-
-// watch(() => competenciaStore.listaCompetencia, (lista)  => {
-//   if(lista.length){
-//     console.log('competencias', lista);
-//     const primeraCompetencia = lista[0];
-//     postulanteStore.data?.idPostulante && getEstados(postulanteStore.data.idPostulante, primeraCompetencia.id_compentencia)//EstadoCompetenciaStore.getEstado(postulanteStore.data.idPostulante);
-//   }
-// });
-
-// watch(() => EstadoCompetenciaStore.lista, (lista)  => {
-//   if(lista.length){
-//     console.log('estados de la competancia', lista);
-//   }
-// });
 
 
 const onResponse = (id: string, option: string) => {
