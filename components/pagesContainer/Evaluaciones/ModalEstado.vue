@@ -76,7 +76,7 @@ const onNext = () => {
               : "¡Resumen de su examen!"
             : wasNotSaved
             ? "¡Su respuesta no se guardó!"
-            : "¡Se acabo el tiempo!"
+            : "¡Se acabó el tiempo!"
         }}</span
       >
       <div v-if="!success && !wasNotSaved" class="flex justify-center mb-4">
@@ -162,7 +162,7 @@ const onNext = () => {
           styles="!w-full max-w-[152px] text-white rounded-[6px]"
           @click="onNext"
         >
-          {{ pendientes > 0 ? "Aceptar" : "Si" }}
+          {{ pendientes > 0 ? "Aceptar" : "Sí" }}
         </BaseButton>
       </div>
     </div>
