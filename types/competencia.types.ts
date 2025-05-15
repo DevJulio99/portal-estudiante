@@ -57,4 +57,7 @@ export interface ResultadoEvaluacion {
     incorrectas: number;
     enblanco: number;
     puntaje: number;
+    porcentajeCorrecto: number,
+    porcentajeIncorrecto: number,
+    porcentajeBlanco: number
 }
