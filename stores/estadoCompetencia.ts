@@ -24,23 +24,23 @@ export const useEstadoCompetenciaStore = defineStore("estadoCompetencia", {
     setLista(lista: EstadoCompencia[]) {
       this.lista = lista;
     },
-    async getEstado(idPostulante: number) {
-      try {
-        const estado = await useNuxtApp().$api.estado.getListarEstado(idPostulante); 
+    // async getEstado(idPostulante: number) {
+    //   try {
+    //     const estado = await useNuxtApp().$api.estado.getListarEstado(idPostulante); 
 
-        if(estado.error.value){
-            //console.log('ee data', estado.error.)
-            const bodyError = estado.error.value.data;
-            throw new Error(bodyError ? "nodata" : "other");
-        }
+    //     if(estado.error.value){
+    //         //console.log('ee data', estado.error.)
+    //         const bodyError = estado.error.value.data;
+    //         throw new Error(bodyError ? "nodata" : "other");
+    //     }
 
-        this.data = estado.data.value;
-        this.error = null;
+    //     this.data = estado.data.value;
+    //     this.error = null;
 
-      } catch (error : any) {
-        //console.log('catch', error.message)
-        this.setError(error.message);
-      }
-    },
+    //   } catch (error : any) {
+    //     //console.log('catch', error.message)
+    //     this.setError(error.message);
+    //   }
+    // },
   },
 });

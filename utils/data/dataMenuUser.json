@@ -68,7 +68,7 @@
             {
                 "etiqueta": "obligaciones-por-pagar",
                 "nombre": "Obligaciones por pagar",
-                "url": "obligaciones-por-pagar",
+                "url": null,
                 "abrir_nueva_pagina": false,
                 "es_clasico": 0,
                 "modalidad": "ALL"

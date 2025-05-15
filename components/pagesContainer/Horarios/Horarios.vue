@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import debounce from 'lodash.debounce';
 import type { HorarioData } from '~/types/cursos.types';
 
 const { $api } = useNuxtApp();
@@ -72,39 +73,39 @@ watch(horarioDataResponse, (response) => {
 	// unwatch();
 });
 
-function callCurrentDayClass() {
-	if (visibleDay.value === dayNum(currentDay)) return;
-	// if (window.dataLayer) {
-	// 	window.dataLayer.push({
-	// 		event: 'Click-Dashboard',
-	// 		section: 'Mis horarios',
-	// 		title: 'Hoy',
-	// 	});
-	// }
-	selectDay.value = 0;
-	visibleDay.value = dayNum(currentDay);
-	fechaSession1.value = `${currentDay.getFullYear()}-${
-		currentDay.getMonth() + 1
-	}-${currentDay.getDate()}T00:00:00Z`;
-	fechaSession2.value = `${currentDay.getFullYear()}-${
-		currentDay.getMonth() + 1
-	}-${currentDay.getDate()}T23:00:00Z`;
-	getDataClass();	
-}
+const callCurrentDayClass = () => {
+  if (visibleDay.value === dayNum(currentDay)) return;
+  
+  selectDay.value = 0;
+  visibleDay.value = dayNum(currentDay);
+  
+  debounce(() => {
+    fechaSession1.value = `${currentDay.getFullYear()}-${
+      currentDay.getMonth() + 1
+    }-${currentDay.getDate()}T00:00:00Z`;
+    fechaSession2.value = `${currentDay.getFullYear()}-${
+      currentDay.getMonth() + 1
+    }-${currentDay.getDate()}T23:00:00Z`;
+    getDataClass();
+  }, 350)();
+};
 
-function callNextDayClass() {
-	if (visibleDay.value === dayNum(nextDay)) return;
-
-	selectDay.value = 1;
-	visibleDay.value = dayNum(nextDay);
-	fechaSession1.value = `${nextDay.getFullYear()}-${
-		nextDay.getMonth() + 1
-	}-${nextDay.getDate()}T00:00:00Z`;
-	fechaSession2.value = `${nextDay.getFullYear()}-${
-		nextDay.getMonth() + 1
-	}-${nextDay.getDate()}T23:00:00Z`;
-	getDataClass();	
-}
+const callNextDayClass = () => {
+  if (visibleDay.value === dayNum(nextDay)) return;
+  
+  selectDay.value = 1;
+  visibleDay.value = dayNum(nextDay);
+  
+  debounce(() => {
+    fechaSession1.value = `${nextDay.getFullYear()}-${
+    	nextDay.getMonth() + 1
+    }-${nextDay.getDate()}T00:00:00Z`;
+    fechaSession2.value = `${nextDay.getFullYear()}-${
+    	nextDay.getMonth() + 1
+    }-${nextDay.getDate()}T23:00:00Z`;
+    getDataClass();
+  }, 350)();
+};
 
 const getDataClass = () => {
 	const dataClass = allDataHorario.value.filter(x => Number(x.horario.diaNumero) === visibleDay.value);
