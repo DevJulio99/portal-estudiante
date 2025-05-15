@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getProfile } from "~/services/profile";
 import type { ResponseLogin } from "~/types/login.types";
 
 const userLogin = ref({
@@ -64,7 +63,6 @@ async function handleFormSubmit() {
     if (response) {
       tokenStore.setToken(response.accessToken, response.refreshToken);
       localStorage.setItem("access", JSON.stringify(response));
-      await getProfile(tokenStore.getDataToken.Dni_Usuario);
       router.push("/inicio");
     }
     if (!response) {

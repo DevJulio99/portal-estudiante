@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import debounce from 'lodash.debounce';
+
 const props = withDefaults(
   defineProps<{
   onValidCaptcha?: () => void;
@@ -32,20 +34,46 @@ watch(
   }
 );
 
-watch(() => captchaStore.captchaModel, async(value, oldVal) => {
-  const trimedNew = value.replaceAll(/\s+/g, '').toLocaleLowerCase();
-  const trimedOld = oldVal.replaceAll(/\s+/g, '').toLocaleLowerCase();
+const lastValidatedCode = ref('');
+const currentLength = ref(0);
 
-  if (value.replaceAll(/\s+/g, '').length < 4) {
+watch(() => captchaStore.captchaModel, debounce(async(value) => {
+  const trimmedValue = value.replaceAll(/\s+/g, '').toLocaleLowerCase();
+  
+  if (trimmedValue.length < 4) {
     captchaStore.captchaValido = false;
+    currentLength.value = trimmedValue.length;
     return;
   }
-  if(trimedNew === trimedOld) return;
-  if(captchaStore.data) await captchaStore.validarCaptcha(
-        captchaStore.data.captchaId,
-        captchaStore.captchaModel
-  ) 
-})
+  
+  const shouldValidate = 
+    (currentLength.value < 4 && trimmedValue.length === 4) ||
+    (currentLength.value === 4 && trimmedValue.length === 4 && trimmedValue !== lastValidatedCode.value);
+  
+  if (shouldValidate && captchaStore.data) {
+    await captchaStore.validarCaptcha(
+      captchaStore.data.captchaId,
+      captchaStore.captchaModel
+    );
+    lastValidatedCode.value = trimmedValue;
+  }
+  
+  currentLength.value = trimmedValue.length;
+}, 500));
+
+const reloadDisabled = ref(false);
+
+const handleReloadCaptcha = async () => {
+  if (reloadDisabled.value) return;
+
+  reloadDisabled.value = true;
+  await captchaStore.refrescarCaptcha();
+
+  setTimeout(() => {
+    reloadDisabled.value = false;
+  }, 3500);
+};
+
 </script>
 
 <template>
@@ -59,7 +87,8 @@ watch(() => captchaStore.captchaModel, async(value, oldVal) => {
         <img :src="captchaStore.data.captchaImage" alt="CAPTCHA" />
         <button
           aria-label="Recargar CAPTCHA"
-          @click="captchaStore.refrescarCaptcha"
+          :disabled="reloadDisabled"
+          @click="handleReloadCaptcha"
         >
           <nuxt-icon
             name="icon-refresh"
@@ -110,5 +139,10 @@ watch(() => captchaStore.captchaModel, async(value, oldVal) => {
 .fmr-captcha input[type="text"]:focus,
 .fmr-captcha input[type="password"]:focus {
   border: solid 2px #1e6657;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
