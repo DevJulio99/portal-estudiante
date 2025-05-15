@@ -10,7 +10,8 @@ const props = withDefaults(
 {}
 );
 
-const valueStroke = !props.data ? 0 : 100 - props.data.puntaje;
+const valueStroke = !props.data ? 0 : 100 - (props.data.puntaje + valueEnBlanco);
+const dashOffset = props.data.porcentajeIncorrecto > props.data.porcentajeBlanco ? (props.data.porcentajeIncorrecto - props.data.porcentajeBlanco) : (props.data.porcentajeIncorrecto + props.data.porcentajeBlanco);
 </script>
 
 <template>
@@ -24,7 +25,13 @@ const valueStroke = !props.data ? 0 : 100 - props.data.puntaje;
                     />
                     <path
                         class="circle-percentage stroke-[#F15656]"
-                        :stroke-dasharray="`${valueStroke}, 100`"
+                        :stroke-dasharray="`${data.porcentajeIncorrecto}, 100`"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path
+                        class="circle-percentage stroke-[#FFE6FB]"
+                        :stroke-dasharray="`${data.porcentajeBlanco}, 100`"
+                        :stroke-dashoffset="`${data.porcentajeIncorrecto > 0 ? (dashOffset) : 0}`"
                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                 </svg>
@@ -56,6 +63,11 @@ const valueStroke = !props.data ? 0 : 100 - props.data.puntaje;
                         <div class="w-6 h-6 rounded-full bg-[#F15656] aspect-square"></div>
                         <p class="text-base text-[#475569]">Incorrectas:</p>
                         <span class="ml-auto text-base font-semibold text-[#111827]">{{ data.incorrectas }}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-6 h-6 rounded-full bg-magenta_10 aspect-square"></div>
+                        <p class="text-base text-[#475569]">En blanco:</p>
+                        <span class="ml-auto text-base font-semibold text-[#111827]">{{ data.enblanco }}</span>
                     </div>
                 </div>
             </div>
