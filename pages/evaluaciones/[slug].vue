@@ -322,24 +322,22 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
 			/>
     </div>
     <div v-else-if="!competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error" class="mb-[84px]">
-      <div class="flex-col-reverse lg:flex-row gap-2 lg:gap-0 flex flex-wrap justify-between my-5">
-        <div
-          class="w-full text-center lg:text-start lg:w-auto text-xl font-bold pb-2 border border-gray_50 border-x-0 border-t-0 flex items-center"
-        >
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center my-5">        
+        <div class="order-1 lg:order-3 flex justify-center lg:justify-end mt-2 mb-4 lg:my-0">
+          <TiempoEvaluacion
+            customClass="w-full flex justify-center lg:w-fit"
+            :onExpired="EvaluacionExpirada"
+            :stop="finishQuestion"
+            :onfinish="(data) => timeData = data"
+            :init="true"
+          />
+        </div>
+        <div class="hidden lg:block order-2"></div>        
+        <div class="order-2 lg:order-2 text-center lg:text-center text-xl font-bold pb-2 border border-gray_50 border-x-0 border-t-0">
           <p>Evaluación de {{ preguntaActual?.preguntas.tipoEvaluacion }}</p>
         </div>
-
-        <TiempoEvaluacion
-          customClass="w-full flex justify-center lg:w-fit"
-          :onExpired="EvaluacionExpirada"
-          :stop="finishQuestion"
-          :onfinish="(data) => timeData = data"
-          :init="true"
-        />
       </div>
-
       <div
-
         class="relative bg-white shadow-[0_4px_4px_#8c8c8c40] rounded-[6px] pt-[13px] pr-[29px] pb-[17px] pl-[19px]"
       >
         <div class="w-full flex flex-wrap lg:flex-nowrap gap-[25px]">
