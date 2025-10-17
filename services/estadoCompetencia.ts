@@ -1,52 +1,50 @@
-// export const getEstados = async (idPostulante: number, idCompetencia: number) => {
-//     const { $api } = useNuxtApp();
-// 	const competenciaStore = useCompetenciaStore();
-//     const estadoCompetenciaStore = useEstadoCompetenciaStore();
-
-// 	try{
-// 		const listaEstados = await $api.estado.getListarEstado(idPostulante, {lazy: true,})
-	   
-// 	if(listaEstados.error.value){
-// 	 const bodyError = listaEstados.error.value.data;
-// 	 throw new Error(bodyError ? "nodata" : "other");
-// 	}
-
-// 	listaEstados.data.value?.data.length && estadoCompetenciaStore.setLista(listaEstados.data.value.data);
-// 	}catch(e: any){
-// 	   if(e.message == 'nodata'){
-// 		const request = {
-//             idCompetencia,
-//             idPostulante,
-//             estado: "i"
-//         };
-// 		console.log('competenciaSeleccionada', competenciaStore.competenciaSeleccionada);
-// 		console.log('competenciaActual', competenciaStore.competenciaActual);
-// 		await $api.cambiarEstado.registrarEstado(request, {lazy: true});
-//         console.log('se registro nuevo estado');
-// 	   }
-// 	}
-// };
-
 export const ListarEstado = async(idPostulante: number) => {
 	const { $api } = useNuxtApp();
     const estadoCompetenciaStore = useEstadoCompetenciaStore();
 	const competenciaStore = useCompetenciaStore();
 
-	const listaEstados = await $api.estado.getListarEstado(idPostulante,competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0, {lazy: true,})
-	listaEstados.data.value?.data.length && estadoCompetenciaStore.setLista(listaEstados.data.value.data);
+	const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+	if (!idCompetencia) {
+		console.error("ListarEstado: No se encontró id de competencia seleccionada.");
+		return;
+	}
+
+	try {
+		const { data: listaEstados, error } = await $api.estado.getListarEstado(idPostulante, idCompetencia, {lazy: true,});
+		if (error.value) {
+			throw error.value;
+		}
+		if (listaEstados.value?.data?.length) {
+			estadoCompetenciaStore.setLista(listaEstados.value.data);
+		}
+	} catch (error) {
+		console.error("Error al listar los estados de competencia:", error);
+	}
 }
 
 export const RegistrarEstado = async(idPostulante: number, idCompetencia: number) => {
 	const { $api } = useNuxtApp();
+
+	if (!idPostulante || !idCompetencia) {
+		console.error("RegistrarEstado: idPostulante o idCompetencia no son válidos.");
+		return;
+	}
+
 	const request = {
 		idCompetencia,
 		idPostulante,
 		estado: "i"
 	};
 
-	await $api.cambiarEstado.registrarEstado(request, {lazy: true});
-	await ListarEstado(idPostulante);
-	console.log('se registro nuevo estado');
+	try {
+		const { error } = await $api.cambiarEstado.registrarEstado(request, {lazy: true});
+		if (error.value) {
+			throw error.value;
+		}
+		await ListarEstado(idPostulante);
+	} catch (error) {
+		console.error("Error al registrar el estado de la competencia:", error);
+	}
 }
 
 export const FinalizarCompetencia = async(pasosFinales = true) => {
@@ -54,15 +52,30 @@ export const FinalizarCompetencia = async(pasosFinales = true) => {
 	const postulanteStore = usePostulanteStore();
 	const competenciaStore = useCompetenciaStore();
 
+	const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+	const idPostulante = postulanteStore.data?.idPostulante;
+
+	if (!idCompetencia || !idPostulante) {
+		console.error("FinalizarCompetencia: No se encontró id de competencia o de postulante.");
+		return;
+	}
+
 	const request = {
-		idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
-		idPostulante: postulanteStore.data?.idPostulante ?? 0,
+		idCompetencia,
+		idPostulante,
 		estado: "f"
 	};
 
-	await $api.cambiarEstado.actualizarEstado(request, {lazy: true,})
-	if(pasosFinales){
-		competenciaStore.llegoAlFinal = true;
-		competenciaStore.finalizoCompetencia = true;
+	try {
+		const { error } = await $api.cambiarEstado.actualizarEstado(request, {lazy: true,});
+		if (error.value) {
+			throw error.value;
+		}
+		if(pasosFinales){
+			competenciaStore.llegoAlFinal = true;
+			competenciaStore.finalizoCompetencia = true;
+		}
+	} catch (error) {
+		console.error("Error al finalizar la competencia:", error);
 	}
 }
