@@ -6,6 +6,7 @@ import { useMsgPopUpStore } from '~/stores/msgPopup';
 const router = useRouter();
 const tokenStore = useTokenStore();
 const msgPopupStore = useMsgPopUpStore();
+const profileStore = useProfileStore();
 const timeoutId = ref<any>(null);
 
 console.log('tokenStore accessToken', tokenStore.accessToken);
@@ -21,30 +22,20 @@ watch(() => msgPopupStore.error, (error) => {
   }
 });
 
-const unWatch = watch(
-    () => [
-      tokenStore.logued,
-      tokenStore.pending,
-      tokenStore.accessToken
-    ],
-    async ([logueado, pendingLogued, accessToken]) => {
-      //console.log('pendingLogued', pendingLogued)
-      //console.log('logueado', logueado)
-      if(logueado && !pendingLogued){
-        await getProfile(tokenStore.getDataToken.Dni_Usuario);
+// --- INICIO: LÓGICA DE CARGA DE PERFIL EN EL LAYOUT ---
+// Esta función se ejecutará una sola vez cuando el layout se monte.
+onMounted(async () => {
+  const isAuth = tokenStore.accessToken.trim().length && tokenStore.refreshToken.trim().length;
+  // Si estamos autenticados pero no tenemos datos de perfil (sucede en una recarga de página)
+  if (isAuth && !profileStore.profileData.data) {
+      tokenStore.setPending(true); // Mostramos la pantalla de carga
+      try {
+          await getProfile(tokenStore.getDataToken.Dni_Usuario);
+      } finally {
+          tokenStore.setPending(false); // Ocultamos la pantalla de carga
       }
-
-      if(!logueado){
-       // unWatch();
-      }
-    }
-  );
-
-
-if(tokenStore.getDataToken && tokenStore.getDataToken.Id_Alumno && tokenStore.accessToken.trim().length){
-    await getProfile(tokenStore.getDataToken.Dni_Usuario);
   }
-
+});
 
 </script>
 <template>
@@ -54,14 +45,31 @@ if(tokenStore.getDataToken && tokenStore.getDataToken.Id_Alumno && tokenStore.ac
   <div class="md:grid md:grid-cols-[auto_1fr]" v-if="!tokenStore.pending && router.currentRoute.value.name != 'login'">
     <MenuComponent />
     <div class="relative top-[64px] flex flex-col min-h-[calc(100vh_-_64px)]">
-      <div class="h-full">
-        <slot></slot>
+      <div class="h-full page">
+        <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />
       </div>
     </div>
   </div>
   <div class="h-full" v-if="!tokenStore.pending && router.currentRoute.value.name == 'login'">
-    <slot></slot>
+    <NuxtPage />
   </div>
   <PopUpMensaje :message="msgPopupStore.error.message" :type="msgPopupStore.tipoModal"/>
   <BasePopUpBottom />
 </template>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.1s ease-out;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+</style>

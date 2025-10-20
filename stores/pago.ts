@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia';
 import type { Paginado } from '~/types/alumno.types';
 import type { PagosPendientesData } from '~/types/pagos.types';
+import type { ErrorResponse } from '~/types/services.types';
 import { useMsgPopUpStore } from './msgPopup';
 
 interface PagoStore {
 	idPago: number;
 	pending: boolean;
+	error: any;
+	servicesError: any;
 	lista: PagosPendientesData[];
 	paginado: Paginado;
 	total: number;
@@ -18,6 +21,8 @@ export const usePagoStore = defineStore('PagoStore', {
 			idPago: 0,
 			lista: [],
 			pending: true,
+			error: null,
+			servicesError: null,
 			paginado: {
 				pagina : 1,
 				itemsPorPagina : 2
@@ -37,6 +42,8 @@ export const usePagoStore = defineStore('PagoStore', {
            this.pending = true;
 		   this.lista = [];
 		   this.idPago = 0;
+		   this.error = null;
+		   this.servicesError = null;
 		   this.paginado = {
 			pagina : 1,
 			itemsPorPagina: 2
@@ -53,8 +60,6 @@ export const usePagoStore = defineStore('PagoStore', {
             }
 			const servicePagos = await $api.pagos.getPagosPorSede(request);
 
-			console.log('servicePagos', servicePagos)
-
 			if(!servicePagos.error.value && servicePagos.data.value?.data.length){
 				if(this.total <= 0) this.total = servicePagos.data.value.data[0].total;
 				this.lista = servicePagos.data.value.data; 
@@ -63,9 +68,31 @@ export const usePagoStore = defineStore('PagoStore', {
 			if(servicePagos.error.value){
 				this.lista = []
 				const msgPopupStore = useMsgPopUpStore();
-				console.log('servicePagos.error.value', servicePagos.error.value.data)
 				msgPopupStore.setError(true, (servicePagos.error.value.data as any)?.message, 'error');
 			}
+
+			this.pending = false;
+		},
+		async listarPagosPendientes() {
+			this.pending = true;
+			const { $api } = useNuxtApp();
+			const tokenStore = useTokenStore();
+			const request = {
+                codigoSede: tokenStore.getDataToken.Codigo_Sede,
+                ...this.paginado
+            }
+			const { data, error, pending } = await $api.pagos.getPagosPendientes(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear());
+
+			if (data.value?.data?.length) {
+				this.lista = data.value.data;
+				this.servicesError = null;
+				this.error = null;
+			} else if (data.value?.error) {
+				this.servicesError = data.value.error;
+				this.lista = [];
+			}
+			
+			this.error = error.value;
 
 			this.pending = false;
 		},

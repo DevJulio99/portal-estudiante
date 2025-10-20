@@ -23,7 +23,7 @@ class PagosModule extends FetchFactory<DataResponse<PagosPendientesData[]>> {
 				};
 				return this.call(
 					'GET',
-					`${this.RESOURCE}alumno/${id}/${anio}`,
+					`${this.RESOURCE}alumno/pagos-pendientes/${id}/${anio}`,
 					undefined,
 					fetchOptions,
 				);

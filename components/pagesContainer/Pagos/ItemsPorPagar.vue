@@ -2,18 +2,13 @@
 import { useMediaQuery } from '@vueuse/core';
 import ImageUploader from '~/components/base/ImageUploader.vue';
 import type { PagosPendientesData } from '~/types/pagos.types';
-
-const { $api } = useNuxtApp();
+import type { ErrorResponse } from '~/types/services.types';
 
 const isMediumScreen = useMediaQuery('(min-width: 768px)');
 
-const listaPagosPendientes = ref<PagosPendientesData[]>([]);
 const popupDetalleData = ref();
 const popupDetalleVisible = ref(false);
-const servicesError: Ref<any> = ref(null);
 const popupCaptcha = ref(false);
-// const loadingPagos = ref(true);
-const tokenStore = useTokenStore();
 const pagoStore = usePagoStore();
 const imageLoaderStore = useImageLoaderStore();
 
@@ -45,40 +40,30 @@ const SubirImagen = (idPago: number) => {
 }
 
 const montoTotalPagar = computed(() => {
-  return listaPagosPendientes.value.reduce((total, item) => {
+  return pagoStore.lista.reduce((total, item) => {
     return total + (item.totalAPagar || 0);
   }, 0);
 });
 
-const {
-	data: dataPagos,
-	error: errorPagos,
-	pending: loadingPagos,
-} = await $api.pagos.getPagosPendientes(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), {
-	lazy: true,
-});
-
-watch(dataPagos, (response) => {
-	if (response?.data?.length) {
-		listaPagosPendientes.value = response?.data;
-	} else if (response?.error) {
-		servicesError.value = response.error;
-	}
-});
-
 onMounted(() => {
+	// Asumiendo que tienes una acción en tu store para cargar los pagos.
+	// Esto centraliza la lógica de fetching.
+	if(!pagoStore.lista.length) {
+		console.log('listarPagos:');
+		pagoStore.listarPagosPendientes();
+	}
 	imageLoaderStore.enabledButton = false;
 })
 </script>
 <template aria-label="TableItemsPorPagar">
 	<div
-		v-if="loadingPagos"
+		v-if="pagoStore.pending"
 		class="w-full h-[200px] md:h-[350px] flex justify-center"
 	>
 		<BaseStatusLoading />
 	</div>
 	<div
-		v-else-if="errorPagos"
+		v-else-if="pagoStore.error"
 		class="flex items-center justify-center h-[240px] md:h-[380px]"
 	>
 		<BaseStatusError
@@ -88,20 +73,20 @@ onMounted(() => {
 		/>
 	</div>
 	<div
-		v-else-if="servicesError"
+		v-else-if="pagoStore.servicesError"
 		class="flex items-center justify-center h-[240px] md:h-[380px]"
 	>
 		<BaseStatusNoData
 			:text="
-				servicesError?.titulo ??
+				pagoStore.servicesError?.titulo ??
 				'Estamos trabajando en el detalle de este contenido'
 			"
-			:description="servicesError?.descripcion"
-			:icono="servicesError?.icono"
+			:description="pagoStore.servicesError?.descripcion"
+			:icono="pagoStore.servicesError?.icono"
 		/>
 	</div>
 	<div
-		v-if="!loadingPagos && listaPagosPendientes.length > 0"
+		v-if="!pagoStore.pending && pagoStore.lista.length > 0"
 		class="w-full"
 	>
 		<div v-if="isMediumScreen" class="mb-3">
@@ -125,7 +110,7 @@ onMounted(() => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(item, index) in listaPagosPendientes" :key="index">
+						<tr v-for="(item, index) in pagoStore.lista" :key="index">
 							<td>{{ item.documentoPago != '' ? item.documentoPago : '-' }}</td>
 							<td
 								:class="{

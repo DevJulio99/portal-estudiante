@@ -29,6 +29,8 @@ export interface Curso {
 	notaFinal: number;
 	nivel?: string;
 	grado?:string;
+	fechaInicio?: string;
+	fechaFin?: string;
 }
 
 export interface CursoAsistencia {

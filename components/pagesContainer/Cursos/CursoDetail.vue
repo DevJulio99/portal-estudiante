@@ -173,6 +173,7 @@ function formatCantidadVeces(veces: string | number): string {
 			</div>
 			<horario-curso
 				v-else
+				:dataCurso="item"
 				:dataHorario="dataHorario"
 				:error="error"
 				:errorResponse="errorResponse"

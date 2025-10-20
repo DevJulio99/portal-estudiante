@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { ResponseLogin } from "~/types/login.types";
+import { getProfile } from '~/services/profile';
 
 const userLogin = ref({
   email: "",
   password: "",
 });
+const profileStore = useProfileStore();
 const tokenStore = useTokenStore();
 const captchaStore = useCaptcha();
 const msgPopupStore = useMsgPopUpStore();
@@ -61,9 +63,17 @@ async function handleFormSubmit() {
 
   const unWatch = watch(dataLog, async(response) => {
     if (response) {
+      // Indicamos que el proceso de carga ha comenzado
+      tokenStore.setPending(true);
+      // 1. Se guarda el token en el store
       tokenStore.setToken(response.accessToken, response.refreshToken);
       localStorage.setItem("access", JSON.stringify(response));
-      router.push("/inicio");
+      // 2. Se espera a que el perfil se cargue
+      await getProfile(tokenStore.getDataToken.Dni_Usuario);
+      // 3. Solo después de cargar el perfil, se redirige
+      await router.push("/inicio");
+      // 4. Indicamos que el proceso de carga ha finalizado
+      tokenStore.setPending(false);
     }
     if (!response) {
       unWatch();

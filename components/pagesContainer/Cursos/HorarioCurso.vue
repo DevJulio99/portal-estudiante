@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { HorarioData } from '~/types/cursos.types';
+import type { Curso, HorarioData } from '~/types/cursos.types';
 import type { ErrorResponse } from '~/types/services.types';
 import { conditionedString } from '~/utils/emptyData';
 
 defineProps<{
+	dataCurso: Curso;
 	dataHorario: HorarioData[];
 	loading: boolean;
 	error: Error | null;
@@ -102,14 +103,14 @@ const convertirHora24 = (hora12: string) => {
 				<div class="w-[124px] md:w-[187px]">
 					<span class="block text-xs text-secondary">Inicia</span>
 					<span class="block text-sm text-black font-extrabold">{{
-						conditionedString(dataHorario?.[0]?.detalleHorario[0]?.fechaInicio ?? '')
+						conditionedString(dataHorario?.[0]?.detalleHorario[0]?.fechaInicio ?? (dataCurso?.fechaInicio ?? ''))
 					}}</span>
 				</div>
 
 				<div class="w-[124px] md:w-[187px]">
 					<span class="block text-xs text-secondary">Finaliza</span>
 					<span class="block text-sm text-black font-extrabold">{{
-						conditionedString(dataHorario?.[0]?.detalleHorario?.[0]?.fechaFin ?? '')
+						conditionedString(dataHorario?.[0]?.detalleHorario?.[0]?.fechaFin ?? (dataCurso?.fechaFin ?? ''))
 					}}</span>
 				</div>
 			</span>

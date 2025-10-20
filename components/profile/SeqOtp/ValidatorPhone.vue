@@ -24,13 +24,6 @@ const showCardLock = ref({
 
 const emit = defineEmits(['otpValidated']);
 
-// const { data: dataTimeOut } = await $api.otpSmsStatus.getTimeoutSMS(
-// 	props.codStudent,
-// 	{
-// 		lazy: true,
-// 	},
-// );
-
 const formatTime = (timeLock: string) => {
 	const partesTiempo = timeLock.split(':');
 	const horas = parseInt(partesTiempo[0]);
@@ -38,20 +31,6 @@ const formatTime = (timeLock: string) => {
 	/* const segundos = parseInt(partesTiempo[2]); */
 	return `${horas} horas y ${minutos} minutos`;
 };
-
-// watch(dataTimeOut, (response) => {
-// 	if (response?.data.length) {
-// 		const values = response?.data[0] || {};
-// 		if (values?.bloqueado) {
-// 			showCardLock.value.show = true;
-// 			showCardLock.value.descripcion = `Inténtalo de nuevo en ${formatTime(
-// 				values?.tiempoBloqueado || '',
-// 			)}`;
-// 		} else {
-// 			handleResendOTP();
-// 		}
-// 	}
-// });
 
 const refreshOptions = () => {
 	showCardLock.value.show = false;
@@ -62,27 +41,6 @@ const refreshOptions = () => {
 
 const handleResendOTP = async () => {
 	refreshOptions();
-	// const { data } = await $api.otpSmsResend.sendOTPSms(
-	// 	{
-	// 		codAlumno: props.codStudent,
-	// 		countryCode: '+51',
-	// 		phone: props.strNumber,
-	// 	},
-	// 	{
-	// 		lazy: true,
-	// 	},
-	// );
-	// const unwatch = watch(
-	// 	data,
-	// 	(response) => {
-	// 		if (response?.flag) {
-	// 			isDisabledOtpInput.value = false;
-	// 			showOTPValidator.value = true;
-	// 		}
-	// 	},
-	// 	{ immediate: true },
-	// );
-	// unwatch();
 };
 
 const handleTimeOver = () => {
@@ -93,49 +51,6 @@ const handleTimeOver = () => {
 const handleCheckOtpSent = async (strOtp: string) => {
 	otpValidateResError.value = false;
 	otpValidateResSuccess.value = false;
-	// const { data } = await $api.otpSmsValidate.validateOTPSms(
-	// 	{
-	// 		codAlumno: props.codStudent,
-	// 		otp: strOtp,
-	// 	},
-	// 	{
-	// 		lazy: true,
-	// 	},
-	// );
-	// const unwatch = watch(
-	// 	data,
-	// 	(response) => {
-	// 		if (response?.data.length) {
-	// 			const values = response?.data[0] || {};
-	// 			otpNumberAttempts.value = values?.count;
-	// 			if (values?.verificado) {
-	// 				otpValidateResSuccess.value = true;
-	// 				emit('otpValidated');
-	// 			} else if (values?.bloqueado) {
-	// 				showCardLock.value.imagen = 'manRounded';
-	// 				showCardLock.value.titulo = response?.message;
-	// 				showCardLock.value.descripcion = `Inténtalo de nuevo en ${formatTime(
-	// 					values?.tiempoBloqueado || '',
-	// 				)}`;
-	// 				showCardLock.value.show = true;
-	// 				showOTPValidator.value = false;
-	// 			} else {
-	// 				otpValidateResError.value = true;
-	// 			}
-
-	// 			if (!values?.verificado && values?.count === 2) {
-	// 				showCardLock.value.imagen = 'error_otp_intentos';
-	// 				showCardLock.value.titulo = response?.message;
-	// 				showCardLock.value.descripcion = '';
-	// 				showCardLock.value.show = true;
-	// 				showOTPValidator.value = false;
-	// 			}
-	// 		}
-	// 		isDisabledOtpInput.value = true;
-	// 	},
-	// 	{ immediate: true },
-	// );
-	// unwatch();
 };
 
 const hideNumber = (str: string) => {

@@ -31,14 +31,6 @@ const respondidas = ref<number>(0);
 const preguntasRespondidas = computed(() => examenStore.preguntasRespondidas)
 const preguntasPendientes = examenStore.lista.length - preguntasRespondidas.value.length;
 
-// watch(() => examenStore.preguntasRespondidas, (preguntas)  => {
-//   console.log('preguntas', preguntas)
-//   if(preguntas.length){
-//     pendientes.value = examenStore.lista.length - preguntas.length;
-//     respondidas.value = preguntas.length;
-//   }
-// });
-
 const onBack = () => {
   props.onClose();
 };
@@ -52,6 +44,22 @@ const onNext = () => {
   }
   props.onClose();
 };
+
+const modalTitle = computed(() => {
+  if (props.success) {
+    return pendientes.value > 0
+      ? "¡Resumen de la competencia 01: Comprensión lectora!"
+      : "¡Resumen de su examen!";
+  }
+  return props.wasNotSaved ? "¡Su respuesta no se guardó!" : "¡Se acabó el tiempo!";
+});
+
+const buttonLabels = computed(() => {
+  return pendientes.value > 0
+    ? { back: "Volver", next: "Aceptar" }
+    : { back: "No", next: "Sí" };
+});
+
 </script>
 
 <template>
@@ -69,16 +77,7 @@ const onNext = () => {
       </div>
       <span
         class="block text-xl font-semibold mb-[6px] text-center font-nunito"
-        >{{
-          success
-            ? pendientes > 0
-              ? "¡Resumen de la competencia 01: Comprensión lectora!"
-              : "¡Resumen de su examen!"
-            : wasNotSaved
-            ? "¡Su respuesta no se guardó!"
-            : "¡Se acabó el tiempo!"
-        }}</span
-      >
+        >{{ modalTitle }}</span      >
       <div v-if="!success && !wasNotSaved" class="flex justify-center mb-4">
         <TiempoEvaluacion :init="false" />
       </div>
@@ -93,30 +92,6 @@ const onNext = () => {
         class="w-full text-center block font-normal text-base text-gray1 mb-[14px]"
         >Preguntas en blanco: {{ examenStore.lista.length - preguntasRespondidas.length }}</span
       >
-
-      <!-- <div
-        v-if="success && !pendientes && !wasNotSaved"
-        class="mb-4 text-gray1 text-sm leading-[21px] font-normal text-center"
-      >
-        Usted desea pasar a la Competencia 02: Razonamiento Crítico
-      </div> -->
-
-      <!-- <div
-        v-if="success && !pendientes && !wasNotSaved"
-        class="mb-4 text-gray1 text-xs leading-[18px] font-normal text-center"
-      >
-        ¿Está seguro que desea avanzar y finalizar la competencia 01:
-        Comprensión lectora?
-      </div> -->
-
-      <!-- <div v-if="wasNotSaved" class="text-center font-normal text-base text-gray1">
-        <p>
-          Si continúa sin guardarla, la respuesta se considerará como no
-          respondida.
-        </p>
-        <br />
-        <p>¿Desea continuar?</p>
-      </div> -->
       <div
         v-if="success && pendientes >= 0"
         class="mb-4 text-xs leading-[18px] font-normal text-gray1 text-center"
@@ -130,21 +105,6 @@ const onNext = () => {
           Será redirigido a la vista de evaluaciones
       </div>
 
-      <!-- <div
-        v-if="!success && !wasNotSaved"
-        class="text-center text-neutron80 text-base font-medium mb-[14px]"
-      >
-        Usted está siendo redirigido automáticamente a la competencia 02:
-        Razonamiento crítico
-      </div> -->
-
-      <!-- <div
-        v-if="!success && !wasNotSaved"
-        class="font-normal text-base text-gray1 font-normal text-center"
-      >
-        Por favor, espere mientras se carga la competencia indicada.
-      </div> -->
-
       <div
         v-if="success || wasNotSaved"
         class="pt-5 border border-[#E4E4E4] border-x-0 border-b-0 flex flex-wrap justify-center gap-[15px] items-center"
@@ -154,7 +114,7 @@ const onNext = () => {
           styles="!w-full max-w-[152px] text-white rounded-[6px]"
           @click="onBack"
         >
-          {{ pendientes > 0 ? "Volver" : "No" }}
+          {{ buttonLabels.back }}
         </BaseButton>
 
         <BaseButton
@@ -162,7 +122,7 @@ const onNext = () => {
           styles="!w-full max-w-[152px] text-white rounded-[6px]"
           @click="onNext"
         >
-          {{ pendientes > 0 ? "Aceptar" : "Sí" }}
+          {{ buttonLabels.next }}
         </BaseButton>
       </div>
     </div>

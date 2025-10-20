@@ -1,5 +1,6 @@
 import dataMenuUser from "~/utils/data/dataMenuUser.json";
 import dataMenuAdmin from "~/utils/data/dataMenuAdmin.json";
+import { getProfile } from "~/services/profile";
 
 export default defineNuxtRouteMiddleware(async (to) => {
     const tokenStore = useTokenStore();
@@ -7,6 +8,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const postulanteStore = usePostulanteStore();
     const competenciaStore = useCompetenciaStore();
     const resultadoCompetenciaStore = useResultadoCompetenciaStore();
+    const profileStore = useProfileStore();
 
     // console.log('refreshToken',tokenStore.refreshToken)
 
@@ -20,7 +22,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const rutasAdmin = getUrls(dataMenuAdmin);
     const rutasCompartidas = ["/documentos"];
 
-    if(!isAuth){
+    // Si el usuario no está autenticado Y la ruta no es /login, redirigimos a /login.
+    // Añadimos una comprobación para no hacer nada si se está cerrando la sesión.
+    if(!isAuth && to.name !== 'login' && !tokenStore.isLoggingOut){
         return navigateTo("/login", { replace: true });
     }
 
@@ -36,9 +40,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo("/inicio", { replace: true });
     }
 
-    if(isAuth){
-      tokenStore.pending = false;
-    }
+    // Ya no es necesario, el flujo de login y la nueva lógica de arriba lo controlan.
 
     if(!isEvaluaciones){
       examenStore.resetExamen();
