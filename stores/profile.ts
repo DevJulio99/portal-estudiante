@@ -12,6 +12,13 @@ export const useProfileStore = defineStore('profileStore', {
 			} as ProfileDataStore,
 		};
 	},
+	getters: {
+		/**
+		 * Devuelve el código del período actual del perfil del usuario.
+		 * Es un getter, por lo que su valor se cachea y es reactivo.
+		 */
+		getPeriodoActual: (state): string => state.profileData.data?.codPeriodoActual ?? '',
+	},
 	actions: {
 		setProfileData(payload: ProfileDataStore) {
 			const tokenStore = useTokenStore();

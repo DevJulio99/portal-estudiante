@@ -31,6 +31,7 @@ class CursosModule extends FetchFactory<DataResponse<Curso[]>> {
 	async getCursosColegio(
 		CodAlumno: number,
 		anio: number,
+		codPeriodo: string,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<Curso[]>>,
 	) {
 		return await useAsyncData(() => {
@@ -39,7 +40,7 @@ class CursosModule extends FetchFactory<DataResponse<Curso[]>> {
 			};
 			return this.call(
 				'GET',
-				`/api/v1/CursosColegioxId/${CodAlumno}/${anio}`,
+				`/api/v1/CursosColegioxId/${CodAlumno}/${anio}/${codPeriodo}`,
 				undefined,
 				fetchOptions,
 			);

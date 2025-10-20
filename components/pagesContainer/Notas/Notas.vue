@@ -19,7 +19,7 @@ interface CursoDetails {
 }
 
 // const user = useUserStoreAuth();
-// const profileStore = useProfileStore();
+const profileStore = useProfileStore();
 
 // const infoAcademica = profileStore.profileData.data?.find(
 // 	(x: any) => x.id === 'infoAcademica',
@@ -41,8 +41,8 @@ const requestQueueNota = ref<VoidFunction[]>([]);
 const servicesError: Ref<unknown> = ref(null);
 const tokenStore = useTokenStore();
 
-const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number) =>
-  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio ,{
+const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number, codCurso: string, codPeriodo: string) =>
+  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio, codCurso, codPeriodo,{
     lazy: true,
 });
 
@@ -79,7 +79,7 @@ const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear() ,{
+} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), profileStore.getPeriodoActual ,{
 	lazy: true,
 });
 
@@ -114,7 +114,7 @@ async function initCallNotas(curso: Curso, status: boolean) {
 	if (status) {
 		// handlerScrollMove(curso.codCurso);
 		// const { data: NotasData, error: errorServicesNotas } = await callNotas();
-		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre', new Date().getFullYear());
+		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre', new Date().getFullYear(), curso.codCurso, curso.periodo);
 		onExpansionNota(indexCurso, data);
 	} else {
 		const dataNota = {
@@ -154,7 +154,7 @@ function onExpansionNota(
 	indexCurso: number,
 	responseData: any,
 ) {
-	           const datanotas = responseData.value.data.filter(x => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso && x.descripcionPeriodo == cursosTotalData.value[indexCurso].dataCurso.periodo);
+	           const datanotas = responseData.value.data.filter((x: any) => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso && x.descripcionPeriodo == cursosTotalData.value[indexCurso].dataCurso.periodo);
 
 			   const dataNota = {
 					...cursosTotalData.value[indexCurso],

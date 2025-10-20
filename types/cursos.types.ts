@@ -18,6 +18,7 @@ export interface Curso {
 	cursado: string;
 	modalidad: string;
 	descCurso: string;
+	codigoPeriodoAcademico: string;
 	periodo: string;
 	seccion: string;
 	docente: Docente[];

@@ -15,6 +15,8 @@ class NotasModule extends FetchFactory<DataResponse<NotaBimestre[]>> {
 		idAlum: number,
 		tipoPeriodo: string,
         anio: number,
+		codCurso: string,
+		codPeriodo: string,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<NotaBimestre[]>>,
 	) {
 		return await useAsyncData(
@@ -24,7 +26,7 @@ class NotasModule extends FetchFactory<DataResponse<NotaBimestre[]>> {
 				};
 				return this.call(
 					'GET',
-					`${this.RESOURCE}/${idAlum}/${tipoPeriodo}/${anio}`,
+					`${this.RESOURCE}/${idAlum}/${tipoPeriodo}/${anio}/${codCurso}/${codPeriodo}`,
 					undefined,
 					fetchOptions,
 				);

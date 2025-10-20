@@ -47,8 +47,8 @@ const callAsistencias = async (idAlum: number, bimestre: string, codCurso: strin
     lazy: true,
 });
 
-const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number) =>
-  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio ,{
+const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number, codCurso: string, codPeriodo: string) =>
+  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio, codCurso, codPeriodo,{
     lazy: true,
 });
 
@@ -104,7 +104,7 @@ async function actionExpansion(option: Option) {
 	}
 
 	if(option.id == 3 && currentOption.value && !dataNotasBimestre.value.length){
-		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre'/*props.item.periodo*/, new Date().getFullYear());
+		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre'/*props.item.periodo*/, new Date().getFullYear(), props.item.codCurso, props.item.codigoPeriodoAcademico);
 		setTimeout(() => {
 			serviceNotas.value = data.value;
 			errorNotas.value = error.value;
@@ -113,9 +113,9 @@ async function actionExpansion(option: Option) {
 
 		const unWatch = watch(serviceNotas, (response) => {
              if (response) {
-				const notasCurso = response.data.filter(x => x.codigoCurso == props.item.codCurso && x.descripcionPeriodo == props.item.periodo);
-				console.log('notasCurso', notasCurso);
-				dataNotasBimestre.value = notasCurso;
+				//const notasCurso = response.data//.filter(x => x.codigoCurso == props.item.codCurso && x.descripcionPeriodo == props.item.periodo);
+				//console.log('notasCurso', notasCurso);
+				dataNotasBimestre.value = response.data;
              }
              if (!response) {
                unWatch();

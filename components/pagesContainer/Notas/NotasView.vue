@@ -98,12 +98,13 @@ const dataCursos = ref<Curso[]>([]);
 
 const servicesError: Ref<ErrorResponse | null> = ref(null);
 const tokenStore = useTokenStore();
+const profileStore = useProfileStore();
 
 const {
 	data: CursosData,
 	error: errorServices,
 	pending: pendingServices,
-} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear() ,{
+} = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), profileStore.getPeriodoActual ,{
 	lazy: true,
 });
 
