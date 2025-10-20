@@ -113,7 +113,7 @@ async function actionExpansion(option: Option) {
 
 		const unWatch = watch(serviceNotas, (response) => {
              if (response) {
-				const notasCurso = response.data.filter(x => x.descripcionCurso == props.item.descCurso && x.descripcionPeriodo == props.item.periodo);
+				const notasCurso = response.data.filter(x => x.codigoCurso == props.item.codCurso && x.descripcionPeriodo == props.item.periodo);
 				console.log('notasCurso', notasCurso);
 				dataNotasBimestre.value = notasCurso;
              }
