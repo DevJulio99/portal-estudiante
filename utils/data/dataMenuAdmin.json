@@ -46,5 +46,16 @@
         "submenu": [],
         "es_clasico": 0,
         "modalidad": "ALL"
+    },
+    {
+        "id": 5,
+        "etiqueta": "matriculas",
+        "nombre": "matriculas",
+        "url": "/matriculas",
+        "icon": "matricula",
+        "icono": "../public/images/documentos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": []
     }
 ]

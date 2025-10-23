@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { useMediaQuery, onClickOutside } from '@vueuse/core';
+
+interface Option {
+	id: string | number;
+	name: string;
+}
+
 const props = withDefaults(
 	defineProps<{
 		id: string;
@@ -11,7 +18,7 @@ const props = withDefaults(
 		responsivePlaceholder?: string;
 		icon: string;
 		iconStyle?: string;
-		options: any;
+		options: Option[];
 		borderDefault: string;
 	}>(),
 	{
@@ -24,94 +31,68 @@ const props = withDefaults(
 		iconStyle: '',
 		placeholder: null,
 		responsivePlaceholder: '',
-		options: [],
+		options: () => [],
 		borderDefault: ''
 	},
 );
 const emit = defineEmits(['change']);
+
+const target = ref(null);
 const openSelect = ref(false);
-const valueSelect = ref();
-const activeResponsive = ref();
 
-onMounted(() => {
-	validResponsive();
-	window.addEventListener('resize', () => {
-		validResponsive();
-	});
-});
-
-const validResponsive = () => {
-	if (window.innerWidth <= 768) {
-		activeResponsive.value = true;
-	} else {
-		activeResponsive.value = false;
-	}
-};
+const isMobile = useMediaQuery('(max-width: 768px)');
 
 const open = () => {
-	openSelect.value = true;
+	if (props.disabled) return;
+	openSelect.value = !openSelect.value; // Alternar el estado
 };
 
 const close = () => {
 	openSelect.value = false;
 };
 
-const selectOp = (value: any, id: string) => {
+onClickOutside(target, close);
+
+const selectOp = (value: Option) => {
 	close();
-	valueSelect.value = value;
-	emit('change', value, id);
+	emit('change', value, props.id);
 };
 
-const currentValue = () => {
-	const optionDefault = props.options.find(
-		(x: any) => `${x.id}` === `${props.value}`,
-	);
-	optionDefault && (valueSelect.value = optionDefault);
-	return optionDefault;
-};
+const selectedOption = computed(() => {
+	return props.options.find((option) => `${option.id}` === `${props.value}`);
+});
+
+const displayText = computed(() => {
+	if (selectedOption.value?.name) {
+		return selectedOption.value.name;
+	}
+	if (isMobile.value && props.responsivePlaceholder) {
+		return props.responsivePlaceholder;
+	}
+	return props.placeholder ?? 'Seleccione';
+});
 </script>
 
 <template>
-	<div class="flex flex-col relative">
-		<div
-			class="relative border-[1px] rounded flex items-center"
-			:class="openSelect ? 'border-turquoise' : borderDefault"
-		>
-			<div
-				:class="`${customStyle} flex items-center w-full py-1.5 px-3 md:p-3 rounded`"
-				@click="open"
-			>
-				<span class="text-xs md:text-sm font-nunito text-neutral">{{
-					currentValue()?.name.trim().length
-						? currentValue()?.name ?? placeholder ?? 'Seleccione'
-						: responsivePlaceholder.trim().length && activeResponsive
-						? responsivePlaceholder
-						: placeholder ?? 'Seleccione'
-				}}</span>
+	<div ref="target" class="flex flex-col relative">
+		<div class="relative border-[1px] rounded flex items-center" :class="[openSelect ? 'border-turquoise' : borderDefault, disabled ? 'bg-extra_gray cursor-not-allowed' : 'cursor-pointer']">
+			<button type="button" :aria-expanded="openSelect" aria-haspopup="listbox" :class="`${customStyle} flex items-center w-full py-1.5 px-3 md:p-3 rounded`" @click="open" :disabled="disabled">
+				<span class="text-xs md:text-sm font-nunito text-neutral">{{ displayText }}</span>
 				<nuxt-icon
 					:name="icon"
 					filled
 					:class="`absolute text-[24px] h-[24px] right-[12px] ${iconStyle} ${openSelect ? 'rotate-180' : ''}`"
 				/>
-			</div>
+			</button>
 			<div
 				v-if="openSelect"
-				class="fixed top-0 left-0 z-20 w-full h-full bg-transparent"
-				@click="close"
-			></div>
-			<div
-				v-if="openSelect"
-				class="py-2 absolute w-full bg-white z-30 top-[50px] shadow-[0_10px_32px_-4px_#0000001A]"
-			>
-				<div
-					v-for="op in options"
-					:key="op"
-					class="p-3 text-sm cursor-pointer text-neutral hover:bg-cyan_40 hover:text-black"
-					:class="valueSelect?.id === op.id ? 'bg-cyan_40' : ''"
-					@click="() => selectOp(op, id)"
-				>
-					{{ op.name }}
-				</div>
+				class="py-2 absolute max-h-[200px] overflow-auto w-full bg-white z-30 top-[50px] shadow-[0_10px_32px_-4px_#0000001A]"
+				role="listbox">
+				<ul>
+					<li v-for="op in options" :key="op.id" role="option" :aria-selected="selectedOption?.id === op.id" class="p-3 text-sm cursor-pointer text-neutral hover:bg-cyan_40 hover:text-black" :class="selectedOption?.id === op.id ? 'bg-cyan_40' : ''" @click="() => selectOp(op)">
+						{{ op.name }}
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

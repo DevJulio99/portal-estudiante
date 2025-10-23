@@ -166,28 +166,30 @@ onMounted(() => {
             <span>o inicia sesión con tu correo</span>
             <div class="line"></div>
           </div> -->
-          <div class="inputs-container">
-            <label for="email">USUARIO</label>
-            <input type="text" name="email" @input="changeEl" @keypress.enter="handleFormSubmit">
+          <form @submit.prevent="handleFormSubmit">
+            <div class="inputs-container">
+              <label for="email">USUARIO</label>
+              <input id="email" type="text" name="email" @input="changeEl">
 
-            <label for="password">CONTRASEÑA</label>
-            <input type="password" name="password" @input="changeEl" @keypress.enter="handleFormSubmit">
+              <label for="password">CONTRASEÑA</label>
+              <input id="password" type="password" name="password" @input="changeEl">
 
-            <!-- <div class="options-container">
-              <div>
-                <input type="checkbox">Mantenerme conectado
+              <!-- <div class="options-container">
+                <div>
+                  <input type="checkbox">Mantenerme conectado
+                </div>
+                <div class="right">
+                  <a href="#">Olvidé mi contraseña</a>
+                </div>
+              </div> -->
+
+              <BaseCaptchaForm />
+
+              <div class="buttons-container">
+                <button class="btn-login" type="submit" :disabled="!captchaStore.captchaValido">{{ textLogin }}</button>
               </div>
-              <div class="right">
-                <a href="#">Olvidé mi contraseña</a>
-              </div>
-            </div> -->
-
-            <BaseCaptchaForm />
-
-            <div class="buttons-container">
-              <button class="btn-login" @click="handleFormSubmit" :disabled="!captchaStore.captchaValido">{{ textLogin }}</button>
             </div>
-          </div>
+          </form>
           <!-- <div class="register-container">
             <span>¿No tienes una cuenta?</span>
             <a href="#">Regístrate</a>
