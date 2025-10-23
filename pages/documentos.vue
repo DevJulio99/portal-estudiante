@@ -7,10 +7,6 @@ useHead({
 	title: 'Mis documentos',
 });
 
-definePageMeta({
-  middleware: "auth",
-});
-
 const { $api } = useNuxtApp();
 
 const tokenStore = useTokenStore();

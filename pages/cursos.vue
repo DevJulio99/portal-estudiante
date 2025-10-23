@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import TablaCursos from '~/components/pagesContainer/GestionCursos/TablaCursos.vue';
 
-definePageMeta({
-	middleware: 'auth',
-});
+
 
 useHead({
   title: "Cursos",

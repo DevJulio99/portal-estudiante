@@ -2,9 +2,7 @@
 import TablaMatriculas from '~/components/pagesContainer/Matriculas/tablaMatriculas.vue';
 
 
-definePageMeta({
-	middleware: 'auth',
-});
+
 
 useHead({
   title: "Matriculas",

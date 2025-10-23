@@ -9,10 +9,6 @@ useHead({
   title: "Eventos",
 });
 
-definePageMeta({
-  middleware: "auth",
-});
-
 const filterStore = useEventFilterStore();
 const { $api } = useNuxtApp();
 

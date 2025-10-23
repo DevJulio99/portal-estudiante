@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import Lista from '~/components/pagesContainer/Evaluaciones/lista.vue';
 import { useProfileStore } from '~/stores/profile';
-definePageMeta({
-  middleware: "auth",
-});
 
 const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();

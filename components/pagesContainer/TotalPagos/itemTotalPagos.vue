@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { PagosPendientesData } from '~/types/pagos.types';
 
-definePageMeta({
-  middleware: "auth",
-});
-
 useHead({
   title: "Total Pagos",
 });

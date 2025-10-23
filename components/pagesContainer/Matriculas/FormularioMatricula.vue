@@ -25,25 +25,17 @@ const validationSchema = yup.object({
 });
 
 const initialValues = computed(() => {
-    if (props.data) { // Se simplifica para manejar data tanto en 'edit' como en 'register'
-        return {
-            idAlumno: props.data.idAlumno,
-            idGrado: props.data.idGrado,
-            idPeriodo: props.data.idPeriodo,
-            tipoMatricula: props.data.tipoMatricula,
-            estadoMatricula: props.data.estadoMatricula,
-            observaciones: props.data.observaciones,
-            activo: props.data.activo,
-        };
-    }
+    // Fusionamos los valores por defecto con los datos recibidos.
+    // Así, si una propiedad no viene en props.data, se usa el valor por defecto.
     return {
-        idAlumno: 0, // Valor por defecto si no se pasa data
+        idAlumno: 0,
         idGrado: 0,
         idPeriodo: 0,
         tipoMatricula: 'Anual',
         estadoMatricula: 'Activa',
         observaciones: '',
         activo: true,
+        ...props.data,
     };
 });
 

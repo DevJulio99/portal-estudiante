@@ -17,9 +17,7 @@ const router = useRouter();
 const isFromSuperapp = Boolean(route?.query?._session === 'app');
 const hasToken = Boolean(route?.query?._tk);
 
-definePageMeta({
-	middleware: 'auth',
-});
+
 
 useHead({
 	title: 'Eventos',

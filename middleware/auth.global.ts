@@ -4,10 +4,6 @@ import { getProfile } from "~/services/profile";
 
 export default defineNuxtRouteMiddleware(async (to) => {
     const tokenStore = useTokenStore();
-    const examenStore = useExamenStore();
-    const postulanteStore = usePostulanteStore();
-    const competenciaStore = useCompetenciaStore();
-    const resultadoCompetenciaStore = useResultadoCompetenciaStore();
     const profileStore = useProfileStore();
 
     // console.log('refreshToken',tokenStore.refreshToken)
@@ -24,6 +20,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
     
     // --- INICIO: Lógica que solo se ejecuta si el usuario está autenticado ---
     if (isAuth) {
+        const examenStore = useExamenStore();
+        const postulanteStore = usePostulanteStore();
+        const competenciaStore = useCompetenciaStore();
+        const resultadoCompetenciaStore = useResultadoCompetenciaStore();
         // Usamos optional chaining (?.) para evitar errores si getDataToken o Role no existen.
         const isAdmin = tokenStore.getDataToken?.Role?.toLowerCase() === "admin";
         const isTotalPagos = to.fullPath.includes('total-pagos');
@@ -55,17 +55,17 @@ export default defineNuxtRouteMiddleware(async (to) => {
                 return navigateTo("/evaluaciones", { replace: true });
             }
         }
+
+        if(!isEvaluaciones){
+            examenStore.resetExamen();
+            postulanteStore.setHabilitado(0);
+            competenciaStore.resetCompetencia();
+        }
+        
+        if (!to.fullPath.includes('resultado-competencias/detalle')) {
+            resultadoCompetenciaStore.resetCompetencia();
+        }
     }
     // --- FIN: Lógica de usuario autenticado ---
-
-    if(!isEvaluaciones){
-      examenStore.resetExamen();
-      postulanteStore.setHabilitado(0);
-      competenciaStore.resetCompetencia();
-    }
-    
-    if (!to.fullPath.includes('resultado-competencias/detalle')) {
-      resultadoCompetenciaStore.resetCompetencia();
-    }
 
 });

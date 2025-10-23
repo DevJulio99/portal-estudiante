@@ -2,10 +2,6 @@
 // import { useMediaQuery } from '@vueuse/core';
 import { useProfileStore } from '~/stores/profile';
 
-definePageMeta({
-  middleware: "auth",
-});
-
 useHead({
 	title: 'Mi Perfil',
 });

@@ -14,10 +14,6 @@ import { getExamenes } from "~/services/examen";
 import InterfazPreguntas from "~/components/pagesContainer/Evaluaciones/interfazPreguntas.vue";
 import exclamation from "@/assets/icons/circle-exclamation.svg";
 
-definePageMeta({
-  middleware: "auth",
-});
-
 const route = useRoute();
 const router = useRouter();
 const { $api } = useNuxtApp();

@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import TablaAlumnos from '~/components/pagesContainer/Alumnos/tablaAlumnos.vue';
 
-definePageMeta({
-	middleware: 'auth',
-});
+
 
 useHead({
   title: "Alumnos",

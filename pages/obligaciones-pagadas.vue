@@ -3,10 +3,6 @@ import { onMounted } from 'vue';
 import type { ObligacionPagada } from '~/types/obligations.types';
 import type { ErrorResponse } from '~/types/services.types';
 
-definePageMeta({
-  middleware: "auth",
-});
-
 useHead({
 	title: 'Obligaciones pagadas',
 });

@@ -29,7 +29,7 @@ onMounted(async () => {
   <div class="fixed w-full h-full top-0 bg-primary flex justify-center items-center" v-if="tokenStore.pending">
       <p class="text-white font-bold text-xl font-grotesk">Cargando...</p>
   </div>
-  <div class="md:grid md:grid-cols-[auto_1fr]" v-if="!tokenStore.pending && router.currentRoute.value.name != 'login'">
+  <div class="md:grid md:grid-cols-[auto_1fr]" v-if="!tokenStore.pending && router.currentRoute.value.name !== 'login' && tokenStore.accessToken">
     <MenuComponent />
     <div class="relative top-[64px] flex flex-col min-h-[calc(100vh_-_64px)]">
       <div class="h-full page">
@@ -37,7 +37,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <div class="h-full" v-if="!tokenStore.pending && router.currentRoute.value.name == 'login'">
+  <div class="h-full" v-if="!tokenStore.pending && router.currentRoute.value.name === 'login'">
     <NuxtPage />
   </div>
   <PopUpMensaje 

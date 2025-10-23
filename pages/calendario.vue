@@ -2,9 +2,7 @@
 import { type Calendar } from '~/domain/calendar/interfaces/service.interface';
 import { type ErrorResponse } from '~/types/services.types';
 
-definePageMeta({
-	middleware: 'auth',
-});
+
 
 useHead({
 	title: 'Calendario académico',

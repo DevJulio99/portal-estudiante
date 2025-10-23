@@ -5,10 +5,6 @@ import { EventStatus } from '~/types/calendar.types';
 
 const { $api } = useNuxtApp();
 
-definePageMeta({
-  middleware: "auth",
-});
-
 const { data: calendar, pending: pendingCalendar } =
 	await $api.calendario.getCalendar(2025, {
 		lazy: true,

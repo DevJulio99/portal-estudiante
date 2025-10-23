@@ -3,10 +3,6 @@ import Card from '~/components/pagesContainer/ResultadoEvaluacion/card.vue';
 import ModalResultado from '~/components/pagesContainer/ResultadoEvaluacion/modalResultado.vue';
 import type { ResultadoEvaluacion } from '~/types/competencia.types';
 
-definePageMeta({
-  middleware: "auth",
-});
-
 const { $api } = useNuxtApp();
 const postulanteStore = usePostulanteStore();
 const competenciaStore = useResultadoCompetenciaStore();

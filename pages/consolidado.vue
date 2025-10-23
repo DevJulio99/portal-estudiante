@@ -7,7 +7,6 @@ import { logoBase64 } from '~/utils/logoPortal';
 
 useHead({ title: 'Consolidados de Matrícula' });
 
-definePageMeta({ middleware: 'auth' });
 
 const breadcrumbsItem = [
   { name: 'Inicio', current: false, url: '/inicio' },

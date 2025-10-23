@@ -5,10 +5,6 @@ useHead({
 	title: 'Total Pagos',
 });
 
-definePageMeta({
-  middleware: "auth",
-});
-
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
 	{ name: 'Total Pagos', current: true, url: '' },
