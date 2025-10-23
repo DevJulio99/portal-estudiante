@@ -9,19 +9,6 @@ const msgPopupStore = useMsgPopUpStore();
 const profileStore = useProfileStore();
 const timeoutId = ref<any>(null);
 
-console.log('tokenStore accessToken', tokenStore.accessToken);
-
-watch(() => msgPopupStore.error, (error) => {
-  if(error.status){
-	clearTimeout(timeoutId.value);
-  msgPopupStore.error.status = false;
-	(document as any).getElementById('popupMsg').style.right = '20px';
-	timeoutId.value = setTimeout(() => {
-		(document as any).getElementById('popupMsg').style.right = '-1000px';
-	}, 5000);
-  }
-});
-
 // --- INICIO: LÓGICA DE CARGA DE PERFIL EN EL LAYOUT ---
 // Esta función se ejecutará una sola vez cuando el layout se monte.
 onMounted(async () => {
@@ -53,7 +40,11 @@ onMounted(async () => {
   <div class="h-full" v-if="!tokenStore.pending && router.currentRoute.value.name == 'login'">
     <NuxtPage />
   </div>
-  <PopUpMensaje :message="msgPopupStore.error.message" :type="msgPopupStore.tipoModal"/>
+  <PopUpMensaje 
+    :message="msgPopupStore.error.message" 
+    :type="msgPopupStore.tipoModal"
+    v-model:show="msgPopupStore.error.status"
+  />
   <BasePopUpBottom />
 </template>
 

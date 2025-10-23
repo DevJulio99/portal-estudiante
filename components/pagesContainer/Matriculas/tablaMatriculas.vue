@@ -120,8 +120,8 @@ const seleccionarAlumnoParaMatricula = (alumno: Alumno) => {
                             <td>{{ item.descripcionGrado }}</td>
                             <td>{{ useDateFormat(item.fechaMatricula, 'DD/MM/YYYY').value }}</td>
                             <td>
-                                <span :class="item.activo ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'" class="px-2 py-1 rounded-full text-xs font-medium">
-                                    {{ item.activo ? 'Activa' : 'Inactiva' }}
+                                <span :class="item.estadoMatricula.toLowerCase() === 'activa' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'" class="px-2 py-1 rounded-full text-xs font-medium">
+                                    {{ item.estadoMatricula }}
                                 </span>
                             </td>
                             <td class="flex justify-center items-center gap-2">

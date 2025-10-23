@@ -1,28 +1,66 @@
 <script lang="ts" setup>
-withDefaults(defineProps<{
+import { ref, watch } from 'vue';
+
+const props = withDefaults(defineProps<{
     message: string;
-    type: 'success' | 'error'
+    type: 'success' | 'error';
+    show: boolean;
+    duration?: number;
 }>(),
 {
   message: "",
-  type: 'success'
-})
+  type: 'success',
+  show: false,
+  duration: 5000,
+});
+
+const emit = defineEmits(['update:show']);
+
+let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+const close = () => {
+  emit('update:show', false);
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
+};
+
+watch(() => props.show, (newValue) => {
+  if (newValue) {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      close();
+    }, props.duration);
+  }
+});
+
 </script>
 
 <template>
-    <div id="popupMsg" class="py-3 px-4 fixed z-[100] top-[20px] right-[-1000px] w-auto h-auto text-white rounded-lg"
-      :class="{
-        'bg-error-dark': type == 'error',
-        'bg-green_70': type == 'success'
-      }">
-    <h3>{{type == 'success' ? 'Ok' : 'Error'}}</h3>
-    <p>{{ message }}</p>
-  </div>
+  <Transition name="slide-fade">
+    <div v-if="show" class="popup-msg" :class="`popup-msg--${type}`">
+      <div class="font-bold capitalize">{{ type === 'success' ? 'Éxito' : 'Error' }}</div>
+      <p class="text-sm">{{ message }}</p>
+      <button @click="close" class="absolute top-1 right-2 text-xl">&times;</button>
+    </div>
+  </Transition>
 </template>
 
-<style>
-#popupMsg {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      transition: right 0.3s ease;
+<style scoped>
+.popup-msg {
+  @apply fixed z-[100] top-5 right-5 w-auto max-w-sm h-auto p-4 text-white rounded-lg shadow-lg;
+}
+.popup-msg--error { @apply bg-error-dark; }
+.popup-msg--success { @apply bg-green-600; } /* Usando un color de Tailwind como ejemplo */
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.4s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>

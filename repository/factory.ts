@@ -17,7 +17,7 @@ class FetchFactory<T> {
 	async call(
 		method: string,
 		url: string,
-		data?: object,
+		data?: any,
 		fetchOptions?: FetchOptions<'json'>,
 	): Promise<T> {
 		const { user } = useUserStoreAuth();

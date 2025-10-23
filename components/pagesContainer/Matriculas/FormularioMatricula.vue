@@ -6,6 +6,7 @@ import type { ResponseMatricula, RequestMatricula } from '~/types/matricula.type
 const props = defineProps<{
     data: ResponseMatricula | null;
     tipo: 'register' | 'edit';
+    onClose: () => void;
 }>();
 
 const matriculaStore = useMatriculaStore();
@@ -64,7 +65,7 @@ const [activo, activoAttrs] = defineField('activo');
 
 // El idAlumno no necesita un defineField porque no es un input del usuario en este formulario
 
-const guardar = handleSubmit(formValues => {
+const guardar = handleSubmit(async (formValues) => {
     if (props.tipo === 'register') {
         const payload: RequestMatricula = {
             idAlumno: formValues.idAlumno,
@@ -76,11 +77,15 @@ const guardar = handleSubmit(formValues => {
             observaciones: formValues.observaciones,
             usuarioRegistro: tokenStore.getDataToken.Dni_Usuario,
         };
-        console.log('payload:', payload);
-        matriculaStore.RegistrarMatricula(payload);
-    }
-    if (props.tipo === 'edit' && props.data) {
-        matriculaStore.ActualizarMatricula(props.data.idMatricula, formValues.estadoMatricula);
+        const success = await matriculaStore.RegistrarMatricula(payload);
+        if (success) {
+            props.onClose();
+        }
+    } else if (props.tipo === 'edit' && props.data) {
+        const success = await matriculaStore.ActualizarMatricula(props.data.idMatricula, formValues.estadoMatricula);
+        if (success) {
+            props.onClose();
+        }
     }
 });
 

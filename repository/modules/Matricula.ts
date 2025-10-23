@@ -54,14 +54,12 @@ class MatriculaModule extends FetchFactory<DataResponse<ResponseMatricula[]>> {
 	) {
 		return await useAsyncData(() => {
 			const fetchOptions: FetchOptions<'json'> = {
-				headers: {
-					'Content-Type': 'text/plain; charset=utf-8',
-				},
-				body: estado,
+				headers: { 'Content-Type': 'application/json' },
 			};
 			return this.call(
 				'PUT',
 				`${this.RESOURCE}/matricula/actualizar-estado/${idMatricula}`,
+				JSON.stringify(estado),
 				fetchOptions,
 			);
 		}, asyncDataOptions);
