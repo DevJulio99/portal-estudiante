@@ -40,6 +40,7 @@ const dataAsistencia = ref<CursoAsistencia[]>([]);
 const dataNotasBimestre = ref<NotaBimestre[]>([]);
 const { $api } = useNuxtApp();
 const tokenStore = useTokenStore();
+const profileStore = useProfileStore();
 
 
 const callAsistencias = async (idAlum: number, bimestre: string, codCurso: string, anio: number) =>
@@ -47,8 +48,8 @@ const callAsistencias = async (idAlum: number, bimestre: string, codCurso: strin
     lazy: true,
 });
 
-const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number, codCurso: string, codPeriodo: string) =>
-  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio, codCurso, codPeriodo,{
+const callNotas = async (idAlum: number, anio: number, codCurso: string, codSubperiodo: string) =>
+  await $api.notas.getNotasxBimestre(idAlum, anio, codCurso, codSubperiodo,{
     lazy: true,
 });
 
@@ -104,7 +105,7 @@ async function actionExpansion(option: Option) {
 	}
 
 	if(option.id == 3 && currentOption.value && !dataNotasBimestre.value.length){
-		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre'/*props.item.periodo*/, new Date().getFullYear(), props.item.codCurso, props.item.codigoPeriodoAcademico);
+		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), props.item.codCurso, profileStore.getSubperiodoActual);
 		setTimeout(() => {
 			serviceNotas.value = data.value;
 			errorNotas.value = error.value;

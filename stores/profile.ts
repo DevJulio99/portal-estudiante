@@ -18,6 +18,7 @@ export const useProfileStore = defineStore('profileStore', {
 		 * Es un getter, por lo que su valor se cachea y es reactivo.
 		 */
 		getPeriodoActual: (state): string => state.profileData.data?.codPeriodoActual ?? '',
+		getSubperiodoActual: (state): string => state.profileData.data?.codSubperiodoActual ?? '',
 	},
 	actions: {
 		setProfileData(payload: ProfileDataStore) {

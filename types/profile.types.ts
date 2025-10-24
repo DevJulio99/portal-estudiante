@@ -13,6 +13,7 @@ export interface ProfileData {
 	documenIdentida: string;
 	codModalidadEstActual: string;
 	codPeriodoActual: string;
+	codSubperiodoActual: string;
 	codPeriodoBanner: null;
 	codPeriodoBannerCatalogo: null;
 	codProductoActual: string;

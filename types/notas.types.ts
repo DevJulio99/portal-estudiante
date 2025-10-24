@@ -6,6 +6,8 @@ export interface NotaBimestre {
     descripcionCurso:string;
     codigoPeriodo: string;
     descripcionPeriodo: string;
+    codigoSubperiodo: string;
+    descripcionSubperiodo: string;
     nota: string;
     peso: string;
     tipoNota: string;

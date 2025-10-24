@@ -41,8 +41,8 @@ const requestQueueNota = ref<VoidFunction[]>([]);
 const servicesError: Ref<unknown> = ref(null);
 const tokenStore = useTokenStore();
 
-const callNotas = async (idAlum: number, tipoPeriodo: string, anio: number, codCurso: string, codPeriodo: string) =>
-  await $api.notas.getNotasxBimestre(idAlum, tipoPeriodo, anio, codCurso, codPeriodo,{
+const callNotas = async (idAlum: number, anio: number, codCurso: string, codSubperiodo: string) =>
+  await $api.notas.getNotasxBimestre(idAlum, anio, codCurso, codSubperiodo,{
     lazy: true,
 });
 
@@ -114,7 +114,7 @@ async function initCallNotas(curso: Curso, status: boolean) {
 	if (status) {
 		// handlerScrollMove(curso.codCurso);
 		// const { data: NotasData, error: errorServicesNotas } = await callNotas();
-		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), 'Bimestre', new Date().getFullYear(), curso.codCurso, curso.periodo);
+		const { data, error, pending } = await callNotas(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), curso.codCurso, profileStore.getSubperiodoActual);
 		onExpansionNota(indexCurso, data);
 	} else {
 		const dataNota = {
@@ -154,7 +154,7 @@ function onExpansionNota(
 	indexCurso: number,
 	responseData: any,
 ) {
-	           const datanotas = responseData.value.data.filter((x: any) => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso && x.descripcionPeriodo == cursosTotalData.value[indexCurso].dataCurso.periodo);
+	           const datanotas = responseData.value.data.filter((x: any) => x.descripcionCurso == cursosTotalData.value[indexCurso].dataCurso.descCurso);
 
 			   const dataNota = {
 					...cursosTotalData.value[indexCurso],
