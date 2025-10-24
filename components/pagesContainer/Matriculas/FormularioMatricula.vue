@@ -14,9 +14,15 @@ const alumnoStore = useAlumnoStore();
 const gradoStore = useGradoStore();
 const tokenStore = useTokenStore();
 
+const esInstitucionC = computed(() => tokenStore.getDataToken?.Tipo_Institucion === 'C');
+
 const validationSchema = yup.object({
     idAlumno: yup.number().required('El alumno es obligatorio').min(1, 'Seleccione un alumno'),
-    idGrado: yup.number().required('El grado es obligatorio').min(1, 'Seleccione un grado'),
+    idGrado: yup.number().when([], {
+        is: () => esInstitucionC.value,
+        then: schema => schema.required('El grado es obligatorio').min(1, 'Seleccione un grado'),
+        otherwise: schema => schema.nullable().optional(),
+    }),
     idPeriodo: yup.number().required('El periodo es obligatorio').min(1, 'Seleccione un periodo'),
     tipoMatricula: yup.string().required('El tipo de matrícula es obligatorio'),
     estadoMatricula: yup.string().required('El estado es obligatorio'),
@@ -62,7 +68,7 @@ const guardar = handleSubmit(async (formValues) => {
         const payload: RequestMatricula = {
             idAlumno: formValues.idAlumno,
             idPeriodo: formValues.idPeriodo,
-            idGrado: formValues.idGrado,
+            idGrado: esInstitucionC.value ? formValues.idGrado : null,
             codigoSede: tokenStore.getDataToken.Codigo_Sede,
             tipoMatricula: formValues.tipoMatricula,
             estadoMatricula: formValues.estadoMatricula,
@@ -86,7 +92,7 @@ const handleChangeSelect = (option: { id: string | number }, fieldName: keyof ty
 }
 
 onMounted(async () => {
-    if (gradoStore.listaGrados.length === 0) {
+    if (esInstitucionC.value && gradoStore.listaGrados.length === 0) {
         await gradoStore.getGrados();
     }
     if (matriculaStore.listaPeriodos.length === 0) {
@@ -100,7 +106,7 @@ onMounted(async () => {
         <BaseTitle :text="tipo === 'edit' ? 'Actualizar Matrícula' : 'Registrar Matrícula'" />
         <form @submit.prevent="guardar" class="flex flex-col flex-grow min-h-0 py-4">
             <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 overflow-auto flex-grow px-2 py-2">
-                <div class="flex flex-col">
+                <div v-if="esInstitucionC" class="flex flex-col">
                     <span class="font-bold">Grado</span>
                     <BaseVeeSelectV2 :value="idGrado" v-bind="idGradoAttrs" id="idGrado" icon="NavArrowDown" class="w-full" borderDefault="border-celestial_white" :options="gradoStore.listaGrados.map(g => ({ id: g.idGrado, name: g.descripcionGrado }))" @change="(option) => handleChangeSelect(option, 'idGrado')" :disabled="tipo === 'edit'" />
                     <span v-if="errors.idGrado" class="text-error">{{ errors.idGrado }}</span>
@@ -130,7 +136,12 @@ onMounted(async () => {
                 </div> -->
             </div>
             <div class="flex justify-center py-3">
-                <button class="rounded px-3 py-2 text-white font-bold bg-primary hover:bg-[#1E6657]" type="submit">Guardar</button>
+                <button 
+                    class="rounded px-3 py-2 text-white font-bold bg-primary hover:bg-[#1E6657] disabled:opacity-50 disabled:cursor-not-allowed" 
+                    type="submit"
+                    :disabled="matriculaStore.pendingActions">
+                    {{ matriculaStore.pendingActions ? 'Guardando...' : 'Guardar' }}
+                </button>
             </div>
         </form>
     </div>

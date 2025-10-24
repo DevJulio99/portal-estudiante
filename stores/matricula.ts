@@ -12,6 +12,7 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 		// } as Paginado,
 		total: 0,
 		pending: false,
+		pendingActions: false,
 		pendingTable: false,
 		pendingPeriodos: false,
 		error: null as any,
@@ -43,10 +44,12 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 			}
 		},
 		async getPeriodos() {
+			const tokenStore = useTokenStore();
 			const { $api } = useNuxtApp();
 			this.pendingPeriodos = true;
+			const codSede = tokenStore.getDataToken.Codigo_Sede;
 			try {
-				const { data, error } = await $api.periodo.getPeriodos();
+				const { data, error } = await $api.periodo.getPeriodos(codSede);
 				if (error.value) {
 					throw error.value;
 				}
@@ -62,40 +65,40 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 		async RegistrarMatricula(payload: RequestMatricula) {
 			const msgPopupStore = useMsgPopUpStore();
 			const { $api } = useNuxtApp();
-			//this.pendingTable = true;
+			this.pendingActions = true;
 			msgPopupStore.setError(false, '');
 			console.log('registrar');
 			try {
 				const { error } = await $api.matricula.registrarMatricula(payload);
 				if (error.value) { throw error.value; }
 				msgPopupStore.setError(true, 'Matrícula registrada correctamente');
-				this.getMatriculas(); // Refrescar lista
+				await this.getMatriculas(); // Refrescar lista
 				return true;
 			} catch (error) {
 				const err = error as any;
 				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo registrar la matrícula', 'error');
 				return false;
 			} finally {
-				this.pendingTable = false;
+				this.pendingActions = false;
 			}
 		},
 		async ActualizarMatricula(idMatricula: number, estado: string) {
 			const msgPopupStore = useMsgPopUpStore();
 			const { $api } = useNuxtApp();
-			//this.pendingTable = true;
+			this.pendingActions = true;
 			msgPopupStore.setError(false, '');
 			try {
 				const { error } = await $api.matricula.actualizarEstadoMatricula(idMatricula, estado);
 				if (error.value) { throw error.value; }
 				msgPopupStore.setError(true, 'Matrícula actualizada correctamente');
-				this.getMatriculas(); // Refrescar lista
+				await this.getMatriculas(); // Refrescar lista
 				return true;
 			} catch (error) {
 				const err = error as any;
 				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo actualizar la matrícula', 'error');
 				return false;
 			} finally {
-				this.pendingTable = false;
+				this.pendingActions = false;
 			}
 		},
         // setPagina(pagina: number) {

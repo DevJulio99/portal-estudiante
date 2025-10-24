@@ -34,10 +34,16 @@ const getGenero = (genero: string = '') => {
    return genero.toLocaleLowerCase() === 'f' ? {value: 2 , key : 'F'} : {value: 0 , key : ''}
 }
 
+const esInstitucionC = computed(() => tokenStore.getDataToken?.Tipo_Institucion === 'C');
+
 const validationSchema = yup.object({
-    idGrado: yup.number().required('El grado es obligatorio').min(1, 'Seleccione un grado'),
+    idGrado: yup.number().when([], {
+        is: () => esInstitucionC.value,
+        then: schema => schema.required('El grado es obligatorio').min(1, 'Seleccione un grado'),
+        otherwise: schema => schema.nullable().optional(),
+    }),
     correo: yup.string().required('El correo es obligatorio').email('El correo no es válido'),
-    contraseña: yup.string().when([], {
+    contraseña: yup.string().when('tipo', {
         is: () => props.tipo === 'edit',
         then: (schema) => schema.transform(value => value || undefined).optional().min(6, 'Mínimo 6 caracteres'),
         otherwise: (schema) => schema.notRequired(),
@@ -130,6 +136,7 @@ const guardar = handleSubmit(formValues => {
             ...formValues,
             codigoSede: tokenStore.getDataToken.Codigo_Sede,
             tipoInstitucion: tokenStore.getDataToken.Tipo_Institucion,
+            idGrado: esInstitucionC.value ? formValues.idGrado : null,
         };
         alumnoStore.RegistrarAlumno(payload as RegistrarAlumno);
     }
@@ -137,6 +144,7 @@ const guardar = handleSubmit(formValues => {
         const payload = { 
             ...formValues,
             tipoInstitucion: tokenStore.getDataToken.Tipo_Institucion,
+            idGrado: esInstitucionC.value ? formValues.idGrado : null,
         };
         alumnoStore.ActualizarAlumno(payload as ActualizarAlumno);
     }
@@ -147,8 +155,7 @@ const handleChangeSelect = (option: { id: string | number }, fieldName: keyof ty
 }
 
 onMounted(async () => {
-    console.log('tokenStore.getDataToken', tokenStore.getDataToken)
-    if (gradoStore.listaGrados.length === 0) {
+    if (esInstitucionC.value && gradoStore.listaGrados.length === 0) {
         await gradoStore.getGrados();
     }
 });
@@ -159,7 +166,7 @@ onMounted(async () => {
     <BaseTitle :text="tipo == 'edit' ? 'Actualizar usuario' : 'Registrar usuario'" />
     <form @submit.prevent="guardar" class="flex flex-col flex-grow min-h-0">
     <div class="w-full grid grid-cols-2 gap-4 overflow-auto flex-grow px-2 py-2">
-        <div class="flex flex-col">
+        <div v-if="esInstitucionC" class="flex flex-col">
             <span class="font-bold">Grado</span>
             <BaseVeeSelectV2 :value="idGrado" v-bind="idGradoAttrs"
                 id="idGrado"
@@ -286,20 +293,25 @@ onMounted(async () => {
             <span v-if="errors.apoderado" class="text-error">{{ errors.apoderado }}</span>
         </div>
 
-        <div class="flex gap-3">
+        <div class="flex items-center gap-2">
+            <input type="checkbox" class="w-4 h-4"
+                   v-model="habilitadoPrueba" v-bind="habilitadoPruebaAttrs" name="habilitadoPrueba">
             <span class="font-bold">Habilitado para prueba</span>
-            <input type="checkbox" v-model="habilitadoPrueba" v-bind="habilitadoPruebaAttrs" name="habilitadoPrueba"
-                class="w-6 h-6 outline-none border border-celestial_white px-2 py-1">
-        </div> 
+        </div>
     </div>
+
     <div class="flex justify-center py-3">
-        <button class="rounded px-3 py-2 text-white font-bold bg-primary hover:bg-[#1E6657]" type="submit">Guardar</button>
+        <button 
+            class="rounded px-3 py-2 text-white font-bold bg-primary hover:bg-[#1E6657] disabled:opacity-50 disabled:cursor-not-allowed" 
+            type="submit" 
+            :disabled="alumnoStore.pending">
+            {{ alumnoStore.pending ? 'Guardando...' : 'Guardar' }}</button>
     </div>
     </form>
 </div>
 </template>
 
-<style>
+<style scoped>
 .text-error {
     color: #ef4444;
     font-size: 0.875rem;

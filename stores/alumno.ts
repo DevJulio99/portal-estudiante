@@ -102,41 +102,50 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 		async RegistrarAlumno(request: RegistrarAlumno) {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
+			this.pending = true;
 			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
-			const registrarAlumnos = await $api.alumno.registrarAlumno(request);
-
-			if(!registrarAlumnos.error.value){
-				msgPopupStore.setError(true, 'Se registro Correctamente')
-				this.pending = true;
-				this.lista = [];
-				this.getAlumnos()
-			}
-
-			if(registrarAlumnos.error.value){
-				msgPopupStore.setError(true, (registrarAlumnos.error.value.data as any).message, 'error')
+			try {
+				const registrarAlumnos = await $api.alumno.registrarAlumno(request);
+	
+				if(!registrarAlumnos.error.value){
+					msgPopupStore.setError(true, 'Se registro Correctamente')
+					this.lista = [];
+					await this.getAlumnos();
+				} else {
+					msgPopupStore.setError(true, (registrarAlumnos.error.value.data as any).message, 'error');
+				}
+			} catch (error) {
+				const err = error as any;
+				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo registrar el alumno', 'error');
+			} finally {
+				this.pending = false;
 			}
 		},
 		async ActualizarAlumno(request: ActualizarAlumno) {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
+			this.pending = true;
 			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
-			const actualizarAlumnos = await $api.alumno.actualizarAlumno(request);
-
-			if(!actualizarAlumnos.error.value){
-				msgPopupStore.setError(true, 'Se actualizo Correctamente')
-				this.pending = true;
-				this.lista = [];
-				this.getAlumnos()
-			}
-
-			if(actualizarAlumnos.error.value){
-				msgPopupStore.setError(true, (actualizarAlumnos.error.value.data as any).message, 'error')
+			try {
+				const actualizarAlumnos = await $api.alumno.actualizarAlumno(request);
+				if(!actualizarAlumnos.error.value){
+					msgPopupStore.setError(true, 'Se actualizo Correctamente')
+					this.lista = [];
+					await this.getAlumnos();
+				} else {
+					msgPopupStore.setError(true, (actualizarAlumnos.error.value.data as any).message, 'error');
+				}
+			} catch (error) {
+				const err = error as any;
+				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo actualizar el alumno', 'error');
+			} finally {
+				this.pending = false;
 			}
 		},
 		async EliminarAlumno(numeroDocumento: string) {

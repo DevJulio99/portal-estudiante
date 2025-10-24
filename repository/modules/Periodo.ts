@@ -13,6 +13,7 @@ class PeriodoModule extends FetchFactory<DataResponse<ResponsePeriodo[]>> {
 	 */
 
 	async getPeriodos(
+		codigoSede: string,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<ResponsePeriodo[]>>,
 	) {
 		return await useAsyncData(() => {
@@ -21,7 +22,7 @@ class PeriodoModule extends FetchFactory<DataResponse<ResponsePeriodo[]>> {
 			};
 			return this.call(
 				'GET',
-				`${this.RESOURCE}/matricula/periodos-disponibles`,
+				`${this.RESOURCE}/matricula/periodos-disponibles/${codigoSede}`,
 				undefined,
 				fetchOptions,
 			);
