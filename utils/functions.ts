@@ -116,10 +116,19 @@ export const validateForm = (form: object, optional: string[]) => {
    return Boolean(!keysErrorData.length)
 }
 
-export const toggleHiddenScroll = () => {
-  const miElemento = document.querySelector('body');
-  if (miElemento) {
-    const valOverflow = miElemento.style.overflow;
-    miElemento.style.overflow  =  (valOverflow == '' || valOverflow == 'auto') ? 'hidden' : 'auto';
-  }
+/**
+ * Controla el estilo 'overflow' del body para mostrar u ocultar la barra de scroll.
+ * @param force - (Opcional) Un booleano para forzar un estado. `true` para ocultar el scroll, `false` para mostrarlo.
+ * Si no se proporciona, simplemente alterna el estado actual.
+ */
+export const toggleHiddenScroll = (force?: boolean) => {
+    const body = document.querySelector('body');
+    if (!body) return;
+
+    if (typeof force === 'boolean') {
+        body.style.overflow = force ? 'hidden' : 'auto';
+    } else {
+        const currentOverflow = body.style.overflow;
+        body.style.overflow = (currentOverflow === '' || currentOverflow === 'auto') ? 'hidden' : 'auto';
+    }
 }

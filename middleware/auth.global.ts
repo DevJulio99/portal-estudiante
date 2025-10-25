@@ -1,5 +1,6 @@
 import dataMenuUser from "~/utils/data/dataMenuUser.json";
 import dataMenuAdmin from "~/utils/data/dataMenuAdmin.json";
+import { Roles } from "~/types/roles.types";
 import { getProfile } from "~/services/profile";
 
 export default defineNuxtRouteMiddleware(async (to) => {
@@ -25,7 +26,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         const competenciaStore = useCompetenciaStore();
         const resultadoCompetenciaStore = useResultadoCompetenciaStore();
         // Usamos optional chaining (?.) para evitar errores si getDataToken o Role no existen.
-        const isAdmin = tokenStore.getDataToken?.Role?.toLowerCase() === "admin";
+        const isAdmin = tokenStore.getDataToken?.Role?.toLowerCase() === Roles.Admin;
         const isTotalPagos = to.fullPath.includes('total-pagos');
         const rutasUsuario = getUrls(dataMenuUser);
         const rutasAdmin = getUrls(dataMenuAdmin);

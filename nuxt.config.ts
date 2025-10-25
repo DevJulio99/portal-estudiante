@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     }
   },
   modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', 'nuxt-icons', '@nuxt/image', '@pinia/nuxt', '@samk-dev/nuxt-vcalendar'],
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   imports: {
     dirs: ['stores', 'composables/**'],
   },

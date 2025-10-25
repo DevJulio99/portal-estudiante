@@ -14,11 +14,17 @@ const props = defineProps<{
 	seeParticipants: (data: Curso) => void;
 }>();
 
-const selectDocente = ref(props.item.docente[0] ?? '');
-const showTooptipWarn = ref(false);
+// --- Constantes y Estado Reactivo ---
+const selectDocente = ref(props.item?.docente?.[0]);
 const showCopyEnabled = ref(false);
 
+// URLs centralizadas para fácil mantenimiento
+const URL_BLACKBOARD = "https://upn.blackboard.com/auth-saml/saml/login?apId=_111_1&redirectUrl=https%3A%2F%2Fupn.blackboard.com%2Fultra";
+const URL_CONTACTO_BAJA_ACADEMICA = "https://contacto.upn.edu.pe/cursos-y-notas/que-sucede-si-desaprobe-un-curso-por-tercera-vez";
+
+// --- Funciones de Utilidad ---
 async function copyEmail() {
+	if (!selectDocente.value?.emailDocente) return;
 	await navigator.clipboard.writeText(selectDocente.value.emailDocente);
 	showCopyEnabled.value = true;
 	setTimeout(() => {
@@ -60,8 +66,7 @@ function formatCredits(credits: string | number): string {
 
 function formatCantidadVeces(veces: string | number): string {
 	const vecesNumber = typeof veces === 'string' ? parseInt(veces, 10) : veces;
-	vecesNumber === 3 && (showTooptipWarn.value = true);
-	const ordinalSuffixes = [
+	const ordinalSuffixes: string[] = [
 		'',
 		'ra',
 		'da',
@@ -85,6 +90,12 @@ function formatCantidadVeces(veces: string | number): string {
 		ordinalSuffixes[0]
 	} vez`;
 }
+
+// --- Propiedades Computadas ---
+const showTooptipWarn = computed(() => {
+    const veces = props.item?.cantidadVeces ?? 0;
+    return (typeof veces === 'string' ? parseInt(veces, 10) : veces) >= 3;
+});
 </script>
 
 <template aria-label="CursoDetail">
@@ -95,15 +106,14 @@ function formatCantidadVeces(veces: string | number): string {
 		<div class="w-full flex flex-wrap gap-4 justify-between">
 			<div class="w-full md:max-w-[389px]">
 				<span class="text-xs text-secondary block">Docente</span>
-				<div
-					v-if="item.docente.length > 1"
+				<select
+					v-if="item?.docente?.length > 1"
 					class="block text-[14px] text-black font-extrabold"
 				>
 					<select
 						id="docentes"
 						v-model="selectDocente"
 						class="select-curso w-full border border-black rounded p-2 outline-none"
-						name="docentes"
 					>
 						<optgroup>
 							<option
@@ -115,14 +125,14 @@ function formatCantidadVeces(veces: string | number): string {
 							</option>
 						</optgroup>
 					</select>
-				</div>
+				</select>
 				<span
-					v-else-if="item.docente.length == 1"
+					v-else-if="item?.nombreDocente"
 					class="text-sm font-extrabold"
 				>
-					{{ item.docente[0].nombresDocentes ?? '' }}
+					{{ item?.nombreDocente ?? '' }}
 				</span>
-				<span v-else>
+				<span v-else class="text-sm font-extrabold">
 					<span class="text-black font-extrabold">-</span>
 				</span>
 			</div>
@@ -131,13 +141,13 @@ function formatCantidadVeces(veces: string | number): string {
 				<span class="block text-xs text-secondary">Correo del docente</span>
 				<span class="block text-sm text-black font-extrabold">
 					<div class="flex items-center gap-[9px]">
-						<p v-if="selectDocente.emailDocente">
-							{{ selectDocente.emailDocente }}
+						<p v-if="item?.correoDocente">
+							{{ item?.correoDocente }}
 						</p>
 						<p v-else>-</p>
 						<div class="relative">
 							<nuxt-icon
-								v-if="selectDocente.emailDocente"
+								v-if="item.correoDocente"
 								role="button"
 								class="cursor-pointer"
 								name="MultipleBlank"
@@ -158,13 +168,13 @@ function formatCantidadVeces(veces: string | number): string {
 		</div>
 
 		<div class="w-full">
-			<div v-if="item.modalidad == 'Virtual'" class="text-xs text-black">
+			<div v-if="item?.modalidad === 'Virtual'" class="text-xs text-black">
 				Horario
 				<div class="text-sm text-black">
 					Tus cursos virtuales no tienen horario fijo. Para ver el contenido del
 					curso ingresa en cualquier momento al
 					<a
-						href="https://upn.blackboard.com/auth-saml/saml/login?apId=_111_1&redirectUrl=https%3A%2F%2Fupn.blackboard.com%2Fultra"
+						:href="URL_BLACKBOARD"
 						target="_blank"
 						class="text-blue_link underline decoration-blue_link"
 						>aula Virtual (Blackboard)</a
@@ -179,25 +189,23 @@ function formatCantidadVeces(veces: string | number): string {
 				:errorResponse="errorResponse"
 				:loading="loading"
 				:message="message"
-				:modalidad="item.modalidad"
+				:modalidad="item?.modalidad"
 			/>
 		</div>
 
-		<div class="w-[77px] md:w-[187px]" v-if="item.ciclo.trim().length">
+		<div class="w-[77px] md:w-[187px]" v-if="item?.ciclo?.trim()?.length">
 			<span class="block text-xs text-secondary">Ciclo</span>
 			<span class="block text-sm text-black font-extrabold">{{
 				getOrdinalWithLabel(item.ciclo)
 			}}</span>
 		</div>
 
-		<div class="w-[77px] md:w-[187px]" v-if="item.nivel?.trim().length">
+		<div class="w-[77px] md:w-[187px]" v-if="item?.nivel?.trim()?.length">
 			<span class="block text-xs text-secondary">Grado</span>
-			<span class="block text-sm text-black font-extrabold">{{item.grado}}° {{
-				item.nivel
-			}}</span>
+			<span class="block text-sm text-black font-extrabold">{{item?.grado}}</span>
 		</div>
 
-		<div class="w-[77px] md:w-[187px]" v-if="item.creditos.trim().length">
+		<div class="w-[77px] md:w-[187px]" v-if="item?.creditos?.trim()?.length">
 			<span class="block text-xs text-secondary">Créditos</span>
 			<span class="block text-sm text-black font-extrabold">{{
 				formatCredits(item.creditos)
@@ -207,7 +215,7 @@ function formatCantidadVeces(veces: string | number): string {
 		<div class="w-[70px] md:w-[187px]">
 			<span class="block text-xs text-secondary">Cursado por</span>
 			<div class="relative flex gap-2">
-				<span class="block text-sm text-black font-extrabold">
+				<span v-if="item?.cantidadVeces" class="block text-sm text-black font-extrabold">
 					{{ formatCantidadVeces(item.cantidadVeces) }}
 				</span>
 				<div v-if="showTooptipWarn" class="relative icon-warn">
@@ -217,8 +225,7 @@ function formatCantidadVeces(veces: string | number): string {
 					>
 						Recuerda que si desapruebas un curso por tercera vez tendrás la
 						condición de baja académica. Revisa más información
-						<a
-							href="https://contacto.upn.edu.pe/cursos-y-notas/que-sucede-si-desaprobe-un-curso-por-tercera-vez"
+						<a :href="URL_CONTACTO_BAJA_ACADEMICA"
 							target="_blank"
 							class="text-primary underline decoration-solid decoration-primary"
 							>aquí.</a

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { getPostulante } from '~/services/postulante';
+import { Roles } from '~/types/roles.types';
 import type { ProfileDataStore } from '~/types/profile.types';
 
 export const useProfileStore = defineStore('profileStore', {
@@ -23,8 +24,9 @@ export const useProfileStore = defineStore('profileStore', {
 	actions: {
 		setProfileData(payload: ProfileDataStore) {
 			const tokenStore = useTokenStore();
-			this.profileData = payload;
-			tokenStore.getDataToken.Role !== 'Admin' && getPostulante();
+			this.profileData = payload; // Asigna los datos del perfil
+			// Solo llama a getPostulante si el rol NO es 'admin' (insensible a mayúsculas/minúsculas)
+			tokenStore.getDataToken?.Role?.toLowerCase() !== Roles.Admin && getPostulante();
 		},
 		clearPorfileData(){
 			this.profileData = {

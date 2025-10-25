@@ -22,6 +22,8 @@ export interface Curso {
 	periodo: string;
 	seccion: string;
 	docente: Docente[];
+	nombreDocente: string;
+	correoDocente: string;
 	creditos: string;
 	cantidadVeces: string;
 	inasistencias: number;

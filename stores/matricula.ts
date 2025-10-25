@@ -29,7 +29,6 @@ export const useMatriculaStore = defineStore('matriculaStore', {
             const codSede = tokenStore.getDataToken.Codigo_Sede;
 			try {
 				const { data, error } = await $api.matricula.getMatriculaPorSede(codSede);
-                console.log('data:', data);
 				if (error.value) {
 					throw error.value;
 				}
@@ -67,7 +66,6 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 			const { $api } = useNuxtApp();
 			this.pendingActions = true;
 			msgPopupStore.setError(false, '');
-			console.log('registrar');
 			try {
 				const { error } = await $api.matricula.registrarMatricula(payload);
 				if (error.value) { throw error.value; }

@@ -40,7 +40,7 @@ class CursosModule extends FetchFactory<DataResponse<Curso[]>> {
 			};
 			return this.call(
 				'GET',
-				`/api/v1/CursosColegioxId/${CodAlumno}/${anio}/${codPeriodo}`,
+				`/api/v1/cursos-alumno/${CodAlumno}`,
 				undefined,
 				fetchOptions,
 			);

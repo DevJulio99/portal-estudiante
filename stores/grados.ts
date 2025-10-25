@@ -33,11 +33,13 @@ export const useGradoStore = defineStore('gradoStore', {
             };
         },
         async getGrados() {
+            const tokenStore = useTokenStore();
             const { $api } = useNuxtApp();
             this.pending = true;
+            const tipoInstitucion = tokenStore.getDataToken.Tipo_Institucion;
 
             try {
-                const response = await $api.grados.getGrados();
+                const response = await $api.grados.getGrados(tipoInstitucion);
                 
                 if (!response.error.value && response.data.value?.data.length) {
                     this.setListaGrados(response.data.value.data);

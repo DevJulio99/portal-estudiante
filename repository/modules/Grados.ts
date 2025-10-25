@@ -12,6 +12,7 @@ class GradosModule extends FetchFactory<DataResponse<Grado[]>> {
      * @returns
      */
     async getGrados(
+        tipoInstitucion: string,
         asyncDataOptions?: AsyncDataOptions<DataResponse<Grado[]>>,
     ) {
         return await useAsyncData(() => {
@@ -20,7 +21,7 @@ class GradosModule extends FetchFactory<DataResponse<Grado[]>> {
             };
             return this.call(
                 'GET',
-                `${this.RESOURCE}`,
+                `${this.RESOURCE}/${tipoInstitucion}`,
                 undefined,
                 fetchOptions,
             );

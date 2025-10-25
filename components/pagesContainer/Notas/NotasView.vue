@@ -491,7 +491,7 @@ function onExpansionNota(
 const initNotasView = () => {
 	const dataCursos_ = dataCursos.value;//cursosMock;
 	const cursosIniciados = dataCursos_.filter(
-			(x) => x.statusCurso === 'Iniciado',
+			(x) => x.statusCurso === 'Iniciado' || x.statusCurso === null,
 		);
 		const cursosPorIniciar = dataCursos_.filter(
 			(x) => x.statusCurso === 'Por iniciar',

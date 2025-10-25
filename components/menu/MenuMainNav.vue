@@ -5,6 +5,7 @@ import { vOnClickOutside } from "@vueuse/components";
 import { Menu } from "~/types/helper.types";
 import MenuNavItem from "./MenuNavItem.vue";
 import dataMenuUser from "~/utils/data/dataMenuUser.json";
+import { Roles } from "~/types/roles.types";
 import dataMenuAdmin from "~/utils/data/dataMenuAdmin.json";
 
 const menuStore = useMenuStore();
@@ -47,7 +48,7 @@ const eventClick = (url: string, title: string, status?: boolean) => {
 };
 
 onMounted(() => {
-  if (tokenStore?.getDataToken?.Role?.toLowerCase() == "admin") {
+  if (tokenStore?.getDataToken?.Role?.toLowerCase() === Roles.Admin) {
     const newMainMenu = {
       data: dataMenuAdmin,
       pending: false,
@@ -56,7 +57,7 @@ onMounted(() => {
     menuStore.setMainMenu(newMainMenu);
   }
 
-  if (tokenStore?.getDataToken?.Role?.toLowerCase() == "user") {
+  if (tokenStore?.getDataToken?.Role?.toLowerCase() === Roles.User) {
     const newMainMenu = {
       data: dataMenuUser,
       pending: false,

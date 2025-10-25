@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import BaseVeeSelect from '~/components/base/BaseVeeSelect.vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import type { ActualizarAlumno, Alumno, RegistrarAlumno } from '~/types/alumno.types';
+import BaseVeeInput from '~/components/base/BaseVeeInput.vue';
+import { TipoInstitucion } from '~/types/institucion.types';
 
 const props = withDefaults(defineProps<{
     data: Alumno | null;
@@ -34,7 +35,7 @@ const getGenero = (genero: string = '') => {
    return genero.toLocaleLowerCase() === 'f' ? {value: 2 , key : 'F'} : {value: 0 , key : ''}
 }
 
-const esInstitucionC = computed(() => tokenStore.getDataToken?.Tipo_Institucion === 'C');
+const esInstitucionC = computed(() => tokenStore.getDataToken?.Tipo_Institucion === TipoInstitucion.Colegio);
 
 const validationSchema = yup.object({
     idGrado: yup.number().when([], {
@@ -162,103 +163,72 @@ onMounted(async () => {
 </script>
 
 <template>
-<div class="flex flex-col h-full">
+<div class="flex flex-col flex-1 min-h-0">
     <BaseTitle :text="tipo == 'edit' ? 'Actualizar usuario' : 'Registrar usuario'" />
-    <form @submit.prevent="guardar" class="flex flex-col flex-grow min-h-0">
-    <div class="w-full grid grid-cols-2 gap-4 overflow-auto flex-grow px-2 py-2">
+    <form @submit.prevent="guardar" class="flex flex-col flex-grow min-h-0" novalidate autocomplete="off">
+    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 overflow-auto flex-grow px-2 py-2">
         <div v-if="esInstitucionC" class="flex flex-col">
-            <span class="font-bold">Grado</span>
             <BaseVeeSelectV2 :value="idGrado" v-bind="idGradoAttrs"
                 id="idGrado"
+                label="Grado"
                 icon="NavArrowDown"
                 class="w-full"
                 borderDefault="border-celestial_white"
-                label=""
+                placeholder="Seleccione un grado"
+                :error="errors.idGrado"
                 :options="gradoStore.listaGrados.map(grado => ({
                     id: grado.idGrado,
                     name: grado.descripcionGrado
                 }))"
                 @change="(option) => handleChangeSelect(option, 'idGrado')"
 			/>
-            <span v-if="errors.idGrado" class="text-error">{{ errors.idGrado }}</span>
         </div>
-        <div>
-            <span class="font-bold">Correo</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="correo" v-bind="correoAttrs" name="correo">
-            <span v-if="errors.correo" class="text-error">{{ errors.correo }}</span>
-        </div>
+        <BaseVeeInput
+            label="Correo"
+            name="correo"
+            type="email"
+            v-model="correo"
+            :error="errors.correo"
+        />
 
         <div v-if="tipo == 'edit'">
-            <span class="font-bold">Contraseña</span>
-            <input type="password" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="contraseña" v-bind="contraseñaAttrs" name="contraseña">
-            <span v-if="errors.contraseña" class="text-error">{{ errors.contraseña }}</span>
+            <BaseVeeInput
+                label="Contraseña"
+                name="contraseña"
+                type="password"
+                v-model="contraseña"
+                :error="errors.contraseña"
+                autocomplete="new-password"
+            />
         </div>
 
-        <div>
-            <span class="font-bold">Nombre</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="nombreUsuario" v-bind="nombreUsuarioAttrs" name="nombreUsuario">
-            <span v-if="errors.nombreUsuario" class="text-error">{{ errors.nombreUsuario }}</span>
-        </div>
+        <BaseVeeInput label="Nombre" name="nombreUsuario" v-model="nombreUsuario" :error="errors.nombreUsuario" />
+        <BaseVeeInput label="Apellido paterno" name="apellidoPaterno" v-model="apellidoPaterno" :error="errors.apellidoPaterno" />
+        <BaseVeeInput label="Apellido materno" name="apellidoMaterno" v-model="apellidoMaterno" :error="errors.apellidoMaterno" />
+        <BaseVeeInput label="Teléfono" name="telefono" v-model="telefono" :error="errors.telefono" :maxlength="9" />
+        <BaseVeeInput label="Número de documento" name="numeroDocumento" v-model="numeroDocumento" :error="errors.numeroDocumento" :maxlength="8" />
 
-        <div>
-            <span class="font-bold">Apellido paterno</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="apellidoPaterno" v-bind="apellidoPaternoAttrs" name="apellidoPaterno">
-            <span v-if="errors.apellidoPaterno" class="text-error">{{ errors.apellidoPaterno }}</span>
-        </div>
-
-        <div>
-            <span class="font-bold">Apellido materno</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="apellidoMaterno" v-bind="apellidoMaternoAttrs" name="apellidoMaterno">
-            <span v-if="errors.apellidoMaterno" class="text-error">{{ errors.apellidoMaterno }}</span>
-        </div>
-
-        <div>
-            <span class="font-bold">Teléfono</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="telefono" v-bind="telefonoAttrs" name="telefono" maxlength="9">
-            <span v-if="errors.telefono" class="text-error">{{ errors.telefono }}</span>
-        </div>
-
-        <div>
-            <span class="font-bold">Número de documento</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="numeroDocumento" v-bind="numeroDocumentoAttrs" name="numeroDocumento" maxlength="8">
-            <span v-if="errors.numeroDocumento" class="text-error">{{ errors.numeroDocumento }}</span>
-        </div>
-
-        <div>
+        <div class="flex flex-col">
             <span class="font-bold">Fecha de nacimiento</span>
-            <input class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" type="date" name="fechaNacimiento"
-                   v-model="fechaNacimiento" v-bind="fechaNacimientoAttrs" :max="fechaMinima">
+            <input 
+                class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]" 
+                type="date" name="fechaNacimiento"
+                v-model="fechaNacimiento" v-bind="fechaNacimientoAttrs" :max="fechaMinima">
             <span v-if="errors.fechaNacimiento" class="text-error">{{ errors.fechaNacimiento }}</span>
         </div>
 
-        <div>
-            <span class="font-bold">Dirección</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="direccion" v-bind="direccionAttrs" name="direccion">
-            <span v-if="errors.direccion" class="text-error">{{ errors.direccion }}</span>
-        </div>
+        <BaseVeeInput label="Dirección" name="direccion" v-model="direccion" :error="errors.direccion" />
+        <BaseVeeInput label="Foto de perfil" name="fotoPerfil" v-model="fotoPerfil" />
 
-        <div>
-            <span class="font-bold">Foto de perfil</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="fotoPerfil" v-bind="fotoPerfilAttrs" name="fotoPerfil">
-        </div>
-
-        <div>
-            <span class="font-bold">Género</span>
+        <div class="flex flex-col">
             <BaseVeeSelectV2 :value="genero" v-bind="generoAttrs"
                 id="genero"
+                label="Género"
                 icon="NavArrowDown"
                 class="w-full"
                 borderDefault="border-celestial_white"
-                label=""
+                placeholder="Seleccione un género"
+                :error="errors.genero"
                 :options="[
 	              {
 	              	id: 'M',
@@ -271,27 +241,11 @@ onMounted(async () => {
                 ]"
                 @change="(option) => handleChangeSelect(option, 'genero')"
 			/>
-            <span v-if="errors.genero" class="text-error">{{ errors.genero }}</span>
         </div>
 
-        <div>
-            <span class="font-bold">Tipo de alumno</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="tipoAlumno" v-bind="tipoAlumnoAttrs" name="tipoAlumno">
-        </div>
-
-        <div>
-            <span class="font-bold">Observaciones</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="observaciones" v-bind="observacionesAttrs" name="observaciones">
-        </div>
-
-        <div>
-            <span class="font-bold">Apoderado</span>
-            <input type="text" class="w-full outline-none rounded border border-celestial_white px-2 py-1 h-[44px]"
-                   v-model="apoderado" v-bind="apoderadoAttrs" name="apoderado">
-            <span v-if="errors.apoderado" class="text-error">{{ errors.apoderado }}</span>
-        </div>
+        <BaseVeeInput label="Tipo de alumno" name="tipoAlumno" v-model="tipoAlumno" />
+        <BaseVeeInput label="Observaciones" name="observaciones" v-model="observaciones" />
+        <BaseVeeInput label="Apoderado" name="apoderado" v-model="apoderado" :error="errors.apoderado" />
 
         <div class="flex items-center gap-2">
             <input type="checkbox" class="w-4 h-4"

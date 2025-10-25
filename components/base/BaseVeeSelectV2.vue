@@ -19,6 +19,7 @@ const props = withDefaults(
 		icon: string;
 		iconStyle?: string;
 		options: Option[];
+		error?: string;
 		borderDefault: string;
 	}>(),
 	{
@@ -31,6 +32,7 @@ const props = withDefaults(
 		iconStyle: '',
 		placeholder: null,
 		responsivePlaceholder: '',
+		error: '',
 		options: () => [],
 		borderDefault: ''
 	},
@@ -75,7 +77,8 @@ const displayText = computed(() => {
 
 <template>
 	<div ref="target" class="flex flex-col relative">
-		<div class="relative border-[1px] rounded flex items-center" :class="[openSelect ? 'border-turquoise' : borderDefault, disabled ? 'bg-extra_gray cursor-not-allowed' : 'cursor-pointer']">
+		<span v-if="label" class="font-bold">{{ label }}</span>
+		<div class="relative border-[1px] rounded flex items-center h-[44px]" :class="[openSelect ? 'border-turquoise' : borderDefault, disabled ? 'bg-extra_gray cursor-not-allowed' : 'cursor-pointer']">
 			<button type="button" :aria-expanded="openSelect" aria-haspopup="listbox" :class="`${customStyle} flex items-center w-full py-1.5 px-3 md:p-3 rounded`" @click="open" :disabled="disabled">
 				<span class="text-xs md:text-sm font-nunito text-neutral">{{ displayText }}</span>
 				<nuxt-icon
@@ -88,12 +91,17 @@ const displayText = computed(() => {
 				v-if="openSelect"
 				class="py-2 absolute max-h-[200px] overflow-auto w-full bg-white z-30 top-[50px] shadow-[0_10px_32px_-4px_#0000001A]"
 				role="listbox">
-				<ul>
+				<ul tabindex="-1" role="listbox">
 					<li v-for="op in options" :key="op.id" role="option" :aria-selected="selectedOption?.id === op.id" class="p-3 text-sm cursor-pointer text-neutral hover:bg-cyan_40 hover:text-black" :class="selectedOption?.id === op.id ? 'bg-cyan_40' : ''" @click="() => selectOp(op)">
 						{{ op.name }}
 					</li>
 				</ul>
 			</div>
 		</div>
+		<span v-if="error" class="text-error">{{ error }}</span>
 	</div>
 </template>
+
+<style scoped>
+.text-error { color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; }
+</style>

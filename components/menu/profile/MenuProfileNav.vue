@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useMediaQuery } from '@vueuse/core';
 import { vOnClickOutside } from '@vueuse/components';
 import { useMenuStore } from '~/stores/menu';
+import { Roles } from '~/types/roles.types';
 
 const { $msal } = useNuxtApp();
 const menuStore = useMenuStore();
@@ -87,7 +88,7 @@ const eventClick = (url: string, title: string) => {
 };
 
 onMounted(() => {
-	if(tokenStore.getDataToken.Role == 'admin'){
+	if(tokenStore.getDataToken?.Role?.toLowerCase() === Roles.Admin){
        profileStore.profileData.data = {
 		...profileStore.profileData.data as any,
 		fullName: tokenStore.getDataToken.Name,

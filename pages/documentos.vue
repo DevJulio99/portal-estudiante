@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import type { DataDocumento } from '~/types/documento.types';
 import type { ErrorResponse } from '~/types/services.types';
+import { Roles } from '~/types/roles.types';
 
 useHead({
 	title: 'Mis documentos',
@@ -10,7 +11,7 @@ useHead({
 const { $api } = useNuxtApp();
 
 const tokenStore = useTokenStore();
-const isAdmin = tokenStore.getDataToken.Role === "admin";
+const isAdmin = tokenStore.getDataToken?.Role?.toLowerCase() === Roles.Admin;
 
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
