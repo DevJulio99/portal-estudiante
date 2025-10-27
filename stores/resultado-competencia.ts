@@ -45,7 +45,7 @@ export const useResultadoCompetenciaStore = defineStore("resultadoCompetenciaSto
     
         if (listaCompetencias.error.value) {
           const bodyError = listaCompetencias.error.value.data;
-          if(listaCompetencias.error.value.statusCode = 404){
+          if(listaCompetencias.error.value.statusCode == 404){
              this.pending = false;
           }
           throw new Error(bodyError ? "nodata" : "other");

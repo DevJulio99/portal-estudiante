@@ -1,18 +1,6 @@
 [
     {
         "id": 1,
-        "etiqueta": "total-pagos",
-        "nombre": "Total Pagos",
-        "url": "/total-pagos",
-        "icono": "../public/images/pagos.svg",
-        "es_nuevo": false,
-        "abrir_nueva_pagina": false,
-        "submenu": [],
-        "es_clasico": 0,
-        "modalidad": "ALL"
-    },
-    {
-        "id": 2,
         "etiqueta": "alumnos",
         "nombre": "alumnos",
         "url": "/alumnos",
@@ -24,7 +12,7 @@
         "modalidad": "ALL"
     },
     {
-        "id": 3,
+        "id": 2,
         "etiqueta": "cursos",
         "nombre": "cursos",
         "url": "/cursos",
@@ -36,7 +24,7 @@
         "modalidad": "ALL"
     },
     {
-        "id": 4,
+        "id": 3,
         "etiqueta": "documentos",
         "nombre": "documentos",
         "url": "/documentos",
@@ -48,7 +36,7 @@
         "modalidad": "ALL"
     },
     {
-        "id": 5,
+        "id":4,
         "etiqueta": "matriculas",
         "nombre": "matrículas",
         "url": "/matriculas",
@@ -57,5 +45,17 @@
         "es_nuevo": false,
         "abrir_nueva_pagina": false,
         "submenu": []
-    }
+    },
+    {
+        "id": 5,
+        "etiqueta": "total-pagos",
+        "nombre": "Total Pagos",
+        "url": "/total-pagos",
+        "icono": "../public/images/pagos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
+    }    
 ]

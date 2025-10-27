@@ -90,6 +90,6 @@ onBeforeUnmount(() => {
                 </div>
             </div>
         </div>
+        <ModalResultado v-if="mostrarModal" :on-close="cerraModal"/>
     </BaseLayout>
-<ModalResultado v-if="mostrarModal" :on-close="cerraModal"/>
 </template>

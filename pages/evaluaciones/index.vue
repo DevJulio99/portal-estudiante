@@ -18,6 +18,16 @@ if(profileStore.profileData.data){
   existeProfile.value = 1;
 }
 
+const procesarHabilitado = () => {
+  if(postulanteStore.habilitado === 1){
+    competenciaStore.getLista();
+    noHabilitado.value = false;
+  }
+  if(postulanteStore.habilitado === 2) {
+    noHabilitado.value = true;
+    competenciaStore.pending = false;
+  }
+}
 
 watch(() => profileStore.profileData.data , (profileData) => {
   if(!existeProfile.value && profileData){
@@ -26,23 +36,18 @@ watch(() => profileStore.profileData.data , (profileData) => {
 })
 
 watch(() => postulanteStore.habilitado , (habilitado) => {
-  if(habilitado === 1){
-    competenciaStore.getLista();
-    noHabilitado.value = false;
-  }
-  if(habilitado === 2) {
-    noHabilitado.value = true;
-    competenciaStore.pending = false;
-  }
+  procesarHabilitado();
 })
 
-
-
 onMounted(() => {
+  competenciaStore.finalizoCompetencia = false;
+  examenStore.resetExamen();
+  
   if(existeProfile.value){
     profileStore.postulanteHabilitado();
-    competenciaStore.finalizoCompetencia = false;
-    examenStore.resetExamen();
+    if(postulanteStore.habilitado !== 0){
+      procesarHabilitado();
+    }
   }
 })
 

@@ -77,12 +77,12 @@ onMounted(() => {
 			:termsConditions="listTermsConditions"
 			:distVal="distVal"
 		/>
-		<ProfileInfoTerminos
+		<!-- <ProfileInfoTerminos
 			v-if="!pendingTerms"
 			:data="data"
 			:distVal="distVal"
 			:termsConditions="listTermsConditions"
-		/>
+		/> -->
 		<!-- <div class="px-6 mb-10 md:mb-[3.75rem]">
 			<BaseSubtitle text="Términos y condiciones" />
 			<hr class="bg-primary text-primary h-[1px] border-0 mb-4" />

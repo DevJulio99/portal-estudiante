@@ -19,7 +19,7 @@ const dataCalendar = ref<Calendar[]>([]);
 const servicesError = ref<ErrorResponse | null>(null);
 
 const { data, pending, error } = await $api.calendario.getCalendar(
-	2025,
+	new Date().getFullYear(),
 	{
 		lazy: true,
 	},
