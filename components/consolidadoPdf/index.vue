@@ -21,10 +21,13 @@ const {
 	lazy: true,
 });
 
-watch(CursosData, (response) => {
+watch(CursosData, async (response) => {
 	if (response?.data.length) {
 		dataCursos.value = response.data;
-    props.onLoad();
+    await nextTick();
+    setTimeout(() => {
+      props.onLoad();
+    }, 50);
 	}
 
 	if (response?.error) {
@@ -34,6 +37,16 @@ watch(CursosData, (response) => {
 
 watch(() => profileStore.profileData?.data, (newData) => {
   dataAlumno = newData;
+});
+
+onMounted(async () => {
+  if (CursosData.value?.data?.length && !pendingServices.value) {
+    dataCursos.value = CursosData.value.data;
+    await nextTick();
+    setTimeout(() => {
+      props.onLoad();
+    }, 50);
+  }
 });
 
 const currentDate = new Date();
@@ -51,7 +64,7 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
 </script>
 
 <template>
-  <div id="pdf-content" v-if="!pendingServices">
+  <div id="pdf-content" v-if="!pendingServices && dataCursos.length > 0 && dataAlumno">
     <h1 class="title">FICHA DE MATRÍCULA</h1>
     <div class="content">
       <div class="single-column">
@@ -84,7 +97,7 @@ const formattedTime = useDateFormat(currentDate, 'hh:mm a');
           <td>{{ curso.seccion }}</td>
           <td>{{ curso.nivel }}</td>
           <td>{{ curso.modalidad }}</td>
-          <td>{{ curso.docente[0]?.nombresDocentes}}</td>
+          <td>{{ curso.nombreDocente}}</td>
         </tr>
         <tr class="date-row">
           <td colspan="7" class="date-cell"><strong>Fecha: </strong>{{ `${formattedDate}` }} - <strong>Hora: </strong>{{ `${formattedTime}` }}</td>

@@ -18,6 +18,7 @@ const docUploaded = ref(false);
 const documentsError: Ref<ErrorResponse | null> = ref(null);
 const isMobile = useMediaQuery('(max-width: 1024px)');
 const isLoading = ref(true);
+const dataReady = ref(false);
 
 // onMounted(() => {
 //   isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -104,10 +105,28 @@ const generatePDF = async () => {
   }
 };
 
-const loadPdf = () => {
-  setTimeout(() => {
-    generatePDF();
-  }, 0);
+const loadPdf = async () => {
+  try {
+    dataReady.value = true;
+    
+    await nextTick();
+    
+    const content = document.getElementById('pdf-student');
+    if (!content) {
+      return;
+    }
+    
+    setTimeout(() => {
+      generatePDF();
+    }, 150);
+  } catch (error) {
+    documentsError.value = {
+      icono: '',
+      descripcion: 'Error al preparar los datos para el PDF.',
+      titulo: 'Error de preparación',
+    };
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -117,7 +136,7 @@ const loadPdf = () => {
       <BaseBreadcrumbs :items="breadcrumbsItem" />
       <BaseTitle text="CONSOLIDADOS DE MATRÍCULA" />
 
-      <div v-if="isLoading" class="max-h-[300px] flex flex-col items-center justify-center">
+      <div v-if="isLoading || !dataReady" class="max-h-[300px] flex flex-col items-center justify-center">
         <BaseStatusLoading />
       </div>
 
