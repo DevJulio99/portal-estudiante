@@ -5,7 +5,7 @@ import TablaMatriculas from '~/components/pagesContainer/Matriculas/tablaMatricu
 
 
 useHead({
-  title: "Matriculas",
+  title: "Matrículas",
 });
 const matriculaStore = useMatriculaStore();
 

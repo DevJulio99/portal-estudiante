@@ -50,7 +50,7 @@
     {
         "id": 5,
         "etiqueta": "matriculas",
-        "nombre": "matriculas",
+        "nombre": "matrículas",
         "url": "/matriculas",
         "icon": "matricula",
         "icono": "../public/images/documentos.svg",

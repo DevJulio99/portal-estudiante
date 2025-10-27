@@ -54,9 +54,9 @@ const displayValue = (value: string | null | undefined) => value || '-';
 
 <style lang="postcss" scoped>
 .info-label {
-    @apply text-sm font-bold text-darkBlue mb-1;
+    @apply text-sm font-bold text-black mb-1;
 }
 .info-value {
-    @apply text-base text-midnightBlue;
+    @apply text-base text-black;
 }
 </style>

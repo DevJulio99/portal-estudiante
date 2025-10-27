@@ -456,6 +456,7 @@ const showUploadModal = ref(false);
 								label=""
 								:options="filterMock"
 								responsivePlaceholder="Filtrar"
+								borderDefault="border-darkBlue"
 								@change="handleChangeSelect"
 							/>
 						</div>
@@ -469,6 +470,7 @@ const showUploadModal = ref(false);
 								class="w-[154px] md:w-[149px]"
 								:options="orderMock"
 								responsivePlaceholder="Ordenar"
+								borderDefault="border-darkBlue"
 								@change="handleChangeSelect"
 							/>
 						</div>
@@ -536,11 +538,11 @@ const showUploadModal = ref(false);
 			:type-doc="detailDoc.type"
 			:on-close="() => handleModal(false)"
 		/>
+		<ModalUploadDocument
+			:show="showUploadModal"
+			:categories="categories"
+			@close="showUploadModal = false"
+			@upload="reloadDocuments"
+		/>		
 	</BaseLayout>
-	<ModalUploadDocument
-		:show="showUploadModal"
-		:categories="categories"
-		@close="showUploadModal = false"
-		@upload="reloadDocuments"
-	/>
 </template>

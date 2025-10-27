@@ -103,14 +103,14 @@ const convertirHora24 = (hora12: string) => {
 				<div class="w-[124px] md:w-[187px]">
 					<span class="block text-xs text-secondary">Inicia</span>
 					<span class="block text-sm text-black font-extrabold">{{
-						conditionedString(dataHorario?.[0]?.detalleHorario[0]?.fechaInicio ?? (dataCurso?.fechaInicio ?? ''))
+						formatDateString(dataHorario?.[0]?.detalleHorario[0]?.fechaInicio ?? (dataCurso?.fechaInicio ?? ''))
 					}}</span>
 				</div>
 
 				<div class="w-[124px] md:w-[187px]">
 					<span class="block text-xs text-secondary">Finaliza</span>
 					<span class="block text-sm text-black font-extrabold">{{
-						conditionedString(dataHorario?.[0]?.detalleHorario?.[0]?.fechaFin ?? (dataCurso?.fechaFin ?? ''))
+						formatDateString(dataHorario?.[0]?.detalleHorario?.[0]?.fechaFin ?? (dataCurso?.fechaFin ?? ''))
 					}}</span>
 				</div>
 			</span>
