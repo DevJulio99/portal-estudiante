@@ -35,6 +35,13 @@ export interface RequestMatricula {
     estadoMatricula: string;
     observaciones:   string;
     usuarioRegistro: string;
+    tipoInstitucion: string;
+    cursos?: CursoSeccion[];
+}
+
+export interface CursoSeccion {
+    idCurso: number;
+    idSeccion: number;
 }
 
 export interface ActualizarMatricula {

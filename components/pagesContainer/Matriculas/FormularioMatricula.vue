@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import type { ResponseMatricula, RequestMatricula } from '~/types/matricula.types';
+import type { ResponseMatricula, RequestMatricula, CursoSeccion } from '~/types/matricula.types';
 import { TipoInstitucion } from '~/types/institucion.types';
 import BaseVeeTextarea from '~/components/base/BaseVeeTextarea.vue';
 
@@ -16,21 +16,26 @@ const alumnoStore = useAlumnoStore();
 const gradoStore = useGradoStore();
 const tokenStore = useTokenStore();
 
-const esInstitucionC = computed(() => tokenStore.getDataToken?.Tipo_Institucion === TipoInstitucion.Colegio);
+const esInstitucionI = computed(() => tokenStore.getDataToken?.Tipo_Institucion === TipoInstitucion.Instituto);
 
 const validationSchema = yup.object({
     idAlumno: yup.number().required('El alumno es obligatorio').min(1, 'Seleccione un alumno'),
-    // idGrado: yup.number().when([], {
-    //     is: () => esInstitucionC.value,
-    //     then: schema => schema.required('El grado es obligatorio').min(1, 'Seleccione un grado'),
-    //     otherwise: schema => schema.nullable().optional(),
-    // }),
     idGrado: yup.number().required('El grado es obligatorio').min(1, 'Seleccione un grado'),
     idPeriodo: yup.number().required('El periodo es obligatorio').min(1, 'Seleccione un periodo'),
     tipoMatricula: yup.string().required('El tipo de matrícula es obligatorio'),
     estadoMatricula: yup.string().required('El estado es obligatorio'),
     observaciones: yup.string().optional(),
     activo: yup.boolean().optional(),
+    cursosSeccion: yup.array().when([], {
+        is: () => esInstitucionI.value,
+        then: schema => schema.of(
+            yup.object({
+                idCurso: yup.number().required().notOneOf([0]),
+                idSeccion: yup.number().required('Debe seleccionar una sección para cada curso').notOneOf([0], 'Debe seleccionar una sección para cada curso'),
+            })
+        ).min(1, 'Debe seleccionar al menos un curso y su sección'),
+        otherwise: schema => schema.optional(),
+    }),
 });
 
 const initialValues = computed(() => {
@@ -44,6 +49,7 @@ const initialValues = computed(() => {
         estadoMatricula: 'Activa',
         observaciones: '',
         activo: true,
+        cursosSeccion: [] as CursoSeccion[],
         ...props.data,
     };
 });
@@ -57,18 +63,23 @@ watch(initialValues, (newInitialValues) => {
     resetForm({ values: newInitialValues });
 });
 
+watch(() => props.data, (newData) => {
+    resetForm({ values: { ...initialValues.value, ...newData } });
+}, { deep: true });
+
 const [idGrado, idGradoAttrs] = defineField('idGrado');
 const [idPeriodo, idPeriodoAttrs] = defineField('idPeriodo');
 const [tipoMatricula, tipoMatriculaAttrs] = defineField('tipoMatricula');
 const [estadoMatricula, estadoMatriculaAttrs] = defineField('estadoMatricula');
 const [observaciones, observacionesAttrs] = defineField('observaciones');
 const [activo, activoAttrs] = defineField('activo');
+const [cursosSeccion, cursosSeccionAttrs] = defineField('cursosSeccion');
 
 // El idAlumno no necesita un defineField porque no es un input del usuario en este formulario
 
 const guardar = handleSubmit(async (formValues) => {
     if (props.tipo === 'register') {
-        const payload: RequestMatricula = {
+        const payload: RequestMatricula & { grados?: CursoSeccion[] } = {
             idAlumno: formValues.idAlumno,
             idPeriodo: formValues.idPeriodo,
             idGrado: formValues.idGrado,
@@ -77,7 +88,11 @@ const guardar = handleSubmit(async (formValues) => {
             estadoMatricula: formValues.estadoMatricula,
             observaciones: formValues.observaciones,
             usuarioRegistro: tokenStore.getDataToken.Dni_Usuario,
+            tipoInstitucion: tokenStore.getDataToken.Tipo_Institucion,
         };
+        if (esInstitucionI.value) {
+            payload.grados = formValues.cursosSeccion;
+        }
         const success = await matriculaStore.RegistrarMatricula(payload);
         if (success) {
             props.onClose();
@@ -94,6 +109,49 @@ const handleChangeSelect = (option: { id: string | number }, fieldName: keyof ty
     setFieldValue(fieldName, option.id);
 }
 
+// Observador para el cambio de grado
+watch(idGrado, async (newIdGrado) => {
+    setFieldValue('cursosSeccion', []); // Limpiar cursos seleccionados al cambiar de grado
+    // Primero, limpiamos los cursos anteriores para evitar mostrar datos incorrectos
+    matriculaStore.clearCursosPorGrado();
+
+    // Si es un instituto y se ha seleccionado un grado válido, buscamos los cursos
+    if (esInstitucionI.value && newIdGrado && newIdGrado > 0) {
+        await matriculaStore.fetchCursosPorGrado({
+            idGrado: newIdGrado,
+            tipoInstitucion: tokenStore.getDataToken.Tipo_Institucion,
+        });
+    }
+});
+
+const handleCourseSelection = (cursoId: number, isChecked: boolean) => {
+    const currentSelection: CursoSeccion[] = [...(values.cursosSeccion || [])];
+    if (isChecked) {
+        if (!currentSelection.some(c => c.idCurso === cursoId)) {
+            currentSelection.push({ idCurso: cursoId, idSeccion: 0 });
+        }
+    } else {
+        const index = currentSelection.findIndex(c => c.idCurso === cursoId);
+        if (index > -1) {
+            currentSelection.splice(index, 1);
+        }
+    }
+    setFieldValue('cursosSeccion', currentSelection);
+};
+
+const handleSectionSelection = (cursoId: number, seccionId: number) => {
+    const updatedSelection = (values.cursosSeccion || []).map((cursoSeccion: CursoSeccion) => {
+        if (cursoSeccion.idCurso === cursoId) {
+            // Crea un nuevo objeto para asegurar la reactividad
+            return { ...cursoSeccion, idSeccion: seccionId };
+        }
+        return cursoSeccion;
+    });
+    setFieldValue('cursosSeccion', updatedSelection);
+};
+
+const isCourseSelected = (cursoId: number) => values.cursosSeccion?.some((c: CursoSeccion) => c.idCurso === cursoId);
+
 onMounted(async () => {
     if (gradoStore.listaGrados.length === 0) {
         await gradoStore.getGrados();
@@ -101,6 +159,11 @@ onMounted(async () => {
     if (matriculaStore.listaPeriodos.length === 0) {
         await matriculaStore.getPeriodos();
     }
+});
+
+onUnmounted(() => {
+    // Limpiamos los cursos al salir del componente para no mantener estado residual
+    matriculaStore.clearCursosPorGrado();
 });
 </script>
 
@@ -113,6 +176,56 @@ onMounted(async () => {
 
                 <BaseVeeSelectV2 :value="idPeriodo" v-bind="idPeriodoAttrs" id="idPeriodo" label="Periodo" icon="NavArrowDown" class="w-full" borderDefault="border-celestial_white" :options="matriculaStore.listaPeriodos.map(p => ({ id: p.idPeriodo, name: p.descripcionPeriodo }))" @change="(option) => handleChangeSelect(option, 'idPeriodo')" :disabled="tipo === 'edit'" :error="errors.idPeriodo" placeholder="Seleccione un periodo" />
 
+                <!-- INICIO: Nueva sección de Cursos por Grado -->
+                <div v-if="esInstitucionI && idGrado > 0" class="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 class="font-bold text-lg mb-2">Cursos y Secciones Disponibles</h3>
+                    <input v-bind="cursosSeccionAttrs" type="hidden" />
+
+                    <!-- Estado de Carga -->
+                    <div v-if="matriculaStore.pendingCursos" class="text-center text-gray-500">
+                        Cargando cursos...
+                    </div>
+
+                    <!-- Lista de Cursos -->
+                    <div v-else-if="matriculaStore.cursosPorGrado.length > 0" class="space-y-4 max-h-60 overflow-y-auto pr-2">
+                        <div v-for="curso in matriculaStore.cursosPorGrado" :key="curso.id_curso" class="p-3 border rounded-md bg-gray-50 transition-all">
+                            <div class="flex items-center gap-2">
+                                <input 
+                                    type="checkbox" 
+                                    :id="`curso-${curso.id_curso}`"
+                                    :checked="isCourseSelected(curso.id_curso)"
+                                    @change="handleCourseSelection(curso.id_curso, ($event.target as HTMLInputElement).checked)"
+                                    class="w-4 h-4"
+                                >
+                                <label :for="`curso-${curso.id_curso}`" class="font-bold text-primary cursor-pointer">{{ curso.descripcion_curso }}</label>
+                            </div>
+                            
+                            <div v-if="isCourseSelected(curso.id_curso)" class="pl-6 mt-3 space-y-2">
+                                <div v-for="seccion in curso.secciones" :key="seccion.codigo_seccion" class="flex items-center gap-2">
+                                    <input 
+                                        type="radio" 
+                                        :id="`seccion-${seccion.codigo_seccion}`"
+                                        :name="`seccion-curso-${curso.id_curso}`"
+                                        :value="seccion.id_seccion"
+                                        @change="handleSectionSelection(curso.id_curso, seccion.id_seccion)"
+                                        class="w-4 h-4"
+                                    >
+                                    <label :for="`seccion-${seccion.codigo_seccion}`" class="text-sm cursor-pointer">
+                                        <span class="font-semibold">{{ seccion.descripcion_seccion }}</span> - 
+                                        <span class="text-gray-600">{{ seccion.horario.nombre_dia }} de {{ seccion.horario.hora_inicio }} a {{ seccion.horario.hora_fin }} (Turno: {{ seccion.horario.turno }})</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mensaje si no se encuentran cursos -->
+                    <div v-else class="text-center text-gray-500 py-4">
+                        No se encontraron cursos disponibles para el grado seleccionado.
+                    </div>
+                    <span v-if="errors.cursosSeccion" class="text-error">{{ errors.cursosSeccion }}</span>
+                </div>
+                <!-- FIN: Nueva sección de Cursos por Grado -->
+                 
                 <BaseVeeSelectV2 :value="tipoMatricula" v-bind="tipoMatriculaAttrs" id="tipoMatricula" label="Tipo de Matrícula" icon="NavArrowDown" class="w-full" borderDefault="border-celestial_white" :options="[{ id: 'Anual', name: 'Anual' }]" @change="(option) => handleChangeSelect(option, 'tipoMatricula')" :disabled="tipo === 'edit'" :error="errors.tipoMatricula" />
 
                 <BaseVeeSelectV2 :value="estadoMatricula" v-bind="estadoMatriculaAttrs" id="estadoMatricula" label="Estado de Matrícula" icon="NavArrowDown" class="w-full" borderDefault="border-celestial_white" :options="[{ id: 'Activa', name: 'Activa' }, { id: 'Inactiva', name: 'Inactiva' }]" @change="(option) => handleChangeSelect(option, 'estadoMatricula')" :error="errors.estadoMatricula" />
@@ -123,11 +236,12 @@ onMounted(async () => {
                     v-model="observaciones"
                     :error="errors.observaciones"
                     :disabled="tipo === 'edit'"
-                    class="md:col-span-2" />
-                <!-- <div v-if="tipo === 'edit'" class="flex gap-3 items-center">
+                    class="md:col-span-2" />                
+
+                <div v-if="tipo === 'edit'" class="flex gap-3 items-center">
                     <span class="font-bold">Matrícula Activa</span>
                     <input type="checkbox" v-model="activo" v-bind="activoAttrs" name="activo" class="w-6 h-6 outline-none border border-celestial_white px-2 py-1">
-                </div> -->
+                </div>
             </div>
             <div class="flex justify-center py-3">
                 <button 

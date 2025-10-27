@@ -77,6 +77,7 @@ export interface ErrorResponsePortal {
 export type DataResponse<T> = {
 	message: string;
 	flag: boolean;
+	success: boolean;
 	error: ErrorResponse | null;
 	data: T;
 };

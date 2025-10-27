@@ -1,27 +1,16 @@
 <script setup lang="ts">
 import PopUpMensaje from '~/components/pagesContainer/Alumnos/PopUpMensaje.vue';
-import { getProfile } from '~/services/profile';
 import { useMsgPopUpStore } from '~/stores/msgPopup';
 
 const router = useRouter();
 const tokenStore = useTokenStore();
 const msgPopupStore = useMsgPopUpStore();
 const profileStore = useProfileStore();
-const timeoutId = ref<any>(null);
 
 // --- INICIO: LÓGICA DE CARGA DE PERFIL EN EL LAYOUT ---
 // Esta función se ejecutará una sola vez cuando el layout se monte.
 onMounted(async () => {
-  const isAuth = tokenStore.accessToken.trim().length && tokenStore.refreshToken.trim().length;
-  // Si estamos autenticados pero no tenemos datos de perfil (sucede en una recarga de página)
-  if (isAuth && !profileStore.profileData.data) {
-      tokenStore.setPending(true); // Mostramos la pantalla de carga
-      try {
-          await getProfile(tokenStore.getDataToken.Dni_Usuario);
-      } finally {
-          tokenStore.setPending(false); // Ocultamos la pantalla de carga
-      }
-  }
+  await profileStore.fetchProfile();
 });
 
 </script>

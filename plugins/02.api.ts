@@ -25,6 +25,7 @@ import GestionCursosModule from '~/repository/modules/GestionCursos';
 import PagosPendientesHomeModule from '~/repository/modules/pagosPendHome';
 import MatriculaModule from '~/repository/modules/Matricula';
 import PeriodoModule from '~/repository/modules/Periodo';
+import CursoGradoModule from '~/repository/modules/cursoGrado';
 
 
 interface IApiInstance {
@@ -54,6 +55,7 @@ interface IApiInstance {
 	pagosPendientesHome: PagosPendientesHomeModule;
 	matricula: MatriculaModule;
 	periodo: PeriodoModule;
+	cursoGrado: CursoGradoModule;
 }
 
 export default defineNuxtPlugin(() => {
@@ -91,6 +93,7 @@ export default defineNuxtPlugin(() => {
 		pagosPendientesHome: new PagosPendientesHomeModule(apiFecther),
 		matricula: new MatriculaModule(apiFecther),
 		periodo: new PeriodoModule(apiFecther),
+		cursoGrado: new CursoGradoModule(apiFecther),
 	};
 
 	return {

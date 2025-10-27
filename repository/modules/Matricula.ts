@@ -47,6 +47,23 @@ class MatriculaModule extends FetchFactory<DataResponse<ResponseMatricula[]>> {
 		}, asyncDataOptions);
 	}
 
+	 async registrarMatriculaInstituto(
+		request: RequestMatricula,
+		asyncDataOptions?: AsyncDataOptions<DataResponse<ResponseMatricula[]>>,
+	) {
+		return await useAsyncData(() => {
+			const fetchOptions: FetchOptions<'json'> = {
+				headers: {},
+			};
+			return this.call(
+				'POST',
+				`${this.RESOURCE}/matricula-instituto/realizar`,
+				request,
+				fetchOptions,
+			);
+		}, asyncDataOptions);
+	}
+
     async actualizarEstadoMatricula(
 		idMatricula: number,
 		estado: string,
