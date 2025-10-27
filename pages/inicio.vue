@@ -6,9 +6,12 @@ import { EventStatus } from '~/types/calendar.types';
 const { $api } = useNuxtApp();
 
 const { data: calendar, pending: pendingCalendar } =
-	await $api.calendario.getCalendar(2025, {
-		lazy: true,
-	});
+	await $api.calendario.getCalendar(
+		new Date().getFullYear(), 
+		{
+			lazy: true,
+		}
+	);
 
 
 </script>

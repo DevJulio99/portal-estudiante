@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ResponseLogin } from "~/types/login.types";
 import { getProfile } from '~/services/profile';
+import { Roles } from '~/types/roles.types';
 
 const userLogin = ref({
   email: "",
@@ -70,8 +71,13 @@ async function handleFormSubmit() {
       localStorage.setItem("access", JSON.stringify(response));
       // 2. Se espera a que el perfil se cargue
       await getProfile(tokenStore.getDataToken.Dni_Usuario);
-      // 3. Solo después de cargar el perfil, se redirige
-      await router.push("/inicio");
+      // 3. Solo después de cargar el perfil, se redirige según el rol
+      const userRole = tokenStore.getDataToken?.Role?.toLowerCase();
+      if (userRole === Roles.Admin) {
+        await router.push("/alumnos");
+      } else {
+        await router.push("/inicio");
+      }
       // 4. Indicamos que el proceso de carga ha finalizado
       tokenStore.setPending(false);
     }

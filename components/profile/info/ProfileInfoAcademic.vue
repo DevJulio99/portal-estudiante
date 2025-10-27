@@ -52,7 +52,7 @@ const copy = (text: string, name: string, title: string) => {
 				subtitle="Ciclo de Ingreso"
 			/>
 			<ProfileSectionItem
-				:data="data.usuarioEmail"
+				:data="data.correoPersonal"
 				subtitle="Correo Estudiante"
 				:msgCopy="msgCopy"
 				:copy="copy"

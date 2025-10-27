@@ -59,7 +59,7 @@ const eventClick = () => {
 			/>
 			<span
 				v-if="!isLargeScreen && !profileStore.profileData.pending"
-				class="text-sm font-extrabold cursos-pointer leading-[18px] inline-block self-end capitalize font-nunito text-black"
+				class="text-sm font-extrabold cursos-pointer leading-[18px] inline-block self-end capitalize font-nunito text-black md:group-hover:text-white"
 			>
 				{{
 					authInfo.user.name?.toLowerCase() ||
