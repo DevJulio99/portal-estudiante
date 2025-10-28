@@ -5,6 +5,12 @@ import type { ActualizarAlumno, Alumno, RegistrarAlumno } from '~/types/alumno.t
 import BaseVeeInput from '~/components/base/BaseVeeInput.vue';
 import { TipoInstitucion } from '~/types/institucion.types';
 
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const isUploadingPhoto = ref(false);
+const isUploadedPhoto = ref(false);
+
+const { uploadFile } = useFileUploader();
+
 const props = withDefaults(defineProps<{
     data: Alumno | null;
     tipo: string;
@@ -155,6 +161,35 @@ const handleChangeSelect = (option: { id: string | number }, fieldName: keyof ty
     setFieldValue(fieldName, option.id);
 }
 
+const handleFileChange = async (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    
+    if (!file) return;
+    
+    isUploadingPhoto.value = true;
+    
+    try {
+        const result = await uploadFile(file);
+        
+        if (result.success && result.url) {
+            setFieldValue('fotoPerfil', result.url);
+            isUploadedPhoto.value = true;
+            setTimeout(() => {
+                isUploadedPhoto.value = false;
+            }, 2000);
+        }
+    } catch (error) {
+        console.error('Error al subir la imagen:', error);
+    } finally {
+        isUploadingPhoto.value = false;
+    }
+};
+
+const triggerFileInput = () => {
+    fileInputRef.value?.click();
+};
+
 onMounted(async () => {
     if (esInstitucionC.value && gradoStore.listaGrados.length === 0) {
         await gradoStore.getGrados();
@@ -218,7 +253,43 @@ onMounted(async () => {
         </div>
 
         <BaseVeeInput label="Dirección" name="direccion" v-model="direccion" :error="errors.direccion" />
-        <BaseVeeInput label="Foto de perfil" name="fotoPerfil" v-model="fotoPerfil" />
+        
+        <div class="flex flex-col">
+            <span class="font-bold mb-2">Foto de perfil</span>
+            <input 
+                type="file" 
+                ref="fileInputRef" 
+                accept="image/*" 
+                class="hidden" 
+                @change="handleFileChange" 
+            />
+            <div class="flex items-center gap-3">
+                <button
+                    type="button"
+                    class="px-4 py-2 rounded border border-celestial_white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed h-[44px] flex items-center justify-center"
+                    @click="triggerFileInput"
+                    :disabled="isUploadingPhoto"
+                >
+                    <template v-if="isUploadingPhoto">
+                        <span class="text-sm">Subiendo...</span>
+                    </template>
+                    <template v-else>
+                        <span class="text-sm">Subir imagen</span>
+                    </template>
+                </button>
+                
+                <div v-if="fotoPerfil" class="flex-1 flex items-center gap-2">
+                    <img 
+                        :src="fotoPerfil" 
+                        alt="Foto de perfil" 
+                        class="w-12 h-12 rounded-full object-cover border border-celestial_white"
+                    />
+                    <span v-if="isUploadedPhoto" class="text-sm text-green-600">
+                        ✓ Imagen subida
+                    </span>
+                </div>
+            </div>
+        </div>
 
         <div class="flex flex-col">
             <BaseVeeSelectV2 :value="genero" v-bind="generoAttrs"

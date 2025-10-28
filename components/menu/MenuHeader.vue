@@ -90,14 +90,17 @@ const eventClick = () => {
           class="flex items-center relative"
         >
           <img
-            :src="
-              profileStore.profileData.data?.fotoUrlLow && validImg
-                ? profileStore.profileData.data?.fotoUrlLow
-                : '/images/userProfile.png'
-            "
+            :src="profileStore.profileData.data?.fotoUrlLow"
+            @error="validImg = false"
+            v-if="validImg"
             class="h-auto max-w-[40px] lg:mr-1 rounded-full"
             loading="lazy"
-
+          />
+          <img
+            v-else
+            src="/images/userProfile.png"
+            class="h-auto max-w-[40px] lg:mr-1 rounded-full"
+            loading="lazy"
           />
           <nuxt-icon
             name="NavArrowDown"
