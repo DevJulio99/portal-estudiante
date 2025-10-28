@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BaseTable from '~/components/base/BaseTable.vue';
 import type { PagosPendientesData } from '~/types/pagos.types';
 
 useHead({
@@ -13,6 +14,22 @@ const popupDetalleData = ref();
 const popupDetalleVisible = ref(false);
 const isMediumScreen = useMediaQuery("(min-width: 768px)");
 const pagoStore = usePagoStore();
+
+const columns = [
+	{ key: 'documentoPago', label: 'N° DOCUMENTO' },
+	{ key: 'fechaVencimiento', label: 'F. VENCIMIENTO' },
+	{ key: 'ciclo', label: 'CICLO' },
+	{ key: 'saldo', label: 'SALDO' },
+	{ key: 'mora', label: 'MORA' },
+	{ key: 'totalAPagar', label: 'TOTAL A PAGAR' },
+	{ key: 'detalle', label: 'DETALLE', isAction: true }
+];
+
+const paginationData = computed(() => ({
+	total: pagoStore.total,
+	currentPage: pagoStore.paginado.pagina,
+	itemsPerPage: pagoStore.paginado.itemsPorPagina
+}));
 
 const showPopup = (datos: object) => {
 	popupDetalleData.value = datos;
@@ -74,142 +91,69 @@ const handlePage = (number: number) => {
     />
   </div>
   <div v-if="!pagoStore.pending && !pagoStore.lista.length" class="w-full py-10 text-xl font-bold text-center">No se encontro datos</div>
-  <div
-		v-if="!pagoStore.pending && pagoStore.lista.length > 0"
-		class="w-full"
+  
+  <BaseTable
+		v-if="!pagoStore.pending"
+		:columns="columns"
+		:data="pagoStore.lista"
+		:loading="false"
+		:show-pagination="pagoStore.lista.length > 0"
+		:pagination-data="paginationData"
+		:show-info-action="false"
+		:show-edit-action="false"
+		:show-delete-action="false"
+		row-key="idPago"
+		@page-change="handlePage"
 	>
-		<!-- <div v-if="isMediumScreen" class="mb-3">
-			Aquí se muestra la lista de los pagos pendientes del alumno. Esta información te permitirá revisar los pagos que aún están por realizarse.
-		</div> -->
-		<div
-			class="w-full"
-		>
-			<div class="box-table overflow-x-auto">
-				<table class="w-full">
-					<thead>
-						<tr class="border border-b-disable border-x-0 border-t-0">
-							<th class="min-w-[120px]">N° DOCUMENTO</th>
-							<th class="min-w-[120px]">F. VENCIMIENTO</th>
-							<th class="min-w-[120px]">CICLO</th>
-							<th class="min-w-[120px]">SALDO</th>
-							<th class="min-w-[120px]">MORA</th>
-							<th class="min-w-[120px]">TOTAL A PAGAR</th>
-							<th class="min-w-[120px]">DETALLE</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(item, index) in pagoStore.lista" :key="index">
-							<td>{{ item.documentoPago != '' ? item.documentoPago : '-' }}</td>
-							<td
-								:class="{
-									'text-red-600 font-semibold': dateIsExpired(
-										item.fechaVencimiento,
-									),
-								}"
-							>
-								{{ useDateFormat(item.fechaVencimiento, 'DD/MM/YYYY', { locales: 'es-ES' }) }}
-							</td>
-							<td>
-								{{ item.ciclo }}
-							</td>
-							<td>
-								S/
-								{{
-										(item.totalAPagar - item.mora).toFixed(2)
-								}}
-							</td>
-							<td>S/ {{ item.mora.toFixed(2) }}</td>
-							<td><strong>S/ {{ item.totalAPagar.toFixed(2) }}</strong></td>
-							<td>
-								<div class="flex gap-[9px] items-center justify-center">
-									<nuxt-icon
-										name="iconEye"
-										filled
-										class="text-[21px] cursor-pointer"
-										@click="
-											showPopup({
-												...item,
-												isExpired: dateIsExpired(item.fechaVencimiento),
-											})
-										"
-									/>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+		<template #cell-documentoPago="{ item }">
+			{{ item.documentoPago != '' ? item.documentoPago : '-' }}
+		</template>
+
+		<template #cell-fechaVencimiento="{ item }">
+			<span
+				:class="{
+					'text-red-600 font-semibold': dateIsExpired(item.fechaVencimiento),
+				}"
+			>
+				{{ useDateFormat(item.fechaVencimiento, 'DD/MM/YYYY', { locales: 'es-ES' }) }}
+			</span>
+		</template>
+
+		<template #cell-ciclo="{ item }">
+			{{ item.ciclo }}
+		</template>
+
+		<template #cell-saldo="{ item }">
+			S/ {{ (item.totalAPagar - item.mora).toFixed(2) }}
+		</template>
+
+		<template #cell-mora="{ item }">
+			S/ {{ item.mora.toFixed(2) }}
+		</template>
+
+		<template #cell-totalAPagar="{ item }">
+			<strong>S/ {{ item.totalAPagar.toFixed(2) }}</strong>
+		</template>
+
+		<template #custom-actions="{ item }">
+			<div class="flex gap-[9px] items-center justify-center">
+				<nuxt-icon
+					name="iconEye"
+					filled
+					class="text-[21px] cursor-pointer"
+					@click="
+						showPopup({
+							...item,
+							isExpired: dateIsExpired(item.fechaVencimiento),
+						})
+					"
+				/>
 			</div>
-		</div>
-	</div>
-	<BasePagination
-				 class="my-3"
-				 v-if="pagoStore.lista.length"
-                 :totalItems="pagoStore.total"
-                 :currentPage="pagoStore.paginado.pagina"
-                 :items-per-page="pagoStore.paginado.itemsPorPagina"
-                 @change="handlePage"
-    />
+		</template>
+	</BaseTable>
   <PagesContainerPagosPopupPaymentDetail
 		v-if="popupDetalleVisible"
 		:data="popupDetalleData"
 		:closePopup="hidePopup"
 	/>
 </template>
-<style lang="postcss" scoped>
-.box-table {
-	font-family: arial, sans-serif;
-	border-collapse: collapse;
-	width: 100%;
-}
-
-tr:nth-child(odd),
-tr:nth-child(odd) td {
-	background-color: white;
-}
-
-tr:nth-child(even),
-tr:nth-child(even) td {
-	background-color: #f6f6f6;
-}
-
-th {
-	font-family: 'grotesk';
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-	color: white;
-	background-color: #031448;
-	font-weight: 600;
-	font-size: 16px;
-}
-
-th:last-child {
-	color: #031448;
-	background-color: lightblue;
-}
-
-td {
-	@apply lg:py-6 py-4 px-2 text-center font-nunito text-sm;
-}
-
-.box-table::-webkit-scrollbar {
-	height: 8px;
-}
-
-.box-table::-webkit-scrollbar-thumb {
-	background-color: rgb(151, 151, 151);
-}
-
-.box-table::-webkit-scrollbar-track {
-	background-color: white;
-}
-
-@media (max-width: 600px) {
-	th {
-		font-size: 14px;
-	}
-
-	td {
-		font-size: 12px;
-	}
-}
-</style>
