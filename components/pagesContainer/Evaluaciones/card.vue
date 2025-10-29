@@ -59,7 +59,7 @@ const status = () => (stadoFecha == 1 || props.data.finalizado) ? 'bg-green_70' 
     >
     <div
       v-if="tipo == 'detalle'"
-        class="z-10 w-full py-[5px] text-xs text-white font-nunito rounded-[16px] absolute top-[9px] left-[10px] text-center lg:max-w-[201px]"
+        class="z-10 w-auto max-w-[200px] py-1.5 px-3.5 text-xs text-white font-nunito rounded-[16px] absolute top-[9px] left-[10px] text-center"
         :class="status()"
         >
         {{data.finalizado ? 'Finalizado' : (stadoFecha == 1 ? 'Disponible ahora' : (stadoFecha == 2 ? `Disponible desde ${transformarFecha(data.fechaInicio).toLocaleDateString()}` : 'Desfasado'))}}
