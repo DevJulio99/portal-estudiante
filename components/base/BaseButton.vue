@@ -36,7 +36,7 @@ withDefaults(
 				'flex items-center': Boolean(iconName),
 				'bg-primary opacity-50 cursor-not-allowed':
 					color === BtnColor.default && (disabled || disabledStyle),
-				'bg-primary text-black':
+				'bg-primary text-white':
 					color === BtnColor.default && (!disabled || !disabledStyle),
 				'bg-extra_gray disabled:text-black':
 					color === BtnColor.black && (disabled || disabledStyle),
@@ -107,6 +107,6 @@ withDefaults(
 
 <style lang="postcss" scoped>
 .btn {
-	@apply w-full md:w-[106px] h-[24px] md:h-[36px] text-xs md:text-sm rounded font-bold flex items-center justify-center;
+	@apply w-full md:w-auto h-[24px] md:h-[36px] text-xs md:text-sm rounded font-bold flex items-center justify-center;
 }
 </style>

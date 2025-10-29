@@ -146,11 +146,28 @@
         "id": 9,
         "etiqueta": "documentos",
         "nombre": "Documentos",
-        "url": "/documentos",
+        "url": null,
         "icono": "../public/images/documentos.svg",
         "es_nuevo": false,
         "abrir_nueva_pagina": false,
-        "submenu": [],
+        "submenu": [
+            {
+                "etiqueta": "documentos",
+                "nombre": "Lista Documentos",
+                "url": "/documentos",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            },
+            {
+                "etiqueta": "reporte_notas",
+                "nombre": "Reporte Notas",
+                "url": "/reporte-notas",
+                "abrir_nueva_pagina": false,
+                "es_clasico": 0,
+                "modalidad": "ALL"
+            }
+        ],
         "es_clasico": 0,
         "modalidad": "ALL"
     },
