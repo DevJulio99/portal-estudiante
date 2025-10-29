@@ -141,8 +141,8 @@ const loadPdf = async () => {
       </div>
 
       <div v-if="urlDoc && !isMobile" class="pdf-container">
-        <embed
-          :src="urlDoc"
+        <iframe
+          :src="`${urlDoc}#navpanes=0`"
           type="application/pdf"
           width="100%"
           height="600px"

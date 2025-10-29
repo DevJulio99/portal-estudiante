@@ -499,38 +499,38 @@ const isLargeScreen = useMediaQuery('(min-width: 1200px)');
 			</div>
 		</div>
 		<BaseModal
-			v-if="viewModal"
-			width="w-[964px]"
-			:handleClose="handleClose"
-			:show-close="false"
-			:style="`p-8`"
+			:show="viewModal"
+			max-width="max-w-[964px]"
+			@close="handleClose"
 		>
-			<div class="!mb-4 flex justify-between">
-				<BaseTitle
-					:text="currentLocation?.nombre ?? ''"
-					class="!m-0 text-[32px] capitalize"
-				/>
-				<nuxt-icon
+			<div class="p-4">
+				<div class="!mb-4 flex justify-between">
+					<BaseTitle
+						:text="currentLocation?.nombre ?? ''"
+						class="!m-0 text-[32px] capitalize"
+					/>
+<!-- 				<nuxt-icon
 					name="upn-icon-close-yellow"
 					class="cursor-pointer text-[24px]"
 					filled
 					@click="handleClose"
-				/>
-			</div>
+				/> -->
+				</div>
 
-			<div class="w-full h-[1px] bg-celestial_white mb-4"></div>
-			<iframe
-				width="100%"
-				height="450px"
-				:src="currentLocation?.url"
-				frameborder="0"
-			></iframe>
-			<BaseButton
-				styles="mt-4 !w-[120px] !h-[46px] py-3.5 px-4 text-sm"
-				@click="handleClose"
-			>
-				Cerrar mapa
-			</BaseButton>
+				<div class="w-full h-[1px] bg-celestial_white mb-4"></div>
+				<iframe
+					width="100%"
+					height="450px"
+					:src="currentLocation?.url"
+					frameborder="0"
+				></iframe>
+				<BaseButton
+					styles="mt-4 !w-[120px] !h-[46px] py-3.5 px-4 text-sm text-white"
+					@click="handleClose"
+				>
+					Cerrar mapa
+				</BaseButton>
+			</div>
 		</BaseModal>
 		<template #secondary>
 			<BaseSubtitle

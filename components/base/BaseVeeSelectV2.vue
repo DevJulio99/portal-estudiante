@@ -78,7 +78,7 @@ const displayText = computed(() => {
 <template>
 	<div ref="target" class="flex flex-col relative">
 		<span v-if="label" class="font-bold">{{ label }}</span>
-		<div class="relative border-[1px] rounded flex items-center h-[44px]" :class="[openSelect ? 'border-turquoise' : borderDefault, disabled ? 'bg-extra_gray cursor-not-allowed' : 'cursor-pointer']">
+		<div class="relative border-[1px] rounded flex items-center h-[46px]" :class="[openSelect ? 'border-turquoise' : borderDefault, disabled ? 'bg-extra_gray cursor-not-allowed' : 'cursor-pointer']">
 			<button type="button" :aria-expanded="openSelect" aria-haspopup="listbox" :class="`${customStyle} flex items-center w-full py-1.5 px-3 md:p-3 rounded`" @click="open" :disabled="disabled">
 				<span class="text-xs md:text-sm font-nunito text-neutral">{{ displayText }}</span>
 				<nuxt-icon
