@@ -25,7 +25,7 @@ class AsistenciaModule extends FetchFactory<DataResponse<CursoAsistencia[]>> {
 			};
 			return this.call(
 				'GET',
-				`${this.RESOURCE}/${CodAlumno}/${bimestre}/${codCurso}/${anio}`,
+				`${this.RESOURCE}/${CodAlumno}/${codCurso}`,
 				undefined,
 				fetchOptions,
 			);

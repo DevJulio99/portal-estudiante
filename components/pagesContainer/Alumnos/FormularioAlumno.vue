@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
+import BaseVeeCheckbox from '~/components/base/BaseVeeCheckbox.vue';
 import type { ActualizarAlumno, Alumno, RegistrarAlumno } from '~/types/alumno.types';
 import BaseVeeInput from '~/components/base/BaseVeeInput.vue';
 import { TipoInstitucion } from '~/types/institucion.types';
@@ -318,11 +319,12 @@ onMounted(async () => {
         <BaseVeeInput label="Observaciones" name="observaciones" v-model="observaciones" />
         <BaseVeeInput label="Apoderado" name="apoderado" v-model="apoderado" :error="errors.apoderado" />
 
-        <div class="flex items-center gap-2">
-            <input type="checkbox" class="w-4 h-4"
-                   v-model="habilitadoPrueba" v-bind="habilitadoPruebaAttrs" name="habilitadoPrueba">
-            <span class="font-bold">Habilitado para prueba</span>
-        </div>
+        <BaseVeeCheckbox
+            label="Habilitado para prueba"
+            name="habilitadoPrueba"
+            v-model="habilitadoPrueba"
+            v-bind="habilitadoPruebaAttrs"
+        />
     </div>
 
     <div class="flex justify-center py-3">

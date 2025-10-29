@@ -3,7 +3,9 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import type { ResponseMatricula, RequestMatricula, CursoSeccion } from '~/types/matricula.types';
 import { TipoInstitucion } from '~/types/institucion.types';
+import BaseVeeCheckbox from '~/components/base/BaseVeeCheckbox.vue';
 import BaseVeeTextarea from '~/components/base/BaseVeeTextarea.vue';
+import BaseVeeRadio from '~/components/base/BaseVeeRadio.vue';
 
 const props = defineProps<{
     data: ResponseMatricula | null;
@@ -152,6 +154,11 @@ const handleSectionSelection = (cursoId: number, seccionId: number) => {
 
 const isCourseSelected = (cursoId: number) => values.cursosSeccion?.some((c: CursoSeccion) => c.idCurso === cursoId);
 
+const getSelectedSectionForCourse = (cursoId: number) => {
+    const selection = values.cursosSeccion?.find((c: CursoSeccion) => c.idCurso === cursoId);
+    return selection ? selection.idSeccion : 0;
+};
+
 onMounted(async () => {
     if (gradoStore.listaGrados.length === 0) {
         await gradoStore.getGrados();
@@ -188,35 +195,38 @@ onUnmounted(() => {
 
                     <!-- Lista de Cursos -->
                     <div v-else-if="matriculaStore.cursosPorGrado.length > 0" class="space-y-4 max-h-60 overflow-y-auto pr-2">
-                        <div v-for="curso in matriculaStore.cursosPorGrado" :key="curso.id_curso" class="p-3 border rounded-md bg-gray-50 transition-all">
-                            <div class="flex items-center gap-2">
-                                <input 
-                                    type="checkbox" 
-                                    :id="`curso-${curso.id_curso}`"
-                                    :checked="isCourseSelected(curso.id_curso)"
-                                    @change="handleCourseSelection(curso.id_curso, ($event.target as HTMLInputElement).checked)"
-                                    class="w-4 h-4"
-                                >
-                                <label :for="`curso-${curso.id_curso}`" class="font-bold text-primary cursor-pointer">{{ curso.descripcion_curso }}</label>
-                            </div>
+                        <label 
+                            v-for="curso in matriculaStore.cursosPorGrado" 
+                            :key="curso.id_curso" 
+                            :for="`curso-${curso.id_curso}`" class="p-3 border rounded-md bg-gray-50 transition-all cursor-pointer block">
+                            <BaseVeeCheckbox
+                                :id="`curso-${curso.id_curso}`"
+                                :name="`curso-${curso.id_curso}`"
+                                :label="curso.descripcion_curso"
+                                :modelValue="isCourseSelected(curso.id_curso)"
+                                @update:modelValue="isChecked => handleCourseSelection(curso.id_curso, isChecked)"
+                                class="font-bold text-primary"
+                            />
                             
-                            <div v-if="isCourseSelected(curso.id_curso)" class="pl-6 mt-3 space-y-2">
-                                <div v-for="seccion in curso.secciones" :key="seccion.codigo_seccion" class="flex items-center gap-2">
-                                    <input 
-                                        type="radio" 
-                                        :id="`seccion-${seccion.codigo_seccion}`"
-                                        :name="`seccion-curso-${curso.id_curso}`"
-                                        :value="seccion.id_seccion"
-                                        @change="handleSectionSelection(curso.id_curso, seccion.id_seccion)"
-                                        class="w-4 h-4"
-                                    >
-                                    <label :for="`seccion-${seccion.codigo_seccion}`" class="text-sm cursor-pointer">
-                                        <span class="font-semibold">{{ seccion.descripcion_seccion }}</span> - 
-                                        <span class="text-gray-600">{{ seccion.horario.nombre_dia }} de {{ seccion.horario.hora_inicio }} a {{ seccion.horario.hora_fin }} (Turno: {{ seccion.horario.turno }})</span>
-                                    </label>
-                                </div>
+                            <div v-if="isCourseSelected(curso.id_curso)" class="pl-6 mt-3 space-y-2" @click.stop>
+                                <BaseVeeRadio
+                                    v-for="seccion in curso.secciones"
+                                    :key="seccion.codigo_seccion"
+                                    :modelValue="getSelectedSectionForCourse(curso.id_curso)"
+                                    :name="`seccion-curso-${curso.id_curso}`"
+                                    :value="seccion.id_seccion"
+                                    :id="`seccion-${seccion.codigo_seccion}`"
+                                    @update:modelValue="() => handleSectionSelection(curso.id_curso, seccion.id_seccion)"
+                                >
+                                    <template #label>
+                                        <label :for="`seccion-${seccion.codigo_seccion}`" class="text-sm cursor-pointer">
+                                            <span class="font-semibold">{{ seccion.descripcion_seccion }}</span> - 
+                                            <span class="text-gray-600">{{ seccion.horario.nombre_dia }} de {{ seccion.horario.hora_inicio }} a {{ seccion.horario.hora_fin }} (Turno: {{ seccion.horario.turno }})</span>
+                                        </label>
+                                    </template>
+                                </BaseVeeRadio>
                             </div>
-                        </div>
+                        </label>
                     </div>
                     <!-- Mensaje si no se encuentran cursos -->
                     <div v-else class="text-center text-gray-500 py-4">
@@ -238,10 +248,13 @@ onUnmounted(() => {
                     :disabled="tipo === 'edit'"
                     class="md:col-span-2" />                
 
-                <div v-if="tipo === 'edit'" class="flex gap-3 items-center">
-                    <span class="font-bold">Matrícula Activa</span>
-                    <input type="checkbox" v-model="activo" v-bind="activoAttrs" name="activo" class="w-6 h-6 outline-none border border-celestial_white px-2 py-1">
-                </div>
+                <BaseVeeCheckbox
+                    v-if="tipo === 'edit'"
+                    label="Matrícula Activa"
+                    name="activo"
+                    v-model="activo"
+                    v-bind="activoAttrs"
+                />
             </div>
             <div class="flex justify-center py-3">
                 <button 
