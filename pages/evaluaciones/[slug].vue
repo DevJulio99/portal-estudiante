@@ -64,7 +64,19 @@ const competenciaActual = computed(() => competenciaStore.competenciaSeleccionad
 const preguntaActual = computed(() => examenStore.preguntaActual)
 const opcionSeleccionada = computed(() => preguntaStore.opcionSeleccionada)
 
-const {data: dataEstados, error: errorEstados} = await $api.estado.getListarEstado(postulanteStore.data?.idPostulante ?? 0,competenciaActual.value?.id_compentencia ?? 0, {lazy: true,})
+const dataEstados = ref<any>(null);
+const errorEstados = ref<any>(null);
+
+watch([
+  () => postulanteStore.data?.idPostulante,
+  () => competenciaActual.value?.id_compentencia
+], async ([idPostulante, idCompetencia]) => {
+  if (idPostulante && idCompetencia) {
+    const resp = await $api.estado.getListarEstado(idPostulante, idCompetencia, { lazy: true });
+    dataEstados.value = resp.data.value;
+    errorEstados.value = resp.error.value;
+  }
+}, { immediate: true });
 
 
 watch(dataEstados, (estados)  => {
@@ -271,6 +283,9 @@ setTimeout(() => {
 })
 
 onBeforeUnmount(() => {
+  const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+
+  if (navigationEntry?.type === 'reload') return;
   postulanteStore.setHabilitado(0);
   competenciaStore.resetCompetencia();
   preguntaStore.setPregunta(1);
@@ -308,10 +323,10 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
     <div v-if="examenStore.pending" class="text-xs text-black py-16">
 			<BaseStatusLoading />
 		</div>
-    <div v-if="examenStore.error" class="p-5 font-telegraf h-full flex justify-center items-center">
+    <div v-if="examenStore.error && !examenStore.pending && !examenStore.lista.length" class="p-5 font-telegraf h-full flex justify-center items-center">
       <BaseStatusError
       class="relative top-[-80px]"
-				:text="examenStore.error.message ?? 'Ocurrio un error'"
+				:text="examenStore.error.message ?? 'Ocurrió un error'"
         description="Por favor, intenta más tarde."
 				:icono="exclamation"
         class-img="w-[40px] h-[40px]"
