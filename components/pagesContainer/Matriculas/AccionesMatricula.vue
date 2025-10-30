@@ -8,7 +8,9 @@ const props = defineProps<{
 const filtro = ref('');
 
 const handleFilter = () => {
-    props.onFilter(filtro.value);
+    if (filtro.value.trim() !== '') {
+        props.onFilter(filtro.value.trim());
+    }
 }
 
 const handleClear = () => {

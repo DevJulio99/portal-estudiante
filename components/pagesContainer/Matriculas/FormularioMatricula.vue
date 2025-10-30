@@ -27,7 +27,6 @@ const validationSchema = yup.object({
     tipoMatricula: yup.string().required('El tipo de matrícula es obligatorio'),
     estadoMatricula: yup.string().required('El estado es obligatorio'),
     observaciones: yup.string().optional(),
-    activo: yup.boolean().optional(),
     cursosSeccion: yup.array().when([], {
         is: () => esInstitucionI.value,
         then: schema => schema.of(
@@ -50,7 +49,6 @@ const initialValues = computed(() => {
         tipoMatricula: 'Anual',
         estadoMatricula: 'Activa',
         observaciones: '',
-        activo: true,
         cursosSeccion: [] as CursoSeccion[],
         ...props.data,
     };
@@ -74,7 +72,6 @@ const [idPeriodo, idPeriodoAttrs] = defineField('idPeriodo');
 const [tipoMatricula, tipoMatriculaAttrs] = defineField('tipoMatricula');
 const [estadoMatricula, estadoMatriculaAttrs] = defineField('estadoMatricula');
 const [observaciones, observacionesAttrs] = defineField('observaciones');
-const [activo, activoAttrs] = defineField('activo');
 const [cursosSeccion, cursosSeccionAttrs] = defineField('cursosSeccion');
 
 // El idAlumno no necesita un defineField porque no es un input del usuario en este formulario
@@ -248,13 +245,6 @@ onUnmounted(() => {
                     :disabled="tipo === 'edit'"
                     class="md:col-span-2" />                
 
-                <BaseVeeCheckbox
-                    v-if="tipo === 'edit'"
-                    label="Matrícula Activa"
-                    name="activo"
-                    v-model="activo"
-                    v-bind="activoAttrs"
-                />
             </div>
             <div class="flex justify-center py-3">
                 <button 

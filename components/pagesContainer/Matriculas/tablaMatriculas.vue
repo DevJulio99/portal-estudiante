@@ -106,12 +106,13 @@ const seleccionarAlumnoParaMatricula = (alumno: Alumno) => {
   </div>
   
   <div v-else class="w-full">
-    <div v-if="valorFilter && alumnoStore.lista.length > 0" class="mb-6">
-      <AccionesMatricula :onRegister="registrar" :on-filter="onFilter" :clear-filter="limpiarFiltro"/>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-        <div 
-          v-for="alumno in alumnoStore.lista" 
-          :key="alumno.id_alumno" 
+    <AccionesMatricula :onRegister="registrar" :on-filter="onFilter" :clear-filter="limpiarFiltro"/>
+
+    <div v-if="valorFilter && alumnoStore.lista.length > 0" class="mb-6 mt-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          v-for="alumno in alumnoStore.lista"
+          :key="alumno.id_alumno"
           class="p-4 border rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition-colors"
           @click="() => seleccionarAlumnoParaMatricula(alumno)"
         >
@@ -122,15 +123,13 @@ const seleccionarAlumnoParaMatricula = (alumno: Alumno) => {
       </div>
     </div>
     
-    <div v-else-if="valorFilter && !alumnoStore.lista.length && !alumnoStore.pendingTable" class="mb-6">
-      <AccionesMatricula :onRegister="registrar" :on-filter="onFilter" :clear-filter="limpiarFiltro"/>
+    <div v-else-if="valorFilter && !alumnoStore.lista.length && !alumnoStore.pendingTable" class="mb-6 mt-4">
       <div class="w-full py-10 text-xl font-bold text-center">
         No se encontraron alumnos para matricular.
       </div>
     </div>
     
     <BaseTable
-      v-else
       :columns="columns"
       :data="tableData"
       :loading="matriculaStore.pendingTable"
@@ -142,15 +141,7 @@ const seleccionarAlumnoParaMatricula = (alumno: Alumno) => {
       no-data-text="No se encontraron datos"
       @edit="actualizar"
       @page-change="handlePage"
-    >
-      <template #actions>
-        <AccionesMatricula 
-          :onRegister="registrar" 
-          :on-filter="onFilter" 
-          :clear-filter="limpiarFiltro"
-        />
-      </template>
-      
+    >      
       <template #cell-estadoMatricula="{ value }">
         <span 
           :class="value?.toLowerCase() === 'activa' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'" 
