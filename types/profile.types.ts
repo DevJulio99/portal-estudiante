@@ -20,6 +20,8 @@ export interface ProfileData {
 	codPrograma: null;
 	codNivel: null;
 	desNivel: null;
+	desGrado?: string;
+	desSeccion?: string;
 	codCampus: null;
 	desCampus: string;
 	codEstadoAlumno: null;

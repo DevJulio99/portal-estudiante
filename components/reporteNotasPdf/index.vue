@@ -43,17 +43,21 @@ const notasPivote = computed<NotaProcesada>(() => {
   return data;
 });
 
-const promediosPorBimestre = computed(() => {
-    const promedios: { [bimestre: string]: number } = {};
-    if (!props.notas) return promedios;
+const puntajesPorBimestre = computed(() => {
+    const puntajes: { [bimestre: string]: number } = {};
+    if (!props.notas) return puntajes;
 
     for (const bimestre of bimestres.value) {
-        const notaBimestre = props.notas.find(n => n.descripcionSubperiodo === bimestre);
-        if (notaBimestre) {
-            promedios[bimestre] = notaBimestre.promedioBimestre;
+        let suma = 0;
+        for (const curso of cursos.value) {
+            const nota = notasPivote.value[curso]?.[bimestre];
+            if (nota !== null && nota !== undefined) {
+                suma += nota;
+            }
         }
+        puntajes[bimestre] = suma;
     }
-    return promedios;
+    return puntajes;
 });
 
 const getNotaCualitativa = (nota: number | null) => {
@@ -70,22 +74,22 @@ onMounted(() => {
 
 <template>
   <div class="print-container">
-    <h2>Institución Educativa Privada</h2>
-    <h1>"JORGE BASADRE"</h1>
-    <h3>¡Formando triunfadores!</h3>
+    <h2 style="position: relative; top: -3px;">Institución Educativa Privada</h2>
+    <h1 style="position: relative; top: -3px;">"JORGE BASADRE"</h1>
+    <h3 style="position: relative; top: -3px;">¡Formando triunfadores!</h3>
 
-    <p class="titulo">INFORME DEL PROGRESO DE LAS NOTAS DEL ESTUDIANTE - 2025</p>
-    <p class="subtitulo">NIVEL INICIAL</p>
+    <p class="titulo" style="position: relative; top: -3px;">INFORME DEL PROGRESO DE LAS NOTAS DEL ESTUDIANTE - {{ new Date().getFullYear() }}</p>
+    <p class="subtitulo" style="position: relative; top: -3px;">Nivel {{ profile?.desNivel }}</p>
 
     <table>
       <tr>
-        <td><strong>APELLIDOS Y NOMBRES:</strong> {{ profile?.fullName }}</td>
-        <td><strong>BIMESTRE:</strong> {{ bimestres.length > 0 ? bimestres[bimestres.length - 1] : '-' }}</td>
-        <td><strong>N° ORDEN:</strong> 7</td>
+        <td><strong style="position: relative; top: -5px;">APELLIDOS Y NOMBRES:</strong> <span style="position: relative; top: -7px;">{{ profile?.fullName }}</span></td>
+        <td><strong style="position: relative; top: -5px;">BIMESTRE:</strong> <span style="position: relative; top: -7px;">{{ bimestres.length > 0 ? bimestres[bimestres.length - 1] : '-' }}</span></td>
+        <td><strong style="position: relative; top: -5px;">N° ORDEN:</strong> <span style="position: relative; top: -7px;">7</span></td>
       </tr>
       <tr>
-        <td><strong>TUTOR(A):</strong> Maria torres</td>
-        <td colspan="2"><strong>AÑO Y SECCIÓN:</strong> </td>
+        <td><strong style="position: relative; top: -5px;">TUTOR(A):</strong> <span style="position: relative; top: -7px;">Maria torres</span></td>
+        <td colspan="2"><strong style="position: relative; top: -5px;">AÑO Y SECCIÓN:</strong><span style="position: relative; top: -7px;">{{  profile?.desGrado }} {{ profile?.desSeccion }}</span> </td>
       </tr>
     </table>
 
@@ -93,43 +97,44 @@ onMounted(() => {
       <thead>
         <tr>
           <th rowspan="2">ASIGNATURAS</th>
-          <th v-for="bimestre in bimestres" :key="bimestre" colspan="2">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</th>
+          <th v-for="bimestre in bimestres" :key="bimestre" colspan="2"><span style="position: relative; top: -3px;">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</span></th>
         </tr>
         <tr>
           <template v-for="bimestre in bimestres" :key="`sub-${bimestre}`">
-            <th>Cuant.</th>
-            <th>Cualit.</th>
+            <th><span style="position: relative; top: -5px;">Cuant.</span></th>
+            <th><span style="position: relative; top: -5px;">Cualit.</span></th>
           </template>
         </tr>
       </thead>
       <tbody>
         <tr v-for="curso in cursos" :key="curso">
-          <td><strong>{{ curso }}</strong></td>
+          <td><strong style="position: relative; top: -5px;">{{ curso }}</strong></td>
           <template v-for="bimestre in bimestres" :key="`nota-${curso}-${bimestre}`">
-            <td>{{ notasPivote[curso][bimestre] !== null ? notasPivote[curso][bimestre]?.toFixed(0) : '-' }}</td>
-            <td>{{ getNotaCualitativa(notasPivote[curso][bimestre]) }}</td>
+            <td style="text-align: center;"><span style="position: relative; top: -7px;">{{ notasPivote[curso][bimestre] !== null ? notasPivote[curso][bimestre]?.toFixed(0) : '-' }}</span></td>
+            <td style="text-align: center;"><span style="position: relative; top: -7px;">{{ getNotaCualitativa(notasPivote[curso][bimestre]) }}</span></td>
+          </template>
+        </tr>
+        <tr>
+          <td><strong style="position: relative; top: -5px;">Puntaje</strong></td>
+          <template v-for="bimestre in bimestres" :key="`puntaje-${bimestre}`">
+            <td colspan="2" style="text-align: center;">
+              <span style="position: relative; top: -7px;">{{ puntajesPorBimestre[bimestre]?.toFixed(0) || '-' }}</span>
+            </td>
           </template>
         </tr>
       </tbody>
     </table>
 
-    <p>
-      <strong>Puntaje:</strong>
-      <span v-for="(promedio, bimestre) in promediosPorBimestre" :key="`prom-${bimestre}`" class="mr-4">
-        {{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES: {{ promedio.toFixed(2) }}
-      </span>
-    </p>
-
     <table>
       <tr>
-        <th>SITUACIÓN FINAL</th>
-        <th>Promovido</th>
-        <th>Requiere Recuperación</th>
-        <th>Repite</th>
+        <th><span style="position: relative; top: -5px;">SITUACIÓN FINAL</span></th>
+        <th><span style="position: relative; top: -5px;">Promovido</span></th>
+        <th><span style="position: relative; top: -5px;">Requiere Recuperación</span></th>
+        <th><span style="position: relative; top: -5px;">Repite</span></th>
       </tr>
       <tr>
         <td></td>
-        <td>X</td>
+        <td style="text-align: center;"><span style="position: relative; top: -5px;">X</span></td>
         <td></td>
         <td></td>
       </tr>
@@ -139,20 +144,20 @@ onMounted(() => {
       <thead>
         <tr>
           <th></th>
-          <th v-for="bimestre in bimestres" :key="bimestre">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</th>
-          <th>Prom. Final</th>
+          <th v-for="bimestre in bimestres" :key="bimestre"><span style="position: relative; top: -3px;">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</span></th>
+          <th><span style="position: relative; top: -3px;">Prom. Final</span></th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>Comportamiento</strong></td>
-          <td v-for="bimestre in bimestres" :key="`comp-${bimestre}`">20</td>
-          <td>-</td>
+          <td><strong style="position: relative; top: -5px;">Comportamiento</strong></td>
+          <td style="text-align: center;" v-for="bimestre in bimestres" :key="`comp-${bimestre}`"><span style="position: relative; top: -7px;">20</span></td>
+          <td style="text-align: center;"><span style="position: relative; top: -7px;">-</span></td>
         </tr>
         <tr>
-          <td><strong>Conducta</strong></td>
-          <td v-for="bimestre in bimestres" :key="`cond-${bimestre}`">18</td>
-          <td>-</td>
+          <td><strong style="position: relative; top: -5px;">Conducta</strong></td>
+          <td style="text-align: center;" v-for="bimestre in bimestres" :key="`cond-${bimestre}`"><span style="position: relative; top: -7px;">18</span></td>
+          <td style="text-align: center;"><span style="position: relative; top: -7px;">-</span></td>
         </tr>
       </tbody>
     </table>
