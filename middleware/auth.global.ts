@@ -41,7 +41,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
             return navigateTo("/admin", { replace: true });
         }
 
-        if(!isAdmin && rutasAdmin.includes(to.fullPath) && !rutasCompartidas.includes(to.fullPath)){
+        if(!isAdmin && (rutasAdmin.includes(to.fullPath) || to.fullPath === '/registro-notas') && !rutasCompartidas.includes(to.fullPath)){
             return navigateTo("/inicio", { replace: true });
         }
 

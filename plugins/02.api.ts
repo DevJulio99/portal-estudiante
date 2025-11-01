@@ -25,6 +25,13 @@ import GestionCursosModule from '~/repository/modules/GestionCursos';
 import PagosPendientesHomeModule from '~/repository/modules/pagosPendHome';
 import MatriculaModule from '~/repository/modules/Matricula';
 import PeriodoModule from '~/repository/modules/Periodo';
+import PeriodoNotasModulo from '~/repository/modules/PeriodoNotasModulo';
+import GradoSedeModulo from '~/repository/modules/GradoSedeModulo';
+import SubperiodoModulo from '~/repository/modules/SubperiodoModulo';
+import SeccionGradoModulo from '~/repository/modules/SeccionGradoModulo';
+import CursoGradoModulo from '~/repository/modules/CursoGradoModulo';
+import AlumnoFiltroModulo from '~/repository/modules/AlumnoFiltroModulo';
+import NotasAlumnoModulo from '~/repository/modules/NotasAlumnoModulo';
 import ReporteNotaModulo from '~/repository/modules/ReporteNotaModulo';
 import CursoGradoModule from '~/repository/modules/cursoGrado';
 
@@ -56,6 +63,13 @@ interface IApiInstance {
 	pagosPendientesHome: PagosPendientesHomeModule;
 	matricula: MatriculaModule;
 	periodo: PeriodoModule;
+	periodoNotas: PeriodoNotasModulo;
+	gradoSede: GradoSedeModulo;
+	subperiodo: SubperiodoModulo;
+	seccionGrado: SeccionGradoModulo;
+	cursoGradoModulo: CursoGradoModulo;
+	alumnoFiltro: AlumnoFiltroModulo;
+	notasAlumno: NotasAlumnoModulo;
 	cursoGrado: CursoGradoModule;
 	reporteNota: ReporteNotaModulo;
 }
@@ -95,6 +109,13 @@ export default defineNuxtPlugin(() => {
 		pagosPendientesHome: new PagosPendientesHomeModule(apiFecther),
 		matricula: new MatriculaModule(apiFecther),
 		periodo: new PeriodoModule(apiFecther),
+		periodoNotas: new PeriodoNotasModulo(apiFecther),
+		gradoSede: new GradoSedeModulo(apiFecther),
+		subperiodo: new SubperiodoModulo(apiFecther),
+		seccionGrado: new SeccionGradoModulo(apiFecther),
+		cursoGradoModulo: new CursoGradoModulo(apiFecther),
+		alumnoFiltro: new AlumnoFiltroModulo(apiFecther),
+		notasAlumno: new NotasAlumnoModulo(apiFecther),
 		cursoGrado: new CursoGradoModule(apiFecther),
 		reporteNota: new ReporteNotaModulo(apiFecther),
 	};

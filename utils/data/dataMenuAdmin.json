@@ -57,5 +57,16 @@
         "submenu": [],
         "es_clasico": 0,
         "modalidad": "ALL"
-    }    
+    },
+     {
+        "id":6,
+        "etiqueta": "registro-notas",
+        "nombre": "Registro Notas",
+        "url": "/registro-notas",
+        "icon": "matricula",
+        "icono": "../public/images/documentos.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": []
+    }
 ]

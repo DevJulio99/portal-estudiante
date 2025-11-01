@@ -1,6 +1,8 @@
-export interface Grado {
-    idGrado: number,
-    numeroGrado: number,
-    descripcionGrado: string,
-    nivelEducativo: string
+export interface GradoSede {
+  idGrado: number;
+  descripcionGrado: string;
+  nivelEducativo: string;
+  tipoInstitucion: string;
 }
+
+export type ResponseGradoSede = GradoSede[];
