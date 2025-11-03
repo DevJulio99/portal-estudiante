@@ -12,6 +12,7 @@ import type { CursoGrado } from '~/types/curso.types';
 import type { AlumnoFiltro } from '~/types/alumnoFiltro.types';
 import type { NotaAlumno } from '~/types/notasAlumno.types';
 
+import type { RequestRegistroNota } from '~/repository/modules/RegistroNotaModulo';
 useHead({ title: 'Registro de Notas' });
 
 const { $api } = useNuxtApp();
@@ -54,12 +55,13 @@ const [idSubperiodo, idSubperiodoAttrs] = defineField('idSubperiodo');
 const [idAlumno, idAlumnoAttrs] = defineField('idAlumno');
 
 const handleChangeSelect = (option: { id: string | number }, fieldName: keyof typeof values) => {
-    setFieldValue(fieldName, option.id);
+    const id_val = Number(option.id);
+    setFieldValue(fieldName, id_val);
 }
 
 // --- Datos para los Selects ---
-const codSede = computed(() => profileStore.data?.codSede || tokenStore.getDataToken?.Codigo_Sede);
-const tipoInstitucion = computed(() => profileStore.data?.tipoInstitucion || tokenStore.getDataToken?.Tipo_Institucion);
+const codSede = computed(() =>tokenStore.getDataToken?.Codigo_Sede);
+const tipoInstitucion = computed(() => tokenStore.getDataToken?.Tipo_Institucion);
 
 const { data: periodos, pending: pendingPeriodos } = await $api.periodoNotas.obtenerPeriodoPorSede({ codSede: codSede.value || '' });
 const { data: grados, pending: pendingGrados } = await $api.gradoSede.GetGradoPorSede({ codSede: codSede.value || '' });
@@ -71,7 +73,7 @@ watch(idPeriodo, async (newId) => {
     subperiodos.value = [];
     if (newId > 0) {
         pendingSubperiodos.value = true;
-        const { data } = await $api.subperiodo.GetSubperiodoPorPeriodo({ idPeriodo: newId });
+        const { data } = await $api.subperiodo.GetSubperiodoPorPeriodo({ idPeriodo: Number(newId) });
         subperiodos.value = data.value?.data || [];
         pendingSubperiodos.value = false;
     }
@@ -89,8 +91,8 @@ watch(idGrado, async (newId) => {
     if (newId > 0 && codSede.value && tipoInstitucion.value) {
         pendingSecciones.value = true;
         pendingCursos.value = true;
-        const { data: dataSecciones } = await $api.seccionGrado.getSeccionPorGrado({ codSede: codSede.value, idGrado: newId, tipoInstitucion: tipoInstitucion.value, idCiclo: null });
-        const { data: dataCursos } = await $api.cursoGradoModulo.GetCursoPorGrado({ codSede: codSede.value, idGrado: newId, tipoInstitucion: tipoInstitucion.value });
+        const { data: dataSecciones } = await $api.seccionGrado.getSeccionPorGrado({ codSede: codSede.value, idGrado: Number(newId), tipoInstitucion: tipoInstitucion.value, idCiclo: null });
+        const { data: dataCursos } = await $api.cursoGradoModulo.GetCursoPorGrado({ codSede: codSede.value, idGrado: Number(newId), tipoInstitucion: tipoInstitucion.value });
         secciones.value = dataSecciones.value?.data || [];
         cursos.value = dataCursos.value?.data || [];
         pendingSecciones.value = false;
@@ -110,7 +112,7 @@ watch([idPeriodo, idGrado, idSeccion, idCurso, idSubperiodo], async ([p, g, s, c
     if (p > 0 && g > 0 && s > 0 && c > 0 && sp > 0 && codSede.value) {
         pendingAlumnos.value = true;
         const { data } = await $api.alumnoFiltro.GetAlumnosPorFiltro({
-            idPeriodo: p, idSubperiodo: sp, codSede: codSede.value, idGrado: g, idSeccion: s, idCurso: c
+            idPeriodo: Number(p), idSubperiodo: Number(sp), codSede: codSede.value, idGrado: Number(g), idSeccion: Number(s), idCurso: Number(c)
         });
         alumnos.value = data.value?.data || [];
         pendingAlumnos.value = false;
@@ -121,10 +123,12 @@ watch([idPeriodo, idGrado, idSeccion, idCurso, idSubperiodo], async ([p, g, s, c
 
 // --- Carga y manejo de Notas del Alumno ---
 const notasAlumno = ref<NotaAlumno[]>([]);
+const notasOriginales = ref<NotaAlumno[]>([]); // Para comparar cambios
 const pendingNotas = ref(false);
 const observacionesNota = ref('');
 
 const selectedAlumno = computed(() => {
+    // No hay cambios aquí
     if (idAlumno.value > 0) {
         return alumnos.value.find(a => a.idAlumno === idAlumno.value);
     }
@@ -133,20 +137,209 @@ const selectedAlumno = computed(() => {
 
 watch(idAlumno, async (newId) => {
     notasAlumno.value = [];
+    notasOriginales.value = [];
     observacionesNota.value = '';
     if (newId > 0) {
         pendingNotas.value = true;
         const { data } = await $api.notasAlumno.getNotasAlumnos({
-            idAlumno: newId,
-            idCurso: values.idCurso,
-            idPeriodo: values.idPeriodo,
-            idSubperiodo: values.idSubperiodo,
+            idAlumno: Number(newId),
+            idCurso: Number(values.idCurso),
+            idPeriodo: Number(values.idPeriodo),
+            idSubperiodo: Number(values.idSubperiodo),
         });
         notasAlumno.value = data.value?.data || [];
+        // Guardamos una copia profunda del estado original para detectar cambios
+        notasOriginales.value = JSON.parse(JSON.stringify(data.value?.data || []));
         pendingNotas.value = false;
     }
 });
 
+// --- Funcionalidad de Notas ---
+const agregarNota = () => {
+    if (!idAlumno.value) return;
+    const nuevaNota: NotaAlumno = {
+        idNota: Date.now(), // ID temporal para el v-for key
+        nota: null,
+        peso: 0,
+        tipoNota: '',
+        idAlumno: idAlumno.value,
+    };
+    notasAlumno.value.push(nuevaNota);
+};
+
+const validarPeso = (notaItem: NotaAlumno) => {
+    if (notaItem.peso === null) return;
+    const pesoActual = Number(notaItem.peso);
+
+    if (pesoActual > 1) {
+        notaItem.peso = 1;
+    } else if (pesoActual < 0) {
+        notaItem.peso = 0;
+    }
+
+    // Opcional: Limitar también los decimales del peso para consistencia
+    const pesoString = String(notaItem.peso);
+    if (pesoString.includes('.') && pesoString.split('.')[1]?.length > 2) {
+        notaItem.peso = Number(pesoActual.toFixed(2));
+    }
+};
+
+const validarNota = (notaItem: NotaAlumno) => {
+    if (notaItem.nota === null) return;
+    const notaActual = Number(notaItem.nota);
+
+    if (notaActual > 20) {
+        // Convertimos el número a string, eliminamos el último dígito y lo volvemos a convertir a número.
+        const valorCorregido = String(notaItem.nota).slice(0, -1);
+        notaItem.nota = valorCorregido === '' ? null : Number(valorCorregido);
+    } else if (Number(notaItem.nota) < 0) {
+        // Para valores negativos, simplemente lo reseteamos a 0.
+        notaItem.nota = 0;
+    }
+
+    // Validar y limitar a dos decimales
+    const notaString = String(notaItem.nota);
+    if (notaString.includes('.')) {
+        const decimalPart = notaString.split('.')[1];
+        if (decimalPart && decimalPart.length > 2) {
+            notaItem.nota = Number(Number(notaItem.nota).toFixed(2));
+        }
+    }
+};
+
+const onNotaKeyDown = (event: KeyboardEvent) => {
+    const key = event.key;
+    const target = event.target as HTMLInputElement;
+    const currentValue = target.value;
+
+    // Permitir teclas de control (Backspace, Tab, flechas, etc.)
+    if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(key)) {
+        return;
+    }
+
+    // Prevenir un segundo punto decimal
+    if (key === '.' && currentValue.includes('.')) {
+        event.preventDefault();
+    }
+
+    // Prevenir cualquier caracter que no sea un número o un punto.
+    // Esto bloquea '-', '+', 'e', etc.
+    if (!/^[0-9.]$/.test(key)) {
+        event.preventDefault();
+    }
+};
+
+// --- Cálculo de Promedio ---
+const notasParaPromedio = computed(() => {
+    return notasAlumno.value.filter(n => n.tipoNota !== 'Promedio Final');
+});
+
+const promedioCalculado = computed(() => {
+    const notas = notasParaPromedio.value;
+    if (!notas.length) {
+        return 0;
+    }
+
+    const sumaPonderada = notas.reduce((acc, notaItem) => {
+        // Suma de (nota * peso)
+        return acc + (Number(notaItem.nota || 0) * Number(notaItem.peso || 0));
+    }, 0);
+
+    // Suma total de los pesos (debería ser 100 para un promedio completo)
+    const sumaPesos = notas.reduce((acc, notaItem) => acc + Number(notaItem.peso || 0), 0);
+
+    if (sumaPesos === 0) return 0;
+
+    // El promedio es la suma ponderada dividida por la suma de los pesos.
+    return parseFloat((sumaPonderada / sumaPesos).toFixed(2));
+});
+
+// --- Guardar Notas ---
+const isSaving = ref(false);
+const msgPopupStore = useMsgPopUpStore();
+
+// Función de simulación para actualizar notas existentes
+const actualizarNota = async (nota: NotaAlumno) => {
+    console.log('Simulando actualización para la nota:', nota.tipoNota, 'con nuevo valor:', nota.nota);
+    // Aquí iría la llamada al servicio de actualización cuando esté implementado.
+    // Ejemplo: await $api.registroNota.actualizarNotaAlumno(nota);
+    // Simulamos una pequeña demora
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return { success: true, message: `Nota "${nota.tipoNota}" actualizada.` };
+};
+
+const guardarNotas = async () => {
+    const notasActuales = notasParaPromedio.value;
+
+    // 1. Identificar notas nuevas (las que tienen un ID temporal grande)
+    const notasNuevas = notasActuales.filter(n => n.idNota > 1000000000);
+
+    // 2. Identificar notas modificadas (las que existían y han cambiado)
+    const notasModificadas = notasActuales.filter(notaActual => {
+        // Solo nos interesan las notas que no son nuevas
+        if (notaActual.idNota <= 1000000000) {
+            const notaOriginal = notasOriginales.value.find(n => n.idNota === notaActual.idNota);
+            // Si no se encuentra la original, o si algún valor ha cambiado, se considera modificada.
+            return !notaOriginal ||
+                   notaOriginal.nota !== notaActual.nota ||
+                   notaOriginal.peso !== notaActual.peso ||
+                   notaOriginal.tipoNota !== notaActual.tipoNota;
+        }
+        return false;
+    });
+
+    if (notasNuevas.length === 0 && notasModificadas.length === 0) {
+        msgPopupStore.setError(true, 'No hay cambios para guardar.', 'error');
+        return;
+    }
+
+    isSaving.value = true;
+    try {
+        const requestsRegistro = notasNuevas.map(notaItem => {
+            const payload: RequestRegistroNota = {
+                idAlumno: Number(idAlumno.value),
+                idCurso: Number(idCurso.value),
+                idPeriodo: Number(idPeriodo.value),
+                idSubperiodo: Number(idSubperiodo.value),
+                tipoNota: notaItem.tipoNota,
+                nota: notaItem.nota,
+                peso: Number(notaItem.peso || 0),
+            };
+            console.log('payload registro:', payload);
+            return $api.registroNota.registrarNotaAlumno(payload);
+        });
+
+        const requestsActualizacion = notasModificadas.map(notaItem => {
+            return actualizarNota(notaItem);
+        });
+
+        // Ejecutamos todas las promesas de registro y actualización en paralelo
+        const allResponses = await Promise.all([...requestsRegistro, ...requestsActualizacion]);
+
+        // Buscamos si alguna de las respuestas de registro falló (a nivel de aplicación)
+        const failedResponse = allResponses.find(response => {
+            // La respuesta de useAsyncData está en response.data.value
+            // La respuesta de la simulación está directamente en el objeto
+            const result = response.data?.value || response;
+            return result && result.success === false || result.error.value.data;
+        });
+
+        if (failedResponse) {
+            const result = failedResponse.data?.value || failedResponse;
+            console.log('result', result);
+            msgPopupStore.setError(true, result.message || result.error.value.data.message || 'Una operación falló.', 'error');
+        } else {
+            msgPopupStore.setError(true, 'Cambios guardados correctamente.', 'success');
+        }
+
+    } catch (error: any) {
+        // Este bloque ahora solo se ejecutará para errores de red o HTTP (4xx, 5xx)
+        const errorMessage = error.data?.message || 'Ocurrió un error al guardar las notas.';
+        msgPopupStore.setError(true, errorMessage, 'error');
+    } finally {
+        isSaving.value = false;
+    }
+};
 </script>
 
 <template>
@@ -155,17 +348,17 @@ watch(idAlumno, async (newId) => {
     <h1 class="text-2xl font-bold mb-4">Registro de Notas</h1>
     <div class="bg-white p-4 rounded-lg shadow-md mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-            <BaseVeeSelectV2 :value="idPeriodo" v-bind="idPeriodoAttrs" id="idPeriodo" label="Periodo" :options="periodos?.data?.map(p => ({ id: p.idPeriodo, name: p.descripcionPeriodo })) || []" @change="(option) => handleChangeSelect(option, 'idPeriodo')" :error="errors.idPeriodo" :disabled="pendingPeriodos" placeholder="Seleccione periodo" />
+            <BaseVeeSelectV2 :value="idPeriodo" v-bind="idPeriodoAttrs" id="idPeriodo" label="Periodo" :options="periodos?.data?.map(p => ({ id: p.idPeriodo, name: p.descripcionPeriodo })) || []" @change="(option) => handleChangeSelect(option, 'idPeriodo')" :error="errors.idPeriodo" :disabled="pendingPeriodos" placeholder="Seleccione periodo" borderDefault="border-gray-300" />
 
-            <BaseVeeSelectV2 :value="idGrado" v-bind="idGradoAttrs" id="idGrado" label="Grado" :options="grados?.data?.map(g => ({ id: g.idGrado, name: g.descripcionGrado })) || []" @change="(option) => handleChangeSelect(option, 'idGrado')" :error="errors.idGrado" :disabled="pendingGrados" placeholder="Seleccione grado" />
+            <BaseVeeSelectV2 :value="idGrado" v-bind="idGradoAttrs" id="idGrado" label="Grado" :options="grados?.data?.map(g => ({ id: g.idGrado, name: g.descripcionGrado })) || []" @change="(option) => handleChangeSelect(option, 'idGrado')" :error="errors.idGrado" :disabled="pendingGrados" placeholder="Seleccione grado" borderDefault="border-gray-300" />
 
-            <BaseVeeSelectV2 :value="idSeccion" v-bind="idSeccionAttrs" id="idSeccion" label="Sección" :options="secciones.map(s => ({ id: s.idSeccion, name: s.descripcionSeccion }))" @change="(option) => handleChangeSelect(option, 'idSeccion')" :error="errors.idSeccion" :disabled="!idGrado || pendingSecciones" placeholder="Seleccione sección" />
+            <BaseVeeSelectV2 :value="idSeccion" v-bind="idSeccionAttrs" id="idSeccion" label="Sección" :options="secciones.map(s => ({ id: s.idSeccion, name: s.descripcionSeccion }))" @change="(option) => handleChangeSelect(option, 'idSeccion')" :error="errors.idSeccion" :disabled="!idGrado || pendingSecciones" placeholder="Seleccione sección" borderDefault="border-gray-300" />
 
-            <BaseVeeSelectV2 :value="idCurso" v-bind="idCursoAttrs" id="idCurso" label="Curso" :options="cursos.map(c => ({ id: c.idCurso, name: c.descripcionCurso }))" @change="(option) => handleChangeSelect(option, 'idCurso')" :error="errors.idCurso" :disabled="!idGrado || pendingCursos" placeholder="Seleccione curso" />
+            <BaseVeeSelectV2 :value="idCurso" v-bind="idCursoAttrs" id="idCurso" label="Curso" :options="cursos.map(c => ({ id: c.idCurso, name: c.descripcionCurso }))" @change="(option) => handleChangeSelect(option, 'idCurso')" :error="errors.idCurso" :disabled="!idGrado || pendingCursos" placeholder="Seleccione curso" borderDefault="border-gray-300" />
 
-            <BaseVeeSelectV2 :value="idSubperiodo" v-bind="idSubperiodoAttrs" id="idSubperiodo" label="Subperiodo" :options="subperiodos.map(sp => ({ id: sp.idSubperiodo, name: sp.descripcionSubperiodo }))" @change="(option) => handleChangeSelect(option, 'idSubperiodo')" :error="errors.idSubperiodo" :disabled="!idPeriodo || pendingSubperiodos" placeholder="Seleccione subperiodo" />
+            <BaseVeeSelectV2 :value="idSubperiodo" v-bind="idSubperiodoAttrs" id="idSubperiodo" label="Subperiodo" :options="subperiodos.map(sp => ({ id: sp.idSubperiodo, name: sp.descripcionSubperiodo }))" @change="(option) => handleChangeSelect(option, 'idSubperiodo')" :error="errors.idSubperiodo" :disabled="!idPeriodo || pendingSubperiodos" placeholder="Seleccione subperiodo" borderDefault="border-gray-300" />
 
-            <BaseVeeSelectV2 :value="idAlumno" v-bind="idAlumnoAttrs" id="idAlumno" label="Alumno" :options="alumnos.map(a => ({ id: a.idAlumno, name: a.nombreAlumno }))" @change="(option) => handleChangeSelect(option, 'idAlumno')" :error="errors.idAlumno" :disabled="pendingAlumnos || alumnos.length === 0" placeholder="Todos los alumnos" />
+            <BaseVeeSelectV2 :value="idAlumno" v-bind="idAlumnoAttrs" id="idAlumno" label="Alumno" :options="alumnos.map(a => ({ id: a.idAlumno, name: a.nombreAlumno }))" @change="(option) => handleChangeSelect(option, 'idAlumno')" :error="errors.idAlumno" :disabled="pendingAlumnos || alumnos.length === 0" placeholder="Todos los alumnos" borderDefault="border-gray-300" />
         </div>
     </div>
 
@@ -182,18 +375,31 @@ watch(idAlumno, async (newId) => {
             <p class="text-sm text-gray-500 mb-4 border-b pb-4">Código: {{ selectedAlumno.codigoAlumno }}</p>
 
             <div v-if="notasAlumno.length > 0" class="space-y-3">
-                <div v-for="notaItem in notasAlumno" :key="notaItem.idNota" class="flex justify-between items-center">
-                    <label :for="`nota-${notaItem.idNota}`" class="text-gray-700">
-                        {{ notaItem.tipoNota }} ({{ notaItem.peso * 100 }}%)
-                    </label>
-                    <input :id="`nota-${notaItem.idNota}`" type="number" v-model="notaItem.nota" class="w-20 text-center border rounded-md px-2 py-1" placeholder="0" />
+                <!-- Encabezados -->
+                <div class="grid grid-cols-12 gap-2 text-xs font-bold text-gray-500">
+                    <div class="col-span-5">Tipo de Nota</div>
+                    <div class="col-span-3 text-center">Peso (%)</div>
+                    <div class="col-span-3 text-center">Nota</div>
+                    <div class="col-span-1"></div>
                 </div>
+                <!-- Inputs de Notas -->
+                <div v-for="(notaItem, index) in notasParaPromedio" :key="notaItem.idNota" class="grid grid-cols-12 gap-2 items-center">
+                    <input :id="`tipo-${notaItem.idNota}`" type="text" v-model="notaItem.tipoNota" class="col-span-5 border rounded-md px-2 py-1 text-sm" placeholder="Ej: Práctica 1" />
+                    <input :id="`peso-${notaItem.idNota}`" type="number" v-model.number="notaItem.peso" @input="validarPeso(notaItem)" class="col-span-3 text-center border rounded-md px-2 py-1 text-sm" placeholder="0.2" min="0" max="1" step="0.1" />
+                    <input :id="`nota-${notaItem.idNota}`" type="number" v-model.number="notaItem.nota" @input="validarNota(notaItem)" @keydown="onNotaKeyDown" class="col-span-3 text-center border rounded-md px-2 py-1 font-bold" placeholder="0" min="0" max="20" step="0.1" />
+                    <button v-if="notaItem.idNota > 1000000000" @click="notasAlumno.splice(notasAlumno.findIndex(n => n.idNota === notaItem.idNota), 1)" type="button" class="col-span-1 text-red-500 hover:text-red-700">
+                        🗑️
+                    </button>
+                </div>
+                <button @click="agregarNota" type="button" class="w-full mt-3 text-sm rounded px-4 py-2 text-primary border border-primary hover:bg-primary hover:text-white transition-colors">
+                    + Agregar Nueva Nota
+                </button>
                 <div class="flex justify-between items-center font-bold text-lg pt-3 border-t">
                     <span>Promedio:</span>
-                    <span>17.0</span> 
+                    <span>{{ promedioCalculado }}</span> 
                 </div>
                 <textarea v-model="observacionesNota" class="w-full border rounded-md p-2 mt-4" rows="2" placeholder="Observaciones..."></textarea>
-                <button class="w-full mt-4 rounded px-4 py-2 text-white font-bold bg-primary hover:bg-[#1E6657]">💾 Guardar</button>
+                <button @click="guardarNotas" type="button" class="w-full mt-4 rounded px-4 py-2 text-white font-bold bg-primary hover:bg-[#1E6657] disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isSaving">{{ isSaving ? 'Guardando...' : 'Guardar' }}</button>
             </div>
             <p v-else class="text-center text-gray-500 py-4">No se encontraron notas para este alumno en el curso y periodo seleccionados.</p>
         </div>

@@ -16,7 +16,7 @@ const props = withDefaults(
 		value: string | number;
 		placeholder?: string | null;
 		responsivePlaceholder?: string;
-		icon: string;
+		icon?: string;
 		iconStyle?: string;
 		options: Option[];
 		error?: string;

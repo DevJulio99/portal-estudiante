@@ -33,6 +33,7 @@ import CursoGradoModulo from '~/repository/modules/CursoGradoModulo';
 import AlumnoFiltroModulo from '~/repository/modules/AlumnoFiltroModulo';
 import NotasAlumnoModulo from '~/repository/modules/NotasAlumnoModulo';
 import ReporteNotaModulo from '~/repository/modules/ReporteNotaModulo';
+import RegistroNotaModulo from '~/repository/modules/RegistroNotaModulo';
 import CursoGradoModule from '~/repository/modules/cursoGrado';
 
 
@@ -72,6 +73,7 @@ interface IApiInstance {
 	notasAlumno: NotasAlumnoModulo;
 	cursoGrado: CursoGradoModule;
 	reporteNota: ReporteNotaModulo;
+	registroNota: RegistroNotaModulo;
 }
 
 export default defineNuxtPlugin(() => {
@@ -118,6 +120,7 @@ export default defineNuxtPlugin(() => {
 		notasAlumno: new NotasAlumnoModulo(apiFecther),
 		cursoGrado: new CursoGradoModule(apiFecther),
 		reporteNota: new ReporteNotaModulo(apiFecther),
+		registroNota: new RegistroNotaModulo(apiFecther),
 	};
 
 	return {
