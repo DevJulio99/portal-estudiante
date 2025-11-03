@@ -12,7 +12,7 @@ import type { CursoGrado } from '~/types/curso.types';
 import type { AlumnoFiltro } from '~/types/alumnoFiltro.types';
 import type { NotaAlumno } from '~/types/notasAlumno.types';
 
-import type { RequestRegistroNota } from '~/repository/modules/RegistroNotaModulo';
+import type { RequestRegistroNota, RequestActualizarNota } from '~/repository/modules/RegistroNotaModulo';
 useHead({ title: 'Registro de Notas' });
 
 const { $api } = useNuxtApp();
@@ -135,23 +135,26 @@ const selectedAlumno = computed(() => {
     return null;
 });
 
-watch(idAlumno, async (newId) => {
+const recargarNotas = async () => {
     notasAlumno.value = [];
     notasOriginales.value = [];
     observacionesNota.value = '';
-    if (newId > 0) {
+    if (idAlumno.value > 0) {
         pendingNotas.value = true;
         const { data } = await $api.notasAlumno.getNotasAlumnos({
-            idAlumno: Number(newId),
+            idAlumno: Number(idAlumno.value),
             idCurso: Number(values.idCurso),
             idPeriodo: Number(values.idPeriodo),
             idSubperiodo: Number(values.idSubperiodo),
         });
         notasAlumno.value = data.value?.data || [];
-        // Guardamos una copia profunda del estado original para detectar cambios
         notasOriginales.value = JSON.parse(JSON.stringify(data.value?.data || []));
         pendingNotas.value = false;
     }
+};
+
+watch(idAlumno, async (newId) => {
+    await recargarNotas();
 });
 
 // --- Funcionalidad de Notas ---
@@ -207,6 +210,30 @@ const validarNota = (notaItem: NotaAlumno) => {
     }
 };
 
+const onPesoKeyDown = (event: KeyboardEvent) => {
+    const key = event.key;
+    const target = event.target as HTMLInputElement;
+    const currentValue = target.value;
+
+    // Permitir teclas de control
+    if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(key)) {
+        return;
+    }
+
+    // Prevenir cualquier caracter que no sea un número o un punto.
+    if (!/^[0-9.]$/.test(key)) {
+        event.preventDefault();
+    }
+
+    // Si ya hay un punto y se intenta escribir un número, verificar la longitud de los decimales
+    if (currentValue.includes('.') && /[0-9]/.test(key)) {
+        const decimalPart = currentValue.split('.')[1];
+        if (decimalPart && decimalPart.length >= 2) {
+            event.preventDefault(); // Prevenir la escritura de más de 2 decimales
+        }
+    }
+};
+
 const onNotaKeyDown = (event: KeyboardEvent) => {
     const key = event.key;
     const target = event.target as HTMLInputElement;
@@ -258,16 +285,6 @@ const promedioCalculado = computed(() => {
 const isSaving = ref(false);
 const msgPopupStore = useMsgPopUpStore();
 
-// Función de simulación para actualizar notas existentes
-const actualizarNota = async (nota: NotaAlumno) => {
-    console.log('Simulando actualización para la nota:', nota.tipoNota, 'con nuevo valor:', nota.nota);
-    // Aquí iría la llamada al servicio de actualización cuando esté implementado.
-    // Ejemplo: await $api.registroNota.actualizarNotaAlumno(nota);
-    // Simulamos una pequeña demora
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return { success: true, message: `Nota "${nota.tipoNota}" actualizada.` };
-};
-
 const guardarNotas = async () => {
     const notasActuales = notasParaPromedio.value;
 
@@ -289,53 +306,98 @@ const guardarNotas = async () => {
     });
 
     if (notasNuevas.length === 0 && notasModificadas.length === 0) {
-        msgPopupStore.setError(true, 'No hay cambios para guardar.', 'error');
+        msgPopupStore.showWarning('No hay cambios para guardar.');
         return;
     }
 
     isSaving.value = true;
     try {
-        const requestsRegistro = notasNuevas.map(notaItem => {
+        // Calculamos el peso total sumando los pesos de todas las notas en el formulario (nuevas, modificadas y sin cambios).
+        // Esto representa el estado final si se guardan los cambios.
+        const pesoTotalProyectado = notasParaPromedio.value.reduce((acc, n) => acc + Number(n.peso || 0), 0);
+        
+        if (pesoTotalProyectado > 1) {
+            msgPopupStore.showError(`El peso total (${pesoTotalProyectado.toFixed(2)}) superaría el máximo permitido (1.00).`);
+            isSaving.value = false; // Detener el estado de carga
+            return;
+        }
+
+        let registroExitoso = true;
+        let actualizacionExitosa = true;
+        const mensajesError: string[] = [];
+
+        // 1. Preparamos la llamada para las nuevas notas (una sola llamada)
+        if (notasNuevas.length > 0) {
             const payload: RequestRegistroNota = {
                 idAlumno: Number(idAlumno.value),
                 idCurso: Number(idCurso.value),
                 idPeriodo: Number(idPeriodo.value),
                 idSubperiodo: Number(idSubperiodo.value),
-                tipoNota: notaItem.tipoNota,
-                nota: notaItem.nota,
-                peso: Number(notaItem.peso || 0),
+                notas: notasNuevas.map(notaItem => ({
+                    tipo_nota: notaItem.tipoNota,
+                    nota: notaItem.nota,
+                    peso: Number(notaItem.peso || 0),
+                })),
             };
-            console.log('payload registro:', payload);
-            return $api.registroNota.registrarNotaAlumno(payload);
-        });
-
-        const requestsActualizacion = notasModificadas.map(notaItem => {
-            return actualizarNota(notaItem);
-        });
-
-        // Ejecutamos todas las promesas de registro y actualización en paralelo
-        const allResponses = await Promise.all([...requestsRegistro, ...requestsActualizacion]);
-
-        // Buscamos si alguna de las respuestas de registro falló (a nivel de aplicación)
-        const failedResponse = allResponses.find(response => {
-            // La respuesta de useAsyncData está en response.data.value
-            // La respuesta de la simulación está directamente en el objeto
-            const result = response.data?.value || response;
-            return result && result.success === false || result.error.value.data;
-        });
-
-        if (failedResponse) {
-            const result = failedResponse.data?.value || failedResponse;
-            console.log('result', result);
-            msgPopupStore.setError(true, result.message || result.error.value.data.message || 'Una operación falló.', 'error');
-        } else {
-            msgPopupStore.setError(true, 'Cambios guardados correctamente.', 'success');
+            try {
+                const { data, error } = await $api.registroNota.registrarNotasAlumno(payload);
+                if (error.value || data.value?.success === false) {
+                    registroExitoso = false;
+                    mensajesError.push(data.value?.message || error.value?.data?.message || 'Error al registrar nuevas notas.');
+                }
+            } catch (e: any) {
+                registroExitoso = false;
+                mensajesError.push(e.data?.message || 'Error de red al registrar notas.');
+            }
         }
 
-    } catch (error: any) {
-        // Este bloque ahora solo se ejecutará para errores de red o HTTP (4xx, 5xx)
-        const errorMessage = error.data?.message || 'Ocurrió un error al guardar las notas.';
-        msgPopupStore.setError(true, errorMessage, 'error');
+        // 2. Preparamos la llamada para las notas modificadas
+        if (notasModificadas.length > 0) {
+            const payload: RequestActualizarNota = {
+                idAlumno: Number(idAlumno.value),
+                idCurso: Number(idCurso.value),
+                idPeriodo: Number(idPeriodo.value),
+                idSubperiodo: Number(idSubperiodo.value),
+                notas: notasModificadas.map(notaItem => ({
+                    tipo_nota: notaItem.tipoNota,
+                    id_nota: notaItem.idNota,
+                    nota: notaItem.nota,
+                    peso: Number(notaItem.peso || 0),
+                })),
+            };
+            try {
+                const { data, error } = await $api.registroNota.actualizarNotasAlumno(payload);
+                if (error.value || data.value?.success === false) {
+                    actualizacionExitosa = false;
+                    mensajesError.push(data.value?.message || error.value?.data?.message || 'Error al actualizar notas existentes.');
+                }
+            } catch (e: any) {
+                actualizacionExitosa = false;
+                mensajesError.push(e.data?.message || 'Error de red al actualizar notas.');
+            }
+        }
+
+        // 3. Mostramos los resultados
+        if (mensajesError.length === 0) {
+            // Caso 1: Todo fue exitoso
+            msgPopupStore.showSuccess('Cambios guardados correctamente.');
+        } else {
+            // Caso 2: Hubo al menos un error
+            const mensajeFinal = mensajesError.join(' ');
+            if ((notasNuevas.length > 0 && registroExitoso) || (notasModificadas.length > 0 && actualizacionExitosa)) {
+                // Si algo fue exitoso, mostramos una advertencia con el error
+                msgPopupStore.showWarning(`Operación parcial: ${mensajeFinal}`);
+            } else {
+                // Si todo falló, mostramos un error completo
+                msgPopupStore.showError(mensajeFinal);
+            }
+        }
+
+        // Si al menos una operación fue exitosa, recargamos los datos.
+        if ((notasNuevas.length > 0 && registroExitoso) || (notasModificadas.length > 0 && actualizacionExitosa)) {
+            await recargarNotas();
+        }
+
     } finally {
         isSaving.value = false;
     }
@@ -374,7 +436,7 @@ const guardarNotas = async () => {
             </div>
             <p class="text-sm text-gray-500 mb-4 border-b pb-4">Código: {{ selectedAlumno.codigoAlumno }}</p>
 
-            <div v-if="notasAlumno.length > 0" class="space-y-3">
+            <div class="space-y-3">
                 <!-- Encabezados -->
                 <div class="grid grid-cols-12 gap-2 text-xs font-bold text-gray-500">
                     <div class="col-span-5">Tipo de Nota</div>
@@ -382,10 +444,15 @@ const guardarNotas = async () => {
                     <div class="col-span-3 text-center">Nota</div>
                     <div class="col-span-1"></div>
                 </div>
+
+                <p v-if="notasParaPromedio.length === 0" class="text-center text-gray-500 py-4 col-span-12">
+                    No se encontraron notas. Haz clic en "Agregar Nueva Nota" para comenzar.
+                </p>
+
                 <!-- Inputs de Notas -->
                 <div v-for="(notaItem, index) in notasParaPromedio" :key="notaItem.idNota" class="grid grid-cols-12 gap-2 items-center">
                     <input :id="`tipo-${notaItem.idNota}`" type="text" v-model="notaItem.tipoNota" class="col-span-5 border rounded-md px-2 py-1 text-sm" placeholder="Ej: Práctica 1" />
-                    <input :id="`peso-${notaItem.idNota}`" type="number" v-model.number="notaItem.peso" @input="validarPeso(notaItem)" class="col-span-3 text-center border rounded-md px-2 py-1 text-sm" placeholder="0.2" min="0" max="1" step="0.1" />
+                    <input :id="`peso-${notaItem.idNota}`" type="number" v-model.number="notaItem.peso" @input="validarPeso(notaItem)" @keydown="onPesoKeyDown" class="col-span-3 text-center border rounded-md px-2 py-1 text-sm" placeholder="0.2" min="0" max="1" step="0.1" />
                     <input :id="`nota-${notaItem.idNota}`" type="number" v-model.number="notaItem.nota" @input="validarNota(notaItem)" @keydown="onNotaKeyDown" class="col-span-3 text-center border rounded-md px-2 py-1 font-bold" placeholder="0" min="0" max="20" step="0.1" />
                     <button v-if="notaItem.idNota > 1000000000" @click="notasAlumno.splice(notasAlumno.findIndex(n => n.idNota === notaItem.idNota), 1)" type="button" class="col-span-1 text-red-500 hover:text-red-700">
                         🗑️
@@ -401,7 +468,6 @@ const guardarNotas = async () => {
                 <textarea v-model="observacionesNota" class="w-full border rounded-md p-2 mt-4" rows="2" placeholder="Observaciones..."></textarea>
                 <button @click="guardarNotas" type="button" class="w-full mt-4 rounded px-4 py-2 text-white font-bold bg-primary hover:bg-[#1E6657] disabled:opacity-50 disabled:cursor-not-allowed" :disabled="isSaving">{{ isSaving ? 'Guardando...' : 'Guardar' }}</button>
             </div>
-            <p v-else class="text-center text-gray-500 py-4">No se encontraron notas para este alumno en el curso y periodo seleccionados.</p>
         </div>
     </div>
     <div v-else class="text-center text-gray-500 mt-6">

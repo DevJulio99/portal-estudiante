@@ -106,7 +106,7 @@ export const validateForm = (form: object, optional: string[]) => {
     alumnoStore.msgError = convertArrayInObject(arrayErrors);
     alumnoStore.setErrorForm(keysErrorData);
     //alumnoStore.setError(true, hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos')
-		msgPopupStore.setError(true, hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos', 'error');
+		msgPopupStore.showError(hiddenData.length ? 'Tiene que completar los campos' : 'Tiene que ingresar campos validos');
    }
 
    if(!keysErrorData.length){

@@ -30,9 +30,9 @@ onMounted(async () => {
     <NuxtPage />
   </div>
   <PopUpMensaje 
-    :message="msgPopupStore.error.message" 
-    :type="msgPopupStore.tipoModal"
-    v-model:show="msgPopupStore.error.status"
+    :message="msgPopupStore.message" 
+    :type="msgPopupStore.type"
+    v-model:show="msgPopupStore.show"
   />
   <BasePopUpBottom />
 </template>

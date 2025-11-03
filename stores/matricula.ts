@@ -72,7 +72,6 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 			const msgPopupStore = useMsgPopUpStore();
 			const { $api } = useNuxtApp();
 			this.pendingActions = true;
-			msgPopupStore.setError(false, '');
 			const tipoInstitucion = tokenStore.getDataToken.Tipo_Institucion;
 			try {
 				let response;
@@ -85,12 +84,12 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 				if (response.error.value) {
 					throw response.error.value;
 				}
-				msgPopupStore.setError(true, 'Matrícula registrada correctamente');
+				msgPopupStore.showSuccess('Matrícula registrada correctamente');
 				await this.getMatriculas(); // Refrescar lista
 				return true;
 			} catch (error) {
 				const err = error as any;
-				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo registrar la matrícula', 'error');
+				msgPopupStore.showError(err.data?.message ?? 'No se pudo registrar la matrícula');
 				return false;
 			} finally {
 				this.pendingActions = false;
@@ -100,16 +99,15 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 			const msgPopupStore = useMsgPopUpStore();
 			const { $api } = useNuxtApp();
 			this.pendingActions = true;
-			msgPopupStore.setError(false, '');
 			try {
 				const { error } = await $api.matricula.actualizarEstadoMatricula(idMatricula, estado);
 				if (error.value) { throw error.value; }
-				msgPopupStore.setError(true, 'Matrícula actualizada correctamente');
+				msgPopupStore.showSuccess('Matrícula actualizada correctamente');
 				await this.getMatriculas(); // Refrescar lista
 				return true;
 			} catch (error) {
 				const err = error as any;
-				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo actualizar la matrícula', 'error');
+				msgPopupStore.showError(err.data?.message ?? 'No se pudo actualizar la matrícula');
 				return false;
 			} finally {
 				this.pendingActions = false;

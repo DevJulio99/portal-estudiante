@@ -40,7 +40,7 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 		setErrorForm(data: string[]){
 			const msgPopupStore = useMsgPopUpStore();
 			this.errorForm = data;
-			if(data.length) msgPopupStore.tipoModal = 'error';
+			if(data.length) msgPopupStore.showError('Formulario inválido');
 		},
 		setPagina(pagina: number){
            this.paginado.pagina = pagina;
@@ -94,7 +94,7 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 				this.lista = [];
 				if(listaAlumnos.error.value.statusCode !== 404){
 					const msgPopupStore = useMsgPopUpStore();
-					msgPopupStore.setError(true, (listaAlumnos.error.value.data as any).message, 'error')
+					msgPopupStore.showError((listaAlumnos.error.value.data as any).message)
 				}
 			}
 			this.pending = false;
@@ -103,7 +103,6 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
 			this.pending = true;
-			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
@@ -111,15 +110,15 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 				const registrarAlumnos = await $api.alumno.registrarAlumno(request);
 	
 				if(!registrarAlumnos.error.value){
-					msgPopupStore.setError(true, 'Se registro Correctamente')
+					msgPopupStore.showSuccess('Se registro Correctamente')
 					this.lista = [];
 					await this.getAlumnos();
 				} else {
-					msgPopupStore.setError(true, (registrarAlumnos.error.value.data as any).message, 'error');
+					msgPopupStore.showError((registrarAlumnos.error.value.data as any).message);
 				}
 			} catch (error) {
 				const err = error as any;
-				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo registrar el alumno', 'error');
+				msgPopupStore.showError(err.data?.message ?? 'No se pudo registrar el alumno');
 			} finally {
 				this.pending = false;
 			}
@@ -128,22 +127,21 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
 			this.pending = true;
-			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			try {
 				const actualizarAlumnos = await $api.alumno.actualizarAlumno(request);
 				if(!actualizarAlumnos.error.value){
-					msgPopupStore.setError(true, 'Se actualizo Correctamente')
+					msgPopupStore.showSuccess('Se actualizo Correctamente')
 					this.lista = [];
 					await this.getAlumnos();
 				} else {
-					msgPopupStore.setError(true, (actualizarAlumnos.error.value.data as any).message, 'error');
+					msgPopupStore.showError((actualizarAlumnos.error.value.data as any).message);
 				}
 			} catch (error) {
 				const err = error as any;
-				msgPopupStore.setError(true, err.data?.message ?? 'No se pudo actualizar el alumno', 'error');
+				msgPopupStore.showError(err.data?.message ?? 'No se pudo actualizar el alumno');
 			} finally {
 				this.pending = false;
 			}
@@ -151,21 +149,20 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 		async EliminarAlumno(numeroDocumento: string) {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
-			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			const eliminarAlumnos = await $api.alumno.eliminarAlumno(numeroDocumento);
 
 			if(!eliminarAlumnos.error.value){
-				msgPopupStore.setError(true, 'Se elimino Correctamente')
+				msgPopupStore.showSuccess('Se elimino Correctamente')
 				this.pending = true;
 				this.lista = [];
 				this.getAlumnos()
 			}
 
 			if(eliminarAlumnos.error.value){
-				msgPopupStore.setError(true, (eliminarAlumnos.error.value.data as any).message, 'error')
+				msgPopupStore.showError((eliminarAlumnos.error.value.data as any).message)
 			}
 		},
 		async FiltrarAlumno(value: string) {
@@ -205,7 +202,7 @@ export const useAlumnoStore = defineStore('alumnoStore', {
 				this.pendingTable = false;
 				this.lista = [];
 				if(filtroAlumnos.error.value.statusCode !== 404){
-				    msgPopupStore.setError(true, (filtroAlumnos.error.value.data as any).message, 'error')
+				    msgPopupStore.showError((filtroAlumnos.error.value.data as any).message)
 				}
 			}
 		},	

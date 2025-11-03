@@ -1,37 +1,44 @@
 
 import { defineStore } from 'pinia';
 
-interface ErrorPopUp {
-	status: boolean;
+interface MsgPopUpState {
+	show: boolean;
 	message: string;
+	type: 'success' | 'error' | 'warning';
+	showBottom: boolean;
+	messageBottom: string;
 }
 
-interface ErrorPopUpStore {
-	error: ErrorPopUp;
-	errorBottom: ErrorPopUp;
-	tipoModal: 'success' | 'error';
-}
-
-export const useMsgPopUpStore = defineStore('PopUpMsgStore', {
-	state: (): ErrorPopUpStore => ({
-		error: {
-            status: false,
-            message: '',
-        },
-		errorBottom: {
-			status: false,
-            message: '',
-		},
-        tipoModal: 'success'
+export const useMsgPopUpStore = defineStore('msgPopup', {
+	state: (): MsgPopUpState => ({
+		show: false,
+		message: '',
+		type: 'success',
+		showBottom: false,
+		messageBottom: '',
     }),
 	actions: {
-		setError(status: boolean, message: string, tipoModal: 'success' | 'error' = 'success'){
-            this.error = { status, message };
-			this.tipoModal = tipoModal;
+		_show(message: string, type: 'success' | 'error' | 'warning') {
+			this.message = message;
+			this.type = type;
+			this.show = true;
 		},
-		setErrorBottom(status: boolean, message: string, tipoModal: 'success' | 'error' = 'success'){
-            this.errorBottom = { status, message };
-			this.tipoModal = tipoModal;
+
+		showSuccess(message: string) {
+			this._show(message, 'success');
+		},
+
+		showError(message: string) {
+			this._show(message, 'error');
+		},
+
+		showWarning(message: string) {
+			this._show(message, 'warning');
+		},
+
+		setErrorBottom(status: boolean, message: string) {
+			this.showBottom = status;
+			this.messageBottom = message;
 		},
 	},
 });

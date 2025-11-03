@@ -39,7 +39,7 @@ export const useCursoStore = defineStore('cursoStore', {
 		setErrorForm(data: string[]){
 			const msgPopupStore = useMsgPopUpStore();
 			this.errorForm = data;
-			if(data.length) msgPopupStore.tipoModal = 'error';
+			if(data.length) msgPopupStore.showError('Formulario inválido');
 		},
 		setPagina(pagina: number){
            this.paginado.pagina = pagina;
@@ -93,7 +93,7 @@ export const useCursoStore = defineStore('cursoStore', {
 				this.lista = [];
 				if(listaCursos.error.value.statusCode !== 404){
 					const msgPopupStore = useMsgPopUpStore();
-					msgPopupStore.setError(true, (listaCursos.error.value.data as any).message, 'error')
+					msgPopupStore.showError((listaCursos.error.value.data as any).message)
 				}
 			}
 			this.pending = false;
@@ -101,61 +101,58 @@ export const useCursoStore = defineStore('cursoStore', {
 		async RegistrarCurso(request: RegistrarCurso) {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
-			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			const registrarCursos = await $api.gestionCursos.registrarCurso(request);
 
 			if(!registrarCursos.error.value){
-				msgPopupStore.setError(true, 'Se registró correctamente')
+				msgPopupStore.showSuccess('Se registró correctamente')
 				this.pending = true;
 				this.lista = [];
 				this.getCursos();
 			}
 
 			if(registrarCursos.error.value){
-				msgPopupStore.setError(true, (registrarCursos.error.value.data as any).message, 'error')
+				msgPopupStore.showError((registrarCursos.error.value.data as any).message)
 			}
 		},
 		async ActualizarCurso(request: ActualizarCurso) {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
-			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			const actualizarCursos = await $api.gestionCursos.actualizarCurso(request);
 
 			if(!actualizarCursos.error.value){
-				msgPopupStore.setError(true, 'Se actualizó correctamente')
+				msgPopupStore.showSuccess('Se actualizó correctamente')
 				this.pending = true;
 				this.lista = [];
 				this.getCursos();
 			}
 
 			if(actualizarCursos.error.value){
-				msgPopupStore.setError(true, (actualizarCursos.error.value.data as any).message, 'error')
+				msgPopupStore.showError((actualizarCursos.error.value.data as any).message)
 			}
 		},
 		async EliminarCurso(idCurso: number) {
 			const { $api } = useNuxtApp();
 			const msgPopupStore = useMsgPopUpStore();
-			msgPopupStore.setError(false, '')
 			this.paginado.pagina = 1;
 			this.activeFilter = false;
 			this.activeList = true;
 			const eliminarCursos = await $api.gestionCursos.eliminarCurso(idCurso);
 
 			if(!eliminarCursos.error.value){
-				msgPopupStore.setError(true, 'Se eliminó correctamente')
+				msgPopupStore.showSuccess('Se eliminó correctamente')
 				this.pending = true;
 				this.lista = [];
 				this.getCursos();
 			}
 
 			if(eliminarCursos.error.value){
-				msgPopupStore.setError(true, (eliminarCursos.error.value.data as any).message, 'error')
+				msgPopupStore.showError((eliminarCursos.error.value.data as any).message)
 			}
 		},
 		async FiltrarCurso(value: string) {
@@ -195,7 +192,7 @@ export const useCursoStore = defineStore('cursoStore', {
 				this.pendingTable = false;
 				this.lista = [];
 				if(filtroCursos.error.value.statusCode !== 404){
-				    msgPopupStore.setError(true, (filtroCursos.error.value.data as any).message, 'error')
+				    msgPopupStore.showError((filtroCursos.error.value.data as any).message)
 				}
 			}
 		},	

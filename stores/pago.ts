@@ -68,7 +68,7 @@ export const usePagoStore = defineStore('PagoStore', {
 			if(servicePagos.error.value){
 				this.lista = []
 				const msgPopupStore = useMsgPopUpStore();
-				msgPopupStore.setError(true, (servicePagos.error.value.data as any)?.message, 'error');
+				msgPopupStore.showError((servicePagos.error.value.data as any)?.message);
 			}
 
 			this.pending = false;

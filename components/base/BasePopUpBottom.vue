@@ -2,14 +2,17 @@
 const msgPopupStore = useMsgPopUpStore();
 const timeoutId = ref<any>(null);
 
-watch(() => msgPopupStore.errorBottom, (error) => {
-  if(error.status){
-	clearTimeout(timeoutId.value);
-  msgPopupStore.errorBottom.status = false;
-    (document.getElementById('popuperr') as HTMLDivElement).classList.add('show');
-	timeoutId.value = setTimeout(() => {
-		(document.getElementById('popuperr') as HTMLDivElement).classList.remove('show');
-	}, 5000);
+watch(() => msgPopupStore.showBottom, (isShown) => {
+  if (isShown) {
+    clearTimeout(timeoutId.value);
+    const popupEl = document.getElementById('popuperr');
+    if (popupEl) {
+      popupEl.classList.add('show');
+      timeoutId.value = setTimeout(() => {
+        popupEl.classList.remove('show');
+        msgPopupStore.setErrorBottom(false, ''); // Resetea el estado en el store
+      }, 5000);
+    }
   }
 });
 </script>
@@ -19,7 +22,7 @@ watch(() => msgPopupStore.errorBottom, (error) => {
     class="w-full text-center font-nunito popup-error bg-error fixed text-white block p-4 z-[1000] bottom-[-100px] left-[50%] opacity-0"
     id="popuperr"
   >
-    <p>{{ msgPopupStore.errorBottom.message }}</p>
+    <p>{{ msgPopupStore.messageBottom }}</p>
   </div>
 </template>
 
