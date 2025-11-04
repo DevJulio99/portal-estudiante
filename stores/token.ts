@@ -37,6 +37,9 @@ export const useTokenStore = defineStore('tokenStore', {
 		},
 		setPending(status: boolean) {
 			this.pending = status;
+		},
+		setIsLoggingOut(status: boolean) {
+			this.isLoggingOut = status;
 		}
 	},
 });

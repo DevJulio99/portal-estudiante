@@ -80,6 +80,14 @@ export default defineNuxtPlugin(() => {
 	const config = useRuntimeConfig();
 	const fetchOptions: FetchOptions = {
 		baseURL: config.public.urlApi,
+		// El manejo de errores 401 se hace en FetchFactory.call() para tener más control
+		// Este interceptor global actúa como respaldo
+		onResponseError({ response }) {
+			// Solo loguear errores críticos, el manejo real se hace en FetchFactory
+			if (response.status === 401) {
+				console.warn('[API Plugin] Error 401 detectado. El manejo se realiza en FetchFactory.');
+			}
+		},
 	};
 
 	const apiFecther = $fetch.create(fetchOptions);
