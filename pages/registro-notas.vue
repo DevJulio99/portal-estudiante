@@ -4,15 +4,12 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 
 // Importar tipos
-import type { Periodo } from '~/types/periodo.types';
-import type { GradoSede } from '~/types/grado.types';
 import type { Subperiodo } from '~/types/subperiodo.types';
 import type { SeccionGrado } from '~/types/seccion.types';
 import type { CursoGrado } from '~/types/curso.types';
 import type { AlumnoFiltro } from '~/types/alumnoFiltro.types';
 import type { NotaAlumno } from '~/types/notasAlumno.types';
-
-import type { RequestRegistroNota, RequestActualizarNota } from '~/repository/modules/RegistroNotaModulo';
+import type { RequestGestionarNotas } from '~/repository/modules/RegistroNotaModulo';
 useHead({ title: 'Registro de Notas' });
 
 const { $api } = useNuxtApp();
@@ -162,7 +159,7 @@ const agregarNota = () => {
     if (!idAlumno.value) return;
     const nuevaNota: NotaAlumno = {
         idNota: Date.now(), // ID temporal para el v-for key
-        nota: null,
+        nota: 0,
         peso: 0,
         tipoNota: '',
         idAlumno: idAlumno.value,
@@ -194,7 +191,7 @@ const validarNota = (notaItem: NotaAlumno) => {
     if (notaActual > 20) {
         // Convertimos el número a string, eliminamos el último dígito y lo volvemos a convertir a número.
         const valorCorregido = String(notaItem.nota).slice(0, -1);
-        notaItem.nota = valorCorregido === '' ? null : Number(valorCorregido);
+        notaItem.nota = valorCorregido === '' ? 0 : Number(valorCorregido);
     } else if (Number(notaItem.nota) < 0) {
         // Para valores negativos, simplemente lo reseteamos a 0.
         notaItem.nota = 0;
@@ -312,92 +309,44 @@ const guardarNotas = async () => {
 
     isSaving.value = true;
     try {
-        // Calculamos el peso total sumando los pesos de todas las notas en el formulario (nuevas, modificadas y sin cambios).
-        // Esto representa el estado final si se guardan los cambios.
         const pesoTotalProyectado = notasParaPromedio.value.reduce((acc, n) => acc + Number(n.peso || 0), 0);
         
         if (pesoTotalProyectado > 1) {
             msgPopupStore.showError(`El peso total (${pesoTotalProyectado.toFixed(2)}) superaría el máximo permitido (1.00).`);
-            isSaving.value = false; // Detener el estado de carga
+            isSaving.value = false;
             return;
         }
 
-        let registroExitoso = true;
-        let actualizacionExitosa = true;
-        const mensajesError: string[] = [];
+        const payload: RequestGestionarNotas = {
+            idAlumno: Number(idAlumno.value),
+            idCurso: Number(idCurso.value),
+            idPeriodo: Number(idPeriodo.value),
+            idSubperiodo: Number(idSubperiodo.value),
+            notasInsertar: notasNuevas.map(n => ({
+                tipo_nota: n.tipoNota,
+                nota: n.nota, // Se mantiene como null si está vacío
+                peso: Number(n.peso || 0),
+            })),
+            notasActualizar: notasModificadas.map(n => ({
+                id_nota: n.idNota,
+                tipo_nota: n.tipoNota,
+                nota: n.nota, // Se mantiene como null si está vacío
+                peso: Number(n.peso || 0),
+            })),
+        };
 
-        // 1. Preparamos la llamada para las nuevas notas (una sola llamada)
-        if (notasNuevas.length > 0) {
-            const payload: RequestRegistroNota = {
-                idAlumno: Number(idAlumno.value),
-                idCurso: Number(idCurso.value),
-                idPeriodo: Number(idPeriodo.value),
-                idSubperiodo: Number(idSubperiodo.value),
-                notas: notasNuevas.map(notaItem => ({
-                    tipo_nota: notaItem.tipoNota,
-                    nota: notaItem.nota,
-                    peso: Number(notaItem.peso || 0),
-                })),
-            };
-            try {
-                const { data, error } = await $api.registroNota.registrarNotasAlumno(payload);
-                if (error.value || data.value?.success === false) {
-                    registroExitoso = false;
-                    mensajesError.push(data.value?.message || error.value?.data?.message || 'Error al registrar nuevas notas.');
-                }
-            } catch (e: any) {
-                registroExitoso = false;
-                mensajesError.push(e.data?.message || 'Error de red al registrar notas.');
-            }
-        }
+        const { data, error } = await $api.registroNota.gestionarNotas(payload);
 
-        // 2. Preparamos la llamada para las notas modificadas
-        if (notasModificadas.length > 0) {
-            const payload: RequestActualizarNota = {
-                idAlumno: Number(idAlumno.value),
-                idCurso: Number(idCurso.value),
-                idPeriodo: Number(idPeriodo.value),
-                idSubperiodo: Number(idSubperiodo.value),
-                notas: notasModificadas.map(notaItem => ({
-                    tipo_nota: notaItem.tipoNota,
-                    id_nota: notaItem.idNota,
-                    nota: notaItem.nota,
-                    peso: Number(notaItem.peso || 0),
-                })),
-            };
-            try {
-                const { data, error } = await $api.registroNota.actualizarNotasAlumno(payload);
-                if (error.value || data.value?.success === false) {
-                    actualizacionExitosa = false;
-                    mensajesError.push(data.value?.message || error.value?.data?.message || 'Error al actualizar notas existentes.');
-                }
-            } catch (e: any) {
-                actualizacionExitosa = false;
-                mensajesError.push(e.data?.message || 'Error de red al actualizar notas.');
-            }
-        }
-
-        // 3. Mostramos los resultados
-        if (mensajesError.length === 0) {
-            // Caso 1: Todo fue exitoso
-            msgPopupStore.showSuccess('Cambios guardados correctamente.');
+         if (error.value || data.value?.success === false) {
+            const errorMessage = data.value?.message || error.value?.data?.message || 'Ocurrió un error al guardar las notas.';
+            msgPopupStore.showError(errorMessage);
         } else {
-            // Caso 2: Hubo al menos un error
-            const mensajeFinal = mensajesError.join(' ');
-            if ((notasNuevas.length > 0 && registroExitoso) || (notasModificadas.length > 0 && actualizacionExitosa)) {
-                // Si algo fue exitoso, mostramos una advertencia con el error
-                msgPopupStore.showWarning(`Operación parcial: ${mensajeFinal}`);
-            } else {
-                // Si todo falló, mostramos un error completo
-                msgPopupStore.showError(mensajeFinal);
-            }
-        }
-
-        // Si al menos una operación fue exitosa, recargamos los datos.
-        if ((notasNuevas.length > 0 && registroExitoso) || (notasModificadas.length > 0 && actualizacionExitosa)) {
+            msgPopupStore.showSuccess('Cambios guardados correctamente.');
             await recargarNotas();
         }
 
+    } catch (e: any) {
+        msgPopupStore.showError(e.data?.message || 'Error de red al guardar las notas.');
     } finally {
         isSaving.value = false;
     }

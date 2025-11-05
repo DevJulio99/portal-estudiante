@@ -1,4 +1,3 @@
-import type { $Fetch, FetchOptions } from 'ofetch';
 import type { AsyncDataOptions } from '#app';
 import FetchFactory from '../factory';
 import type { DataResponse } from '~/types/services.types';
@@ -13,37 +12,23 @@ interface NotaPayloadActualizar extends NotaPayload {
     id_nota: number;
 }
 
-export interface RequestRegistroNota {
+export interface RequestGestionarNotas {
     idAlumno: number;
     idCurso: number;
     idPeriodo: number;
     idSubperiodo: number;
-    notas: NotaPayload[];
-}
-
-export interface RequestActualizarNota {
-    idAlumno: number;
-    idCurso: number;
-    idPeriodo: number;
-    idSubperiodo: number;
-    notas: NotaPayloadActualizar[];
+    notasInsertar: NotaPayload[];
+    notasActualizar: NotaPayloadActualizar[];
 }
 
 class RegistroNotaModulo extends FetchFactory<DataResponse<any>> {
     private RESOURCE = '/api/v1/notas';
 
-    async registrarNotasAlumno(
-        body: RequestRegistroNota,
+    async gestionarNotas(
+        body: RequestGestionarNotas,
         asyncDataOptions?: AsyncDataOptions<DataResponse<any>>,
     ) {
-        return useAsyncData(() => this.call('POST', `${this.RESOURCE}/registrar`, body), asyncDataOptions);
-    }
-
-    async actualizarNotasAlumno(
-        body: RequestActualizarNota,
-        asyncDataOptions?: AsyncDataOptions<DataResponse<any>>,
-    ) {
-        return useAsyncData(() => this.call('PUT', `${this.RESOURCE}/actualizar`, body), asyncDataOptions);
+        return useAsyncData(() => this.call('POST', `${this.RESOURCE}/gestionar`, body), asyncDataOptions);
     }
 }
 
