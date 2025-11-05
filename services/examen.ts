@@ -19,8 +19,10 @@ export const listarExamen = async () => {
       const bodyError = examenService.error.value.data;
       throw new Error(bodyError ? "nodata" : "other");
     }
+    
+    const listaExamenes = examenService.data.value?.data || [];
+    examenStore.setLista(listaExamenes);
     examenStore.pending = false;
-    examenService.data.value?.data.length && examenStore.setLista(examenService.data.value.data);
 };
 
 export const getExamenes = async () => {
@@ -28,6 +30,9 @@ export const getExamenes = async () => {
   const postulanteStore = usePostulanteStore();
   const competenciaStore = useCompetenciaStore();
   const examenStore = useExamenStore();
+
+  examenStore.pending = true;
+  examenStore.error = null;
 
   try {
     await listarExamen();
@@ -45,14 +50,15 @@ export const getExamenes = async () => {
         { lazy: true }
       );
 
-      if(generarExamen.error.value?.data){
-         examenStore.error = generarExamen.error.value.data;
+      if(generarExamen.error.value){
+         examenStore.error = generarExamen.error.value.data || null;
          examenStore.pending = false;
+         return;
       }
 
-      if (!generarExamen.error.value) {
-        listarExamen();
-      }
+      await listarExamen();
+    } else {
+      examenStore.pending = false;
     }
   }
 };

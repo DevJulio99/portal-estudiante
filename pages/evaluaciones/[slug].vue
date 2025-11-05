@@ -66,39 +66,55 @@ const opcionSeleccionada = computed(() => preguntaStore.opcionSeleccionada)
 
 const dataEstados = ref<any>(null);
 const errorEstados = ref<any>(null);
+const isLoadingEstados = ref(true);
 
 watch([
   () => postulanteStore.data?.idPostulante,
   () => competenciaActual.value?.id_compentencia
 ], async ([idPostulante, idCompetencia]) => {
   if (idPostulante && idCompetencia) {
+    isLoadingEstados.value = true;
     const resp = await $api.estado.getListarEstado(idPostulante, idCompetencia, { lazy: true });
     dataEstados.value = resp.data.value;
     errorEstados.value = resp.error.value;
+    isLoadingEstados.value = false;
+  } else {
+    isLoadingEstados.value = false;
   }
 }, { immediate: true });
 
 
-watch(dataEstados, (estados)  => {
-  if(estados?.data.length){
+watch([dataEstados, errorEstados, isLoadingEstados], async ([estados, error, loading])  => {
+  if(loading) return;
+
+  const idPostulante = postulanteStore.data?.idPostulante;
+  const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+  
+  if(!idPostulante || !idCompetencia) {
+    return;
+  }
+
+  if(examenStore.lista.length) {
+    return;
+  }
+
+  if(estados?.data?.length){
     estadoStore.lista = estados.data;
-    !examenStore.lista.length && getExamenes();
-  }
-});
-
-const unWatchEstado = watch([errorEstados, () => examenStore.lista], async(err: any)  => {
-  const errorEstado = err?.[0]?.data;
-  const listaExamen = err?.[1]?.length;
-
-  if(errorEstado?.success == false && listaExamen === 0){
-    getExamenes();
+    await getExamenes();
+    return;
   }
 
-  if(errorEstado?.success == false && listaExamen > 0){
-    await RegistrarEstado(postulanteStore.data?.idPostulante ?? 0, competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0);
-    unWatchEstado();
+  if(error?.data?.success === false){
+    await RegistrarEstado(idPostulante, idCompetencia);
+    await getExamenes();
+    return;
   }
-});
+
+  if(!estados && !error && examenStore.pending) {
+    await RegistrarEstado(idPostulante, idCompetencia);
+    await getExamenes();
+  }
+}, { immediate: true });
 
 watch(() => examenStore.lista, (examenes)  => {
   if(examenes.length){
@@ -255,31 +271,51 @@ const finalizarCompetencia = () => {
 }
 
 onMounted(() => {
+  if(!examenStore.lista.length) {
+    examenStore.pending = true;
+  }
+  
   if(competenciaActual.value){
     competencia.value = competenciaActual.value;
     competenciaStore.setTiempoCompetencia(competenciaActual.value);
     //getExamenes();
   }
 
-setTimeout(() => {
-  const container = document.getElementById('cont-img');
-
-  const allImg = container?.getElementsByTagName('img');
-  
-  if(allImg?.length){
-    for(const img of allImg) {
-      if(!img.className.startsWith('icon-zoom')) {
-        img.addEventListener('click', (ev: any) => {
-          showPreviewImage.value = {
-            status: true,
-            url: ev.target.src
-          }
-        })
+  // Mecanismo de respaldo: si después de un delay los datos están disponibles pero no se han cargado los exámenes, intentar cargarlos
+  setTimeout(async () => {
+    const idPostulante = postulanteStore.data?.idPostulante;
+    const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+    
+    if(idPostulante && idCompetencia && !examenStore.lista.length && examenStore.pending && !isLoadingEstados.value) {
+      if(!dataEstados.value && !errorEstados.value) {
+        await RegistrarEstado(idPostulante, idCompetencia);
+        await getExamenes();
+      } else if(dataEstados.value?.data?.length && !examenStore.lista.length) {
+        estadoStore.lista = dataEstados.value.data;
+        await getExamenes();
       }
-     
     }
-  }
-}, 0);
+  }, 500);
+
+  setTimeout(() => {
+    const container = document.getElementById('cont-img');
+
+    const allImg = container?.getElementsByTagName('img');
+    
+    if(allImg?.length){
+      for(const img of allImg) {
+        if(!img.className.startsWith('icon-zoom')) {
+          img.addEventListener('click', (ev: any) => {
+            showPreviewImage.value = {
+              status: true,
+              url: ev.target.src
+            }
+          })
+        }
+       
+      }
+    }
+  }, 0);
 })
 
 onBeforeUnmount(() => {
@@ -288,6 +324,7 @@ onBeforeUnmount(() => {
   if (navigationEntry?.type === 'reload') return;
   postulanteStore.setHabilitado(0);
   competenciaStore.resetCompetencia();
+  examenStore.resetExamen();
   preguntaStore.setPregunta(1);
   preguntaStore.setResumenActivo(false);
 });

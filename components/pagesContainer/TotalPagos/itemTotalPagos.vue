@@ -18,7 +18,7 @@ const pagoStore = usePagoStore();
 const columns = [
 	{ key: 'documentoPago', label: 'N° DOCUMENTO' },
 	{ key: 'fechaVencimiento', label: 'F. VENCIMIENTO' },
-	{ key: 'ciclo', label: 'CICLO' },
+	{ key: 'periodo', label: 'PERIODO' },
 	{ key: 'saldo', label: 'SALDO' },
 	{ key: 'mora', label: 'MORA' },
 	{ key: 'totalAPagar', label: 'TOTAL A PAGAR' },
@@ -119,7 +119,7 @@ const handlePage = (number: number) => {
 			</span>
 		</template>
 
-		<template #cell-ciclo="{ item }">
+		<template #cell-periodo="{ item }">
 			{{ item.ciclo }}
 		</template>
 
