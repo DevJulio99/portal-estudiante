@@ -16,7 +16,7 @@ const imageLoaderStore = useImageLoaderStore();
 const columns = [
 	{ key: 'documentoPago', label: 'N° DOCUMENTO' },
 	{ key: 'fechaVencimiento', label: 'F. VENCIMIENTO' },
-	{ key: 'ciclo', label: 'CICLO' },
+	{ key: 'periodo', label: 'PERIODO' },
 	{ key: 'saldo', label: 'SALDO' },
 	{ key: 'mora', label: 'MORA' },
 	{ key: 'totalAPagar', label: 'TOTAL A PAGAR' },
@@ -74,21 +74,19 @@ onMounted(() => {
 	>
 		<BaseStatusLoading />
 	</div>
+	
 	<div
-		v-else-if="pagoStore.error"
+		v-else-if="pagoStore.error || pagoStore.servicesError || !pagoStore.lista.length"
 		class="flex items-center justify-center h-[240px] md:h-[380px]"
 	>
 		<BaseStatusError
+			v-if="pagoStore.error"
 			:text="'Lo sentimos, no pudimos cargar tus Obligaciones por pagar'"
 			:description="'Inténtalo de nuevo más tarde'"
 			:icono="null"
 		/>
-	</div>
-	<div
-		v-else-if="pagoStore.servicesError"
-		class="flex items-center justify-center h-[240px] md:h-[380px]"
-	>
 		<BaseStatusNoData
+			v-else-if="pagoStore.servicesError"
 			:text="
 				pagoStore.servicesError?.titulo ??
 				'Estamos trabajando en el detalle de este contenido'
@@ -96,87 +94,99 @@ onMounted(() => {
 			:description="pagoStore.servicesError?.descripcion"
 			:icono="pagoStore.servicesError?.icono"
 		/>
+		<BaseStatusNoData
+			v-else
+			:text="'No tienes obligaciones pendientes'"
+			:description="'No se encontraron pagos por realizar'"
+			:icono="null"
+		/>
 	</div>
-	<BaseTable
-		v-if="!pagoStore.pending"
-		:columns="columns"
-		:data="pagoStore.lista"
-		:loading="false"
-		:show-pagination="false"
-		:show-info-action="false"
-		:show-edit-action="false"
-		:show-delete-action="false"
-		row-key="idPago"
-	>
-		<template #cell-documentoPago="{ item }">
-			{{ item.documentoPago != '' ? item.documentoPago : '-' }}
-		</template>
-
-		<template #cell-fechaVencimiento="{ item }">
-			<span
-				:class="{
-					'text-red-600 font-semibold': dateIsExpired(item.fechaVencimiento),
-				}"
-			>
-				{{ useDateFormat(item.fechaVencimiento, 'DD/MM/YYYY', { locales: 'es-ES' }) }}
-			</span>
-		</template>
-
-		<template #cell-ciclo="{ item }">
-			{{ item.ciclo }}
-		</template>
-
-		<template #cell-saldo="{ item }">
-			S/ {{ (item.totalAPagar - item.mora).toFixed(2) }}
-		</template>
-
-		<template #cell-mora="{ item }">
-			S/ {{ item.mora.toFixed(2) }}
-		</template>
-
-		<template #cell-totalAPagar="{ item }">
-			<strong>S/ {{ item.totalAPagar.toFixed(2) }}</strong>
-		</template>
-
-		<template #cell-subir="{ item }">
-			<div class="flex justify-center">
-				<ImageUploader @click="() => SubirImagen(item.idPago)"/>
-			</div>
-		</template>
-
-		<template #custom-actions="{ item }">
-			<div class="flex gap-[9px] items-center justify-center">
-				<nuxt-icon
-					name="iconEye"
-					filled
-					class="text-[21px] cursor-pointer"
-					@click="
-						showPopup({
-							...item,
-							isExpired: dateIsExpired(item.fechaVencimiento),
-						})
-					"
-				/>
-			</div>
-		</template>
-	</BaseTable>
-
-	<div v-if="!pagoStore.pending && pagoStore.lista.length > 0" class="flex justify-between mt-7 items-center">
-		<p class="mb-0 lg:text-[16px] text-[14px] font-extrabold">Monto total:</p>
-		<span
-			class="bg-gray text-dark_100 font-nunito py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
-			:class="{ 'bg-white': montoTotalPagar == 0.0 }"
-			>S/ {{ montoTotalPagar.toFixed(2) }}</span
+	
+	<div v-else>
+		<BaseTable
+			:columns="columns"
+			:data="pagoStore.lista"
+			:loading="false"
+			:show-pagination="false"
+			:show-info-action="false"
+			:show-edit-action="false"
+			:show-delete-action="false"
+			row-key="idPago"
 		>
+			<template #cell-documentoPago="{ item }">
+				{{ item.documentoPago != '' ? item.documentoPago : '-' }}
+			</template>
+
+			<template #cell-fechaVencimiento="{ item }">
+				<span
+					:class="{
+						'text-red-600 font-semibold': dateIsExpired(item.fechaVencimiento),
+					}"
+				>
+					{{ useDateFormat(item.fechaVencimiento, 'DD/MM/YYYY', { locales: 'es-ES' }) }}
+				</span>
+			</template>
+
+			<template #cell-periodo="{ item }">
+				{{ item.ciclo }}
+			</template>
+
+			<template #cell-saldo="{ item }">
+				S/ {{ (item.totalAPagar - item.mora).toFixed(2) }}
+			</template>
+
+			<template #cell-mora="{ item }">
+				S/ {{ item.mora.toFixed(2) }}
+			</template>
+
+			<template #cell-totalAPagar="{ item }">
+				<strong>S/ {{ item.totalAPagar.toFixed(2) }}</strong>
+			</template>
+
+			<template #cell-subir="{ item }">
+				<div class="flex justify-center">
+					<ImageUploader @click="() => SubirImagen(item.idPago)"/>
+				</div>
+			</template>
+
+			<template #custom-actions="{ item }">
+				<div class="flex gap-[9px] items-center justify-center">
+					<nuxt-icon
+						name="iconEye"
+						filled
+						class="text-[21px] cursor-pointer"
+						@click="
+							showPopup({
+								...item,
+								isExpired: dateIsExpired(item.fechaVencimiento),
+							})
+						"
+					/>
+				</div>
+			</template>
+		</BaseTable>
+
+		<div class="flex justify-between mt-7 items-center">
+			<p class="mb-0 lg:text-[16px] text-[14px] font-extrabold">Monto total:</p>
+			<span
+				class="bg-gray text-dark_100 font-nunito py-2 px-8 font-extrabold lg:text-[16px] text-[14px]"
+				:class="{ 'bg-white': montoTotalPagar == 0.0 }"
+				>S/ {{ montoTotalPagar.toFixed(2) }}</span
+			>
+		</div>
 	</div>
+	
 	<PagesContainerPagosPopupPaymentDetail
 		v-if="popupDetalleVisible"
 		:data="popupDetalleData"
 		:closePopup="hidePopup"
 	/>
-	<PagesContainerPagosModalCaptcha v-if="popupCaptcha" @close="() => {
-		toggleHiddenScroll();
-		popupCaptcha = false
-	}"/>
+	<PagesContainerPagosModalCaptcha 
+		v-if="popupCaptcha" 
+		@close="() => {
+			toggleHiddenScroll();
+			popupCaptcha = false
+		}"
+	/>
 </template>
 
