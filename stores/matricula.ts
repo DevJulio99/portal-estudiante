@@ -32,9 +32,9 @@ export const useMatriculaStore = defineStore('matriculaStore', {
 			this.pending = true;
 			this.activeList = true;
 			this.activeFilter = false;
-            const codSede = tokenStore.getDataToken.Codigo_Sede;
+            //const codSede = tokenStore.getDataToken.Codigo_Sede;
 			try {
-				const { data, error } = await $api.matricula.getMatriculaPorSede(codSede);
+				const { data, error } = await $api.matricula.getMatriculaPorSede();
 				if (error.value) {
 					throw error.value;
 				}

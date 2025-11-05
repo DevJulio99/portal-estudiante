@@ -82,7 +82,6 @@ const guardar = handleSubmit(async (formValues) => {
             idAlumno: formValues.idAlumno,
             idPeriodo: formValues.idPeriodo,
             idGrado: formValues.idGrado,
-            codigoSede: tokenStore.getDataToken.Codigo_Sede,
             tipoMatricula: formValues.tipoMatricula,
             estadoMatricula: formValues.estadoMatricula,
             observaciones: formValues.observaciones,
@@ -176,7 +175,7 @@ onUnmounted(() => {
         <BaseTitle :text="tipo === 'edit' ? 'Actualizar Matrícula' : 'Registrar Matrícula'" />
         <form @submit.prevent="guardar" class="flex flex-col flex-1 min-h-0" novalidate autocomplete="off">
             <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 overflow-auto flex-grow px-2 py-2">
-                <BaseVeeSelectV2 :value="idGrado" v-bind="idGradoAttrs" id="idGrado" label="Grado" icon="NavArrowDown" class="w-full" borderDefault="border-celestial_white" :options="gradoStore.listaGrados.map(g => ({ id: g.idGrado, name: g.descripcionGrado }))" @change="(option) => handleChangeSelect(option, 'idGrado')" :disabled="tipo === 'edit'" :error="errors.idGrado" placeholder="Seleccione un grado" />
+                <BaseVeeSelectV2 :value="idGrado" v-bind="idGradoAttrs" id="idGrado" label="Grado" icon="NavArrowDown" class="w-full" borderDefault="border-celestial_white" :options="gradoStore.listaGrados.map((g: any) => ({ id: g.idGrado, name: g.descripcionGrado }))" @change="(option) => handleChangeSelect(option, 'idGrado')" :disabled="tipo === 'edit'" :error="errors.idGrado" placeholder="Seleccione un grado" />
 
                 <BaseVeeSelectV2 :value="idPeriodo" v-bind="idPeriodoAttrs" id="idPeriodo" label="Periodo" icon="NavArrowDown" class="w-full" borderDefault="border-celestial_white" :options="matriculaStore.listaPeriodos.map(p => ({ id: p.idPeriodo, name: p.descripcionPeriodo }))" @change="(option) => handleChangeSelect(option, 'idPeriodo')" :disabled="tipo === 'edit'" :error="errors.idPeriodo" placeholder="Seleccione un periodo" />
 

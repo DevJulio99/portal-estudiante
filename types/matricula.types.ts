@@ -30,7 +30,6 @@ export interface RequestMatricula {
     idAlumno:        number;
     idPeriodo:       number;
     idGrado:         number | null;
-    codigoSede:      string;
     tipoMatricula:   string;
     estadoMatricula: string;
     observaciones:   string;

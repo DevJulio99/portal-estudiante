@@ -14,7 +14,6 @@ class MatriculaModule extends FetchFactory<DataResponse<ResponseMatricula[]>> {
 	 */
 
 	async getMatriculaPorSede(
-		codSede: string,
 		asyncDataOptions?: AsyncDataOptions<DataResponse<ResponseMatricula[]>>,
 	) {
 		return await useAsyncData(() => {
@@ -23,7 +22,7 @@ class MatriculaModule extends FetchFactory<DataResponse<ResponseMatricula[]>> {
 			};
 			return this.call(
 				'GET',
-				`${this.RESOURCE}/matricula/obtener-por-sede/${codSede}`,
+				`${this.RESOURCE}/matricula/obtener-por-sede`,
 				undefined,
 				fetchOptions,
 			);
