@@ -58,6 +58,24 @@ const handleChangeSelect = (option: { id: string | number }, fieldName: keyof ty
     setFieldValue(fieldName, id_val);
 }
 
+const isFromMatricula = computed(() => !!route.query.idAlumno);
+
+const periodoSeleccionadoDesc = computed(() => {
+    if (idPeriodo.value > 0) {
+        return periodos.value?.data?.find(p => p.idPeriodo === idPeriodo.value)?.descripcionPeriodo || '';
+    }
+    return '';
+});
+
+const gradoSeleccionadoDesc = computed(() => {
+    if (idGrado.value > 0) {
+        return grados.value?.data?.find(g => g.idGrado === idGrado.value)?.descripcionGrado || '';
+    }
+    return '';
+});
+
+const seccionSeleccionadaDesc = computed(() => secciones.value.find(s => s.idSeccion === idSeccion.value)?.descripcionSeccion || '');
+
 // --- Datos para los Selects ---
 const codSede = computed(() =>tokenStore.getDataToken?.Codigo_Sede);
 const tipoInstitucion = computed(() => tokenStore.getDataToken?.Tipo_Institucion);
@@ -372,7 +390,29 @@ const guardarNotas = async () => {
   <div class="p-4">
     <BaseBreadcrumbs :items="breadcrumbsItem" />
     <h1 class="text-2xl font-bold mb-4">Registro de Notas</h1>
-    <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+
+    <div v-if="isFromMatricula" class="bg-white p-4 rounded-lg shadow-md mb-6">
+        <div class="flex justify-between items-start mb-4">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800">{{ gradoSeleccionadoDesc }} - {{ seccionSeleccionadaDesc }}</h2>
+                <p class="text-sm text-gray-600">{{ periodoSeleccionadoDesc }}</p>
+            </div>
+            <NuxtLink to="/matriculas" class="text-sm text-primary hover:underline font-semibold flex items-center gap-1">
+                <nuxt-icon name="arrow-go-back" />
+                <span>Volver a Matrículas</span>
+            </NuxtLink>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t pt-4">            
+            <BaseVeeSelectV2 :value="idCurso" v-bind="idCursoAttrs" id="idCurso" label="Curso" :options="cursos.map(c => ({ id: c.idCurso, name: c.descripcionCurso }))" @change="(option) => handleChangeSelect(option, 'idCurso')" :error="errors.idCurso" :disabled="!idGrado || pendingCursos" placeholder="Seleccione curso" borderDefault="border-gray-300" />
+
+            <BaseVeeSelectV2 :value="idSubperiodo" v-bind="idSubperiodoAttrs" id="idSubperiodo" label="Subperiodo" :options="subperiodos.map(sp => ({ id: sp.idSubperiodo, name: sp.descripcionSubperiodo }))" @change="(option) => handleChangeSelect(option, 'idSubperiodo')" :error="errors.idSubperiodo" :disabled="!idPeriodo || pendingSubperiodos" placeholder="Seleccione subperiodo" borderDefault="border-gray-300" />
+            
+            <BaseVeeSelectV2 :value="idAlumno" v-bind="idAlumnoAttrs" id="idAlumno" label="Alumno" :options="alumnos.map(a => ({ id: a.idAlumno, name: a.nombreAlumno }))" @change="(option) => handleChangeSelect(option, 'idAlumno')" :error="errors.idAlumno" :disabled="pendingAlumnos" placeholder="Seleccione un alumno" borderDefault="border-gray-300" />
+        </div>
+    </div>
+
+    <!-- Vista de Filtros Completos (si se entra directamente) -->
+    <div class="bg-white p-4 rounded-lg shadow-md mb-6" v-if="!isFromMatricula">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             <BaseVeeSelectV2 :value="idPeriodo" v-bind="idPeriodoAttrs" id="idPeriodo" label="Periodo" :options="periodos?.data?.map(p => ({ id: p.idPeriodo, name: p.descripcionPeriodo })) || []" @change="(option) => handleChangeSelect(option, 'idPeriodo')" :error="errors.idPeriodo" :disabled="pendingPeriodos" placeholder="Seleccione periodo" borderDefault="border-gray-300" />
 
@@ -384,7 +424,7 @@ const guardarNotas = async () => {
 
             <BaseVeeSelectV2 :value="idSubperiodo" v-bind="idSubperiodoAttrs" id="idSubperiodo" label="Subperiodo" :options="subperiodos.map(sp => ({ id: sp.idSubperiodo, name: sp.descripcionSubperiodo }))" @change="(option) => handleChangeSelect(option, 'idSubperiodo')" :error="errors.idSubperiodo" :disabled="!idPeriodo || pendingSubperiodos" placeholder="Seleccione subperiodo" borderDefault="border-gray-300" />
 
-            <BaseVeeSelectV2 :value="idAlumno" v-bind="idAlumnoAttrs" id="idAlumno" label="Alumno" :options="alumnos.map(a => ({ id: a.idAlumno, name: a.nombreAlumno }))" @change="(option) => handleChangeSelect(option, 'idAlumno')" :error="errors.idAlumno" :disabled="!idPeriodo || !idGrado || !idSeccion || !idCurso || !idSubperiodo || pendingAlumnos" placeholder="Todos los alumnos" borderDefault="border-gray-300" />
+            <BaseVeeSelectV2  :value="idAlumno" v-bind="idAlumnoAttrs" id="idAlumno" label="Alumno" :options="alumnos.map(a => ({ id: a.idAlumno, name: a.nombreAlumno }))" @change="(option) => handleChangeSelect(option, 'idAlumno')" :error="errors.idAlumno" :disabled="!idPeriodo || !idGrado || !idSeccion || !idCurso || !idSubperiodo || pendingAlumnos" placeholder="Todos los alumnos" borderDefault="border-gray-300" />
         </div>
     </div>
 
