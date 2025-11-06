@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ResponseMatricula } from '~/types/matricula.types';
 import type { Alumno } from '~/types/alumno.types';
+import { useRouter } from 'vue-router';
 import ModalMatricula from './ModalMatricula.vue';
 import AccionesMatricula from './AccionesMatricula.vue';
 import BaseTable from '~/components/base/BaseTable.vue';
@@ -13,6 +14,7 @@ const currentPage = ref(1);
 const valorFilter = ref('');
 const matriculaStore = useMatriculaStore();
 const alumnoStore = useAlumnoStore();
+const router = useRouter();
 
 const columns = [
   { key: 'alumno', label: 'ALUMNO' },
@@ -98,6 +100,18 @@ const seleccionarAlumnoParaMatricula = (alumno: Alumno) => {
     //valorFilter.value = ''; // Limpiamos el filtro para ocultar las tarjetas
     //alumnoStore.lista = []; // Limpiamos la lista de alumnos
 }
+
+const registerNotes = (matricula: ResponseMatricula) => {
+    router.push({
+        path: '/registro-notas',
+        query: {
+            idPeriodo: matricula.idPeriodo,
+            idGrado: matricula.idGrado,
+            idSeccion: matricula.idSeccion,
+            idAlumno: matricula.idAlumno,
+        }
+    });
+};
 </script>
 
 <template>
@@ -137,9 +151,11 @@ const seleccionarAlumnoParaMatricula = (alumno: Alumno) => {
       :show-pagination="false"
       :show-info-action="false"
       :show-delete-action="false"
+      :show-register-notes-action="true"
       row-key="idMatricula"
       no-data-text="No se encontraron datos"
       @edit="actualizar"
+      @register-notes="registerNotes" 
       @page-change="handlePage"
     >      
       <template #cell-estadoMatricula="{ value }">

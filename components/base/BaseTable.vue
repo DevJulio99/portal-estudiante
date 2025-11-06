@@ -26,6 +26,7 @@
     showInfoAction?: boolean;
     showEditAction?: boolean;
     showDeleteAction?: boolean;
+    showRegisterNotesAction?: boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -36,12 +37,14 @@
     showInfoAction: true,
     showEditAction: true,
     showDeleteAction: true,
+    showRegisterNotesAction: false,
   });
 
   defineEmits<{
     info: [item: any];
     edit: [item: any];
     delete: [item: any];
+    'register-notes': [item: any];
     'page-change': [page: number];
   }>();
 
@@ -50,7 +53,7 @@
   });
 
   const hasActionsColumn = computed(() => {
-    return props.showInfoAction || props.showEditAction || props.showDeleteAction || 
+    return props.showInfoAction || props.showEditAction || props.showDeleteAction || props.showRegisterNotesAction ||
           props.columns.some(col => col.isAction);
   });
 
@@ -139,6 +142,15 @@
                     title="Eliminar"
                   >
                     <nuxt-icon name="closeIcon" class="action-icon" />
+                  </button>
+
+                  <button
+                    v-if="showRegisterNotesAction"
+                    class="btn-action btn-register-notes"
+                    @click="$emit('register-notes', item)"
+                    title="Registrar Notas"
+                  >
+                    <nuxt-icon name="fileList" class="action-icon" />
                   </button>
                   
                   <slot name="custom-actions" :item="item" :index="index" />

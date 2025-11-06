@@ -10,11 +10,13 @@ import type { CursoGrado } from '~/types/curso.types';
 import type { AlumnoFiltro } from '~/types/alumnoFiltro.types';
 import type { NotaAlumno } from '~/types/notasAlumno.types';
 import type { RequestGestionarNotas } from '~/repository/modules/RegistroNotaModulo';
+import { useRoute } from 'vue-router';
 useHead({ title: 'Registro de Notas' });
 
 const { $api } = useNuxtApp();
 const tokenStore = useTokenStore();
 const profileStore = useProfileStore();
+const route = useRoute();
 
 const breadcrumbsItem = [
   { name: 'Admin', current: false, url: '/admin' },
@@ -35,12 +37,12 @@ const validationSchema = yup.object({
 const { values, errors, defineField, handleSubmit, setFieldValue, resetField } = useForm({
   validationSchema,
   initialValues: {
-    idPeriodo: 0,
-    idGrado: 0,
-    idSeccion: 0,
+    idPeriodo: Number(route.query.idPeriodo || 0),
+    idGrado: Number(route.query.idGrado || 0),
+    idSeccion: Number(route.query.idSeccion || 0),
     idCurso: 0,
     idSubperiodo: 0,
-    idAlumno: 0,
+    idAlumno: Number(route.query.idAlumno || 0),
   },
 });
 
@@ -74,6 +76,18 @@ watch(idPeriodo, async (newId) => {
         subperiodos.value = data.value?.data || [];
         pendingSubperiodos.value = false;
     }
+},{ immediate: true });
+
+watch(idSubperiodo, async (newSubperiodoId) => {
+    if (newSubperiodoId > 0 && idAlumno.value > 0 && idCurso.value > 0) {
+        await recargarNotas();
+    }
+}, { immediate: true });
+
+watch(idCurso, async (newCursoId) => {
+    if (newCursoId > 0 && idAlumno.value > 0 && idSubperiodo.value > 0) {
+        await recargarNotas();
+    }
 });
 
 const secciones = ref<SeccionGrado[]>([]);
@@ -95,7 +109,7 @@ watch(idGrado, async (newId) => {
         pendingSecciones.value = false;
         pendingCursos.value = false;
     }
-});
+}, { immediate: true });
 
 const alumnos = ref<AlumnoFiltro[]>([]);
 const pendingAlumnos = ref(false);
@@ -115,7 +129,8 @@ watch([idPeriodo, idGrado, idSeccion, idCurso, idSubperiodo], async ([p, g, s, c
         pendingAlumnos.value = false;
     }
 }, {
-    deep: true
+    deep: true,
+    immediate: true
 });
 
 // --- Carga y manejo de Notas del Alumno ---
@@ -369,16 +384,16 @@ const guardarNotas = async () => {
 
             <BaseVeeSelectV2 :value="idSubperiodo" v-bind="idSubperiodoAttrs" id="idSubperiodo" label="Subperiodo" :options="subperiodos.map(sp => ({ id: sp.idSubperiodo, name: sp.descripcionSubperiodo }))" @change="(option) => handleChangeSelect(option, 'idSubperiodo')" :error="errors.idSubperiodo" :disabled="!idPeriodo || pendingSubperiodos" placeholder="Seleccione subperiodo" borderDefault="border-gray-300" />
 
-            <BaseVeeSelectV2 :value="idAlumno" v-bind="idAlumnoAttrs" id="idAlumno" label="Alumno" :options="alumnos.map(a => ({ id: a.idAlumno, name: a.nombreAlumno }))" @change="(option) => handleChangeSelect(option, 'idAlumno')" :error="errors.idAlumno" :disabled="pendingAlumnos || alumnos.length === 0" placeholder="Todos los alumnos" borderDefault="border-gray-300" />
+            <BaseVeeSelectV2 :value="idAlumno" v-bind="idAlumnoAttrs" id="idAlumno" label="Alumno" :options="alumnos.map(a => ({ id: a.idAlumno, name: a.nombreAlumno }))" @change="(option) => handleChangeSelect(option, 'idAlumno')" :error="errors.idAlumno" :disabled="!idPeriodo || !idGrado || !idSeccion || !idCurso || !idSubperiodo || pendingAlumnos" placeholder="Todos los alumnos" borderDefault="border-gray-300" />
         </div>
     </div>
 
     <!-- Tarjeta de Notas del Alumno Seleccionado -->
-    <div v-if="idAlumno > 0" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto mt-6">
+    <div v-if="selectedAlumno" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto mt-6">
         <div v-if="pendingNotas" class="text-center">
             <p>Cargando notas del alumno...</p>
         </div>
-        <div v-else-if="selectedAlumno">
+        <div v-else>
             <div class="flex items-center mb-2">
                 <span class="text-2xl mr-2">👤</span>
                 <h2 class="text-xl font-bold text-gray-800">{{ selectedAlumno.nombreAlumno }}</h2>
