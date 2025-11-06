@@ -142,7 +142,7 @@ const guardar = handleSubmit(formValues => {
     if (props.tipo === 'register') {
         const payload = {
             ...formValues,
-            codigoSede: tokenStore.getDataToken.Codigo_Sede,
+            // codigoSede: tokenStore.getDataToken.Codigo_Sede,
             tipoInstitucion: tokenStore.getDataToken.Tipo_Institucion,
             idGrado: esInstitucionC.value ? formValues.idGrado : null,
         };
@@ -242,7 +242,7 @@ onMounted(async () => {
         <BaseVeeInput label="Apellido paterno" name="apellidoPaterno" v-model="apellidoPaterno" :error="errors.apellidoPaterno" />
         <BaseVeeInput label="Apellido materno" name="apellidoMaterno" v-model="apellidoMaterno" :error="errors.apellidoMaterno" />
         <BaseVeeInput label="Teléfono" name="telefono" v-model="telefono" :error="errors.telefono" :maxlength="9" />
-        <BaseVeeInput label="Número de documento" name="numeroDocumento" v-model="numeroDocumento" :error="errors.numeroDocumento" :maxlength="8" />
+        <BaseVeeInput label="Número de documento" name="numeroDocumento" v-model="numeroDocumento" :error="errors.numeroDocumento" :maxlength="8" :disabled="tipo === 'edit'" />
 
         <div class="flex flex-col">
             <span class="font-bold">Fecha de nacimiento</span>

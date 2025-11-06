@@ -39,7 +39,7 @@ export interface RequestAlumno {
 }
 
 export interface RegistrarAlumno extends RequestAlumno{
-    codigoSede: string;
+    //codigoSede: string;
 }
 
 export interface ActualizarAlumno extends RequestAlumno{
