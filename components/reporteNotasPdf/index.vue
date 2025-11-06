@@ -74,51 +74,51 @@ onMounted(() => {
 
 <template>
   <div class="print-container">
-    <h2 style="position: relative; top: -3px;">Institución Educativa Privada</h2>
-    <h1 style="position: relative; top: -3px;">"JORGE BASADRE"</h1>
-    <h3 style="position: relative; top: -3px;">¡Formando triunfadores!</h3>
+    <h2 style="position: relative; top: -6px;">Institución Educativa Privada</h2>
+    <h1 style="position: relative; top: -6px;">"JORGE BASADRE"</h1>
+    <h3 style="position: relative; top: -6px;">¡Formando triunfadores!</h3>
 
-    <p class="titulo" style="position: relative; top: -3px;">INFORME DEL PROGRESO DE LAS NOTAS DEL ESTUDIANTE - {{ new Date().getFullYear() }}</p>
-    <p class="subtitulo" style="position: relative; top: -3px;">Nivel {{ profile?.desNivel }}</p>
+    <p class="titulo" style="position: relative; top: -6px;">INFORME DEL PROGRESO DE LAS NOTAS DEL ESTUDIANTE - {{ new Date().getFullYear() }}</p>
+    <p class="subtitulo" style="position: relative; top: -6px;">Nivel {{ profile?.desNivel }}</p>
 
     <table>
       <tr>
-        <td><strong style="position: relative; top: -5px;">APELLIDOS Y NOMBRES:</strong> <span style="position: relative; top: -7px;">{{ profile?.fullName }}</span></td>
-        <td><strong style="position: relative; top: -5px;">BIMESTRE:</strong> <span style="position: relative; top: -7px;">{{ bimestres.length > 0 ? bimestres[bimestres.length - 1] : '-' }}</span></td>
-        <td><strong style="position: relative; top: -5px;">N° ORDEN:</strong> <span style="position: relative; top: -7px;">7</span></td>
+        <td><strong style="position: relative; top: -6px;">APELLIDOS Y NOMBRES:</strong> <span style="position: relative; top: -6px;">{{ profile?.fullName }}</span></td>
+        <td><strong style="position: relative; top: -6px;">BIMESTRE:</strong> <span style="position: relative; top: -6px;">{{ bimestres.length > 0 ? bimestres[bimestres.length - 1] : '-' }}</span></td>
+        <td><strong style="position: relative; top: -6px;">N° ORDEN:</strong> <span style="position: relative; top: -6px;">7</span></td>
       </tr>
       <tr>
-        <td><strong style="position: relative; top: -5px;">TUTOR(A):</strong> <span style="position: relative; top: -7px;">Maria torres</span></td>
-        <td colspan="2"><strong style="position: relative; top: -5px;">AÑO Y SECCIÓN:</strong><span style="position: relative; top: -7px;">{{  profile?.desGrado }} {{ profile?.desSeccion }}</span> </td>
+        <td><strong style="position: relative; top: -6px;">TUTOR(A):</strong> <span style="position: relative; top: -6px;">María Torres</span></td>
+        <td colspan="2"><strong style="position: relative; top: -6px;">AÑO Y SECCIÓN:</strong> <span style="position: relative; top: -6px;">{{  profile?.desGrado }} - {{ profile?.desSeccion }}</span> </td>
       </tr>
     </table>
 
     <table>
       <thead>
         <tr>
-          <th rowspan="2">ASIGNATURAS</th>
-          <th v-for="bimestre in bimestres" :key="bimestre" colspan="2"><span style="position: relative; top: -3px;">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</span></th>
+          <th rowspan="2"><span style="position: relative; top: -6px;">ASIGNATURAS</span></th>
+          <th v-for="bimestre in bimestres" :key="bimestre" colspan="2"><span style="position: relative; top: -6px;">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</span></th>
         </tr>
         <tr>
           <template v-for="bimestre in bimestres" :key="`sub-${bimestre}`">
-            <th><span style="position: relative; top: -5px;">Cuant.</span></th>
-            <th><span style="position: relative; top: -5px;">Cualit.</span></th>
+            <th><span style="position: relative; top: -6px;">Cuant.</span></th>
+            <th><span style="position: relative; top: -6px;">Cualit.</span></th>
           </template>
         </tr>
       </thead>
       <tbody>
         <tr v-for="curso in cursos" :key="curso">
-          <td><strong style="position: relative; top: -5px;">{{ curso }}</strong></td>
+          <td><strong style="position: relative; top: -6px;">{{ curso }}</strong></td>
           <template v-for="bimestre in bimestres" :key="`nota-${curso}-${bimestre}`">
-            <td style="text-align: center;"><span style="position: relative; top: -7px;">{{ notasPivote[curso][bimestre] !== null ? notasPivote[curso][bimestre]?.toFixed(0) : '-' }}</span></td>
-            <td style="text-align: center;"><span style="position: relative; top: -7px;">{{ getNotaCualitativa(notasPivote[curso][bimestre]) }}</span></td>
+            <td style="text-align: center;"><span style="position: relative; top: -6px;">{{ notasPivote[curso][bimestre] !== null ? notasPivote[curso][bimestre]?.toFixed(0) : '-' }}</span></td>
+            <td style="text-align: center;"><span style="position: relative; top: -6px;">{{ getNotaCualitativa(notasPivote[curso][bimestre]) }}</span></td>
           </template>
         </tr>
         <tr>
-          <td><strong style="position: relative; top: -5px;">Puntaje</strong></td>
+          <td><strong style="position: relative; top: -6px;">Puntaje</strong></td>
           <template v-for="bimestre in bimestres" :key="`puntaje-${bimestre}`">
             <td colspan="2" style="text-align: center;">
-              <span style="position: relative; top: -7px;">{{ puntajesPorBimestre[bimestre]?.toFixed(0) || '-' }}</span>
+              <span style="position: relative; top: -6px;">{{ puntajesPorBimestre[bimestre]?.toFixed(0) || '-' }}</span>
             </td>
           </template>
         </tr>
@@ -127,14 +127,14 @@ onMounted(() => {
 
     <table>
       <tr>
-        <th><span style="position: relative; top: -5px;">SITUACIÓN FINAL</span></th>
-        <th><span style="position: relative; top: -5px;">Promovido</span></th>
-        <th><span style="position: relative; top: -5px;">Requiere Recuperación</span></th>
-        <th><span style="position: relative; top: -5px;">Repite</span></th>
+        <th><span style="position: relative; top: -6px;">SITUACIÓN FINAL</span></th>
+        <th><span style="position: relative; top: -6px;">Promovido</span></th>
+        <th><span style="position: relative; top: -6px;">Requiere Recuperación</span></th>
+        <th><span style="position: relative; top: -6px;">Repite</span></th>
       </tr>
       <tr>
         <td></td>
-        <td style="text-align: center;"><span style="position: relative; top: -5px;">X</span></td>
+        <td style="text-align: center;"><span style="position: relative; top: -6px;">X</span></td>
         <td></td>
         <td></td>
       </tr>
@@ -144,18 +144,18 @@ onMounted(() => {
       <thead>
         <tr>
           <th></th>
-          <th v-for="bimestre in bimestres" :key="bimestre"><span style="position: relative; top: -3px;">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</span></th>
-          <th><span style="position: relative; top: -3px;">Prom. Final</span></th>
+          <th v-for="bimestre in bimestres" :key="bimestre"><span style="position: relative; top: -6px;">{{ String(bimestre).replace('Bimestre ', '').replace(' - 2025', '') }} BIMES.</span></th>
+          <th><span style="position: relative; top: -6px;">Prom. Final</span></th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong style="position: relative; top: -5px;">Comportamiento</strong></td>
+          <td><strong style="position: relative; top: -6px;">Comportamiento</strong></td>
           <td style="text-align: center;" v-for="bimestre in bimestres" :key="`comp-${bimestre}`"><span style="position: relative; top: -7px;">20</span></td>
           <td style="text-align: center;"><span style="position: relative; top: -7px;">-</span></td>
         </tr>
         <tr>
-          <td><strong style="position: relative; top: -5px;">Conducta</strong></td>
+          <td><strong style="position: relative; top: -6px;">Conducta</strong></td>
           <td style="text-align: center;" v-for="bimestre in bimestres" :key="`cond-${bimestre}`"><span style="position: relative; top: -7px;">18</span></td>
           <td style="text-align: center;"><span style="position: relative; top: -7px;">-</span></td>
         </tr>
@@ -164,7 +164,7 @@ onMounted(() => {
 
     <div class="footer">
       <div class="firma">
-        Maria torres<br>
+        María Torres<br>
         <em>Tutora</em>
       </div>
       <div class="firma">
@@ -249,7 +249,7 @@ th {
 }
 
 .footer {
-  margin-top: 35px;
+  margin-top: 60px;
   display: flex;
   justify-content: space-between;
 }

@@ -185,7 +185,7 @@ const onPageSelect = (page: number) => {
     </div> -->
     <div class="fixed left-0 bottom-0 bg-white lg:relative w-full flex justify-end gap-4 py-2 px-5">
       <BaseButton
-        styles="!w-full max-w-[145px] text-white rounded-[6px]"
+        styles="!w-[115px] text-white rounded-[6px]"
         :color="BtnColor.secondary"
         :disabled="finish || preguntaActual === 1"
         @click="back"
@@ -194,7 +194,7 @@ const onPageSelect = (page: number) => {
       </BaseButton>
 
       <BaseButton
-        styles="!w-full max-w-[145px] text-white rounded-[6px]"
+        styles="!w-[145px] text-white rounded-[6px]"
         :color="BtnColor.default"
         @click="next"
         :disabled="guardadoPendiente.valueOf()"
