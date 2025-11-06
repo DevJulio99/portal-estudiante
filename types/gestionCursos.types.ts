@@ -15,13 +15,10 @@ export interface RequestCourse{
     nivel: string;
 }
 
-export interface RegistrarCurso extends RequestCourse {
-    codigoSede: string;
-}
+export interface RegistrarCurso extends RequestCourse {}
 
 export interface ActualizarCurso extends RequestCourse {
     idCurso: number;
-    codigoSede: string;
 }
 
 export interface Paginado {

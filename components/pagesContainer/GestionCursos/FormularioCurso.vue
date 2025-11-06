@@ -36,7 +36,6 @@ const registrarCurso = ref<RegistrarCurso>({
     creditos: 0,
     modalidad: '',
     nivel: '',
-    codigoSede: tokenStore.getDataToken.Codigo_Sede,
 });
 const actualizarCurso = ref<ActualizarCurso>({
     idCurso: 0,
@@ -44,7 +43,6 @@ const actualizarCurso = ref<ActualizarCurso>({
     creditos: 0,
     modalidad: '',
     nivel: '',
-    codigoSede: tokenStore.getDataToken.Codigo_Sede
 });
 
 const onChangeInput = (e: any) => {
