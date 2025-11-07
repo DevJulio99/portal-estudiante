@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import debounce from 'lodash.debounce';
 import type { HorarioData } from '~/types/cursos.types';
+import { TipoInstitucion } from '~/types/institucion.types';
 
 const { $api } = useNuxtApp();
 const tokenStore = useTokenStore();
@@ -13,10 +14,41 @@ const isScrolled = ref(false);
 const servicesError: Ref<any> = ref(null);
 const selectDay = ref(0);
 const codAlum = user.codAlum;
-const currentDay = new Date();
-const nextDay = new Date(new Date().setDate(currentDay.getDate() + 1));
+
+const esColegio = computed(() => tokenStore.getDataToken?.Tipo_Institucion === TipoInstitucion.Colegio);
+
+const ajustarDiaHabil = (day: Date): Date => {
+	if (!esColegio.value) return day;
+	
+	const dayNumber = (day.getDay() + 6) % 7;
+	
+	if (dayNumber === 5) {
+		const adjustedDay = new Date(day);
+		adjustedDay.setDate(day.getDate() + 2);
+		return adjustedDay;
+	}
+	
+	if (dayNumber === 6) {
+		const adjustedDay = new Date(day);
+		adjustedDay.setDate(day.getDate() + 1);
+		return adjustedDay;
+	}
+	
+	return day;
+};
+
+const currentDay = ajustarDiaHabil(new Date());
+const tomorrowRaw = new Date();
+tomorrowRaw.setDate(tomorrowRaw.getDate() + 1);
+const nextDay = ajustarDiaHabil(tomorrowRaw);
 const dayNum = (day: Date) => (day.getDay() + 6) % 7;
 const visibleDay = ref(dayNum(currentDay));
+
+const esRealmenteManana = computed(() => {
+    const diffTime = nextDay.getTime() - currentDay.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    return diffDays === 1;
+});
 
 const Days = [
 	'Lunes',
@@ -57,14 +89,21 @@ const {
 
 watch(horarioDataResponse, (response) => {
 	if (response?.data.length) {
+		// Filtrar solo días hábiles (0-4: lunes a viernes) si es colegio
+		const filteredData = esColegio.value 
+			? response.data.filter((item) => {
+				const diaNum = Number(item.horario.diaNumero);
+				return diaNum >= 0 && diaNum <= 4; // Solo lunes a viernes
+			})
+			: response.data;
+		
 		const repeatDay = allDataHorario.value.filter(x => Number(x.horario.diaNumero) === visibleDay.value);
 		if(!repeatDay.length){
-			allDataHorario.value = [...dataHorario.value, ...response.data.filter((item) => {
-			   return Number(item.horario.diaNumero) === visibleDay.value;
-		    })];
-			dataHorario.value = response.data.filter((item) => {
-			   return Number(item.horario.diaNumero) === visibleDay.value;
-		    });
+			const dayFilteredData = filteredData.filter((item) => {
+				return Number(item.horario.diaNumero) === visibleDay.value;
+			});
+			allDataHorario.value = [...dataHorario.value, ...dayFilteredData];
+			dataHorario.value = dayFilteredData;
 		}
 	}
 	if (response?.error) {
@@ -74,47 +113,58 @@ watch(horarioDataResponse, (response) => {
 });
 
 const callCurrentDayClass = () => {
-  if (visibleDay.value === dayNum(currentDay)) return;
+  const adjustedCurrentDay = ajustarDiaHabil(new Date());
+  const currentDayNum = dayNum(adjustedCurrentDay);
+  
+  if (visibleDay.value === currentDayNum) return;
   
   selectDay.value = 0;
-  visibleDay.value = dayNum(currentDay);
+  visibleDay.value = currentDayNum;
   
   debounce(() => {
-    fechaSession1.value = `${currentDay.getFullYear()}-${
-      currentDay.getMonth() + 1
-    }-${currentDay.getDate()}T00:00:00Z`;
-    fechaSession2.value = `${currentDay.getFullYear()}-${
-      currentDay.getMonth() + 1
-    }-${currentDay.getDate()}T23:00:00Z`;
+    fechaSession1.value = `${adjustedCurrentDay.getFullYear()}-${
+      adjustedCurrentDay.getMonth() + 1
+    }-${adjustedCurrentDay.getDate()}T00:00:00Z`;
+    fechaSession2.value = `${adjustedCurrentDay.getFullYear()}-${
+      adjustedCurrentDay.getMonth() + 1
+    }-${adjustedCurrentDay.getDate()}T23:00:00Z`;
     getDataClass();
   }, 350)();
 };
 
 const callNextDayClass = () => {
-  if (visibleDay.value === dayNum(nextDay)) return;
+  const adjustedNextDay = ajustarDiaHabil(new Date(new Date().setDate(new Date().getDate() + 1)));
+  const nextDayNum = dayNum(adjustedNextDay);
+  
+  if (visibleDay.value === nextDayNum) return;
   
   selectDay.value = 1;
-  visibleDay.value = dayNum(nextDay);
+  visibleDay.value = nextDayNum;
   
   debounce(() => {
-    fechaSession1.value = `${nextDay.getFullYear()}-${
-    	nextDay.getMonth() + 1
-    }-${nextDay.getDate()}T00:00:00Z`;
-    fechaSession2.value = `${nextDay.getFullYear()}-${
-    	nextDay.getMonth() + 1
-    }-${nextDay.getDate()}T23:00:00Z`;
+    fechaSession1.value = `${adjustedNextDay.getFullYear()}-${
+    	adjustedNextDay.getMonth() + 1
+    }-${adjustedNextDay.getDate()}T00:00:00Z`;
+    fechaSession2.value = `${adjustedNextDay.getFullYear()}-${
+    	adjustedNextDay.getMonth() + 1
+    }-${adjustedNextDay.getDate()}T23:00:00Z`;
     getDataClass();
   }, 350)();
 };
 
 const getDataClass = () => {
-	const dataClass = allDataHorario.value.filter(x => Number(x.horario.diaNumero) === visibleDay.value);
-	if(!dataClass.length){
+	// Filtrar solo días hábiles (0-4: lunes a viernes) si es colegio
+	const filteredData = esColegio.value
+		? allDataHorario.value.filter((item) => {
+			const diaNum = Number(item.horario.diaNumero);
+			return diaNum >= 0 && diaNum <= 4 && diaNum === visibleDay.value;
+		})
+		: allDataHorario.value.filter(x => Number(x.horario.diaNumero) === visibleDay.value);
+	
+	if(!filteredData.length){
 		callHorarioRango();
 	}else {
-		dataHorario.value = allDataHorario.value.filter((item) => {
-			return Number(item.horario.diaNumero) === visibleDay.value;
-		})
+		dataHorario.value = filteredData;
 	}
 }
 
@@ -146,7 +196,7 @@ onUnmounted(() => {
 				:class="selectDay == 0 && 'bg-[#287f6b] text-white'"
 				@click="callCurrentDayClass"
 			>
-				HOY {{ Days[currentDay.getDay() - 1] }}
+				HOY {{ Days[dayNum(currentDay)] }}
 				{{
 					`${
 						currentDay.getDate() <= 9
@@ -160,7 +210,7 @@ onUnmounted(() => {
 				:class="selectDay == 1 && 'bg-[#287f6b] text-white'"
 				@click="callNextDayClass"
 			>
-				Mañana {{ Days[nextDay.getDay() - 1] }}
+				{{ esRealmenteManana ? 'Mañana' : '' }} {{ Days[dayNum(nextDay)] }}
 				{{
 					`${
 						nextDay.getDate() <= 9 ? `0${nextDay.getDate()}` : nextDay.getDate()

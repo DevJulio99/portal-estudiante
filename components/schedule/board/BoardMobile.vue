@@ -78,25 +78,41 @@ const getDiff = (init: string, fin: string) => {
 };
 
 const getTopAndHeight = (init: string, fin: string) => {
-	const hCard = 62;
-	const height = getDiff(init, fin) * (hCard / 60) - 5;
+	const [startHour, startMin] = init.split(':').map(Number);
+	const [endHour, endMin] = fin.split(':').map(Number);
+	const startTime = startHour * 60 + startMin;
+	const endTime = endHour * 60 + endMin;
+	
 	let top = 0;
 	Object.keys(hourModified)
 		.sort()
 		.forEach((item) => {
-			if (
-				Number(init.split(':')[0]) !== 7 &&
-				Number(item) < Number(init.split(':')[0])
-			) {
-				top = top + hourModified[item as keyof typeof hourModified];
+			const hourNum = Number(item);
+			const rowHeight = hourModified[item as keyof typeof hourModified];
+			if (startHour !== 7 && hourNum < startHour) {
+				top += rowHeight;
+			} else if (hourNum === startHour) {
+				top += (startMin / 60) * rowHeight;
 			}
 		});
-	const timeArrInit = init.split(':');
-	if (Number(Number(timeArrInit[1])) / 60 > 0)
-		top = top + Number(timeArrInit[1]) * (hCard / 60);
+
+	let height = 0;
+	for (let h = startHour; h <= endHour; h++) {
+		const hourStr = h.toString().padStart(2, '0');
+		const rowHeight = hourModified[hourStr as keyof typeof hourModified] || 36;
+		const hourStart = h * 60;
+		const hourEnd = (h + 1) * 60;
+		
+		const overlapStart = Math.max(startTime, hourStart);
+		const overlapEnd = Math.min(endTime, hourEnd);
+		const overlapMinutes = Math.max(0, overlapEnd - overlapStart);
+		
+		height += (overlapMinutes / 60) * rowHeight;
+	}
+	
 	return {
 		top: `${top + 3}px`,
-		height: `${height}px`,
+		height: `${height - 5}px`,
 	};
 };
 

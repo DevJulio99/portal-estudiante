@@ -10,29 +10,49 @@ const props = withDefaults(
 		columnNumber: number;
 		currentDay: number;
 		pdf: boolean;
+		hasCourses?: boolean;
 	}>(),
 	{
 		hour: '55',
 		rowNumber: 0,
 		columnNumber: 0,
 		currentDay: 1,
+		hasCourses: true,
 	},
 );
 const currentHour = computed(() =>
 	props.nowMark.getHours() < 7 ? 7 : props.nowMark.getHours(),
 );
-const positionFromTop = computed(() =>
-	props.nowMark.getHours() < 7
-		? '-1px'
-		: `${(72 / 60) * props.nowMark.getMinutes() - 1}px`,
-);
+
+const currentRowHeight = computed(() => {
+	if (props.pdf) {
+		return props.hasCourses ? 48 : 12;
+	}
+	return props.hasCourses ? 72 : 18;
+});
+
+const positionFromTop = computed(() => {
+	if (props.nowMark.getHours() < 7) {
+		return '-1px';
+	}
+	const minutesOffset = (props.nowMark.getMinutes() / 60) * currentRowHeight.value;
+	return `${minutesOffset - 1}px`;
+});
 </script>
 
 <template>
 	<div
 		v-if="rowNumber !== Object.keys(hours!).length - 1"
 		class="grid-box relative"
-		:class="pdf ? 'h-[48px]' : 'h-[72px]'"
+		:class="
+			pdf
+				? hasCourses
+					? 'h-[48px]'
+					: 'h-[12px]'
+				: hasCourses
+					? 'h-[72px]'
+					: 'h-[18px]'
+		"
 	>
 		<div
 			v-if="columnNumber === 0 && Number(hour) === currentHour && !pdf"
