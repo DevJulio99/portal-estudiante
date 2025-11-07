@@ -75,7 +75,7 @@ class MatriculaModule extends FetchFactory<DataResponse<ResponseMatricula[]>> {
 			return this.call(
 				'PUT',
 				`${this.RESOURCE}/matricula/actualizar-estado/${idMatricula}`,
-				JSON.stringify(estado),
+				{ nuevoEstado: estado },
 				fetchOptions,
 			);
 		}, asyncDataOptions);
