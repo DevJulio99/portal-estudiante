@@ -52,28 +52,82 @@ const getDiff = (init: string, fin: string) => {
 	);
 };
 
+const currentDay = (getDay(new Date()) + 6) % 7;
+
+const hasCoursesInHour = (hour: string) => {
+	const hourNum = Number(hour);
+	const nextHourNum = hourNum + 1;
+	
+	return states.fullWeek.some((day) => {
+		if (day?.empty || !day?.detalleHorario) return false;
+		
+		return day.detalleHorario.some((course: any) => {
+			if (states.selectedCourse !== 'Todos' && states.selectedCourse !== course.codMateria) {
+				return false;
+			}
+			
+			const [startHour, startMin] = course.horaInicio.split(':').map(Number);
+			const [endHour, endMin] = course.horaFin.split(':').map(Number);
+			
+			const startTime = startHour * 60 + startMin;
+			const endTime = endHour * 60 + endMin;
+			const hourStart = hourNum * 60;
+			const hourEnd = nextHourNum * 60;
+			
+			return startTime < hourEnd && endTime > hourStart;
+		});
+	});
+};
+
+const getRowHeight = (hour: string | number) => {
+	const hourNum = typeof hour === 'string' ? Number(hour) : hour;
+	if (hourNum === 24) return 0;
+	const hourStr = hourNum.toString().padStart(2, '0');
+	const hasCourses = hasCoursesInHour(hourStr);
+	if (props.pdf) {
+		return hasCourses ? 48 : 12;
+	}
+	return hasCourses ? 72 : 18;
+};
+
 const getTopAndHeight = (init: string, fin: string) => {
-	const timeArrInit = init.split(':');
-	const hCard = hourVal;
-	const height = getDiff(init, fin) * (hCard / 60) - 2;
+	const [startHour, startMin] = init.split(':').map(Number);
+	const [endHour, endMin] = fin.split(':').map(Number);
+	const startTime = startHour * 60 + startMin;
+	const endTime = endHour * 60 + endMin;
+	
 	let top = 0;
 	Object.keys(hours.value)
 		.sort()
-		.forEach((item) => {
-			if (Number(item) < Number(timeArrInit[0])) {
-				top = top + hCard;
+		.forEach((hour) => {
+			const hourNum = Number(hour);
+			const rowHeight = getRowHeight(hour);
+			if (hourNum < startHour) {
+				top += rowHeight;
+			} else if (hourNum === startHour) {
+				top += (startMin / 60) * rowHeight;
 			}
 		});
 
-	if (Number(Number(timeArrInit[1])) / 60 > 0)
-		top = top + Number(timeArrInit[1]) * (hCard / 60);
+	let height = 0;
+	for (let h = startHour; h <= endHour; h++) {
+		const hourStr = h.toString().padStart(2, '0');
+		const rowHeight = getRowHeight(hourStr);
+		const hourStart = h * 60;
+		const hourEnd = (h + 1) * 60;
+		
+		const overlapStart = Math.max(startTime, hourStart);
+		const overlapEnd = Math.min(endTime, hourEnd);
+		const overlapMinutes = Math.max(0, overlapEnd - overlapStart);
+		
+		height += (overlapMinutes / 60) * rowHeight;
+	}
+	
 	return {
 		top: `${top + 11}px`,
-		height: `${height}px`,
+		height: `${height - 2}px`,
 	};
 };
-
-const currentDay = (getDay(new Date()) + 6) % 7;
 
 onBeforeUnmount(() => {
 	states.handleFilter('Todos');
@@ -123,8 +177,11 @@ onBeforeUnmount(() => {
 					class="relative border-r-[1px] border-neutral"
 					:class="{
 						'h-[62px] lg:h-[72px]':
-							i !== Object.keys(hours!).length - 1 && !pdf,
-						'h-[48px]': i !== Object.keys(hours!).length - 1 && pdf,
+							i !== Object.keys(hours!).length - 1 && !pdf && hasCoursesInHour(hour),
+						'h-[18px]':
+							i !== Object.keys(hours!).length - 1 && !pdf && !hasCoursesInHour(hour),
+						'h-[48px]': i !== Object.keys(hours!).length - 1 && pdf && hasCoursesInHour(hour),
+						'h-[12px]': i !== Object.keys(hours!).length - 1 && pdf && !hasCoursesInHour(hour),
 					}"
 				>
 					<div
@@ -152,6 +209,7 @@ onBeforeUnmount(() => {
 							:nowMark="nowMark"
 							:currentDay="currentDay"
 							:pdf="pdf"
+							:hasCourses="hasCoursesInHour(hour)"
 						/>
 						<div class="lg:h-[5px]"></div>
 					</div>

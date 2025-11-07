@@ -9,7 +9,7 @@ const props = defineProps<{
 const nowMark = useNow();
 const getTopStyle = (currentHour: string) => {
 	const hourH = Number(props.hours[currentHour as keyof typeof props.hours]);
-	const fromTop = (hourH / 60) * nowMark.value.getMinutes() - 10;
+	const fromTop = (hourH / 60) * nowMark.value.getMinutes();
 	return fromTop;
 };
 </script>
@@ -41,7 +41,7 @@ const getTopStyle = (currentHour: string) => {
 							isToday
 						"
 						class="hour-mark"
-						:style="{ top: `${getTopStyle(hour) + 1}px` }"
+						:style="{ top: `${getTopStyle(hour)}px` }"
 					>
 						{{ getHourMinutes(nowMark) }}
 					</div>
@@ -52,7 +52,7 @@ const getTopStyle = (currentHour: string) => {
 							isToday
 						"
 						class="line"
-						:style="{ top: `${getTopStyle(hour) + 10}px` }"
+						:style="{ top: `${getTopStyle(hour)}px` }"
 					></div>
 				</div>
 			</div>
