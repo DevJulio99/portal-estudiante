@@ -16,6 +16,13 @@ export interface DataDocumento {
 	interno: boolean;
 }
 
+export interface ResponseCategoria {
+	id: number;
+	nombre: string;
+	secuencia: number;
+	status: string;
+}
+
 export interface DocumentosParamsBk {
 	codNivel: string | null;
 	codCampus: string | null;

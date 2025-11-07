@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import type { DataDocumento } from '~/types/documento.types';
+import type { DataDocumento, ResponseCategoria } from '~/types/documento.types';
 import type { ErrorResponse } from '~/types/services.types';
 import { Roles } from '~/types/roles.types';
 
@@ -27,6 +27,13 @@ const { data, error, pending } = await $api.documentos.getDocumentos({
 	lazy: true,
 });
 
+const { data: categoriesData, error: categoriesError } =
+	await $api.categoriasDocumento.getCategoriasDocumentos({
+		lazy: true,
+	});
+
+const categories = ref<ResponseCategoria[]>([]);
+
 watch(data, (response) => {
 	if (response?.data.length) {
 		documentsData.value = response.data;
@@ -34,6 +41,12 @@ watch(data, (response) => {
 		setFilterDefault();
 	} else if (response?.error) {
 		documentsError.value = response.error;
+	}
+});
+
+watch(categoriesData, (response) => {
+	if (response?.data) {
+		categories.value = response.data;
 	}
 });
 
@@ -99,13 +112,6 @@ const detailDoc = ref({
 });
 const filterListWithCategories = ref<any[]>([]);
 const filterListSearch = ref<DataDocumento[]>([]);
-
-const categories = computed(() =>
-  filterListWithCategories.value.map(category => ({
-    id: category.id,
-    nombre: category.nombre
-  }))
-);
 
 onMounted(() => {
 	setFilterDefault();

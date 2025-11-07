@@ -11,6 +11,7 @@ import cambiarEstadoCompetenciaModule from '~/repository/modules/CambiarEstadoCo
 import PostulanteModule from '~/repository/modules/Postulante';
 import CompetenciaModule from '~/repository/modules/Competencias';
 import DocumentosModule from '~/repository/modules/Documentos';
+import CategoriasDocumentoModule from '~/repository/modules/CategoriasDocumento';
 import ExamenModule from '~/repository/modules/Examen';
 import CalendarModule from '~/repository/modules/Calendario';
 import EventosModule from '~/repository/modules/Eventos';
@@ -50,6 +51,7 @@ interface IApiInstance {
 	postulante: PostulanteModule;
 	competencias: CompetenciaModule;
 	documentos: DocumentosModule;
+	categoriasDocumento: CategoriasDocumentoModule;
 	examen: ExamenModule;
 	calendario: CalendarModule;
 	eventos: EventosModule;
@@ -105,6 +107,7 @@ export default defineNuxtPlugin(() => {
 		postulante: new PostulanteModule(apiFecther),
 		competencias: new CompetenciaModule(apiFecther),
 		documentos: new DocumentosModule(apiFecther),
+		categoriasDocumento: new CategoriasDocumentoModule(apiFecther),
 		examen: new ExamenModule(apiFecther),
 		calendario: new CalendarModule(apiFecther),
 		eventos: new EventosModule(apiFecther),
