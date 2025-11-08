@@ -2,6 +2,10 @@
 import { useNow, useDateFormat } from '@vueuse/core';
 import { type WeekDates } from '~/types/schedule.types';
 import { getDay } from '~/utils/schedule';
+import { TipoInstitucion } from '~/types/institucion.types';
+
+const tokenStore = useTokenStore();
+const esColegio = computed(() => tokenStore.getDataToken?.Tipo_Institucion === TipoInstitucion.Colegio);
 
 const props = withDefaults(
 	defineProps<{
@@ -53,6 +57,33 @@ const getDiff = (init: string, fin: string) => {
 };
 
 const currentDay = (getDay(new Date()) + 6) % 7;
+
+// Filtrar días de la semana para ocultar sábado y domingo cuando es colegio
+const filteredWeekDays = computed(() => {
+	const weekDaysArray = [
+		props.dataWeek.Monday,
+		props.dataWeek.Tuesday,
+		props.dataWeek.Wednesday,
+		props.dataWeek.Thursday,
+		props.dataWeek.Friday,
+		props.dataWeek.Saturday,
+		props.dataWeek.Sunday,
+	];
+	
+	if (esColegio.value) {
+		return weekDaysArray.slice(0, 5); // Solo lunes a viernes
+	}
+	return weekDaysArray;
+});
+
+// Filtrar fullWeek para excluir sábado (índice 5) y domingo (índice 6) cuando es colegio
+const filteredFullWeek = computed(() => {
+	if (esColegio.value) {
+		return states.fullWeek.slice(0, 5); // Solo lunes a viernes
+	}
+	return states.fullWeek;
+});
+
 
 const hasCoursesInHour = (hour: string) => {
 	const hourNum = Number(hour);
@@ -137,8 +168,12 @@ onBeforeUnmount(() => {
 <template>
 	<div class="flex flex-col pl-1 pr-5 lg:py-2 bg-extra_gray">
 		<!-- Días de la semana -->
-		<div ref="datesList" class="datesList">
-			<div v-for="(day, i) in dataWeek" :key="i" class="dateList-item">
+		<div 
+			ref="datesList" 
+			class="datesList" 
+			:style="{ gridTemplateColumns: `repeat(${esColegio ? 5 : 7}, minmax(73px, 1fr))` }"
+		>
+			<div v-for="(day, i) in filteredWeekDays" :key="i" class="dateList-item">
 				<div
 					class="dateList-item-text"
 					:class="{ isToday: day.getDay() === new Date().getDay() && !pdf }"
@@ -194,8 +229,11 @@ onBeforeUnmount(() => {
 				<div class="lg:h-[5px]"></div>
 			</div>
 			<!-- Grilla de cursos -->
-			<div class="calendar-grid relative">
-				<div v-for="(item, ix) in states.fullWeek" :key="item" class="relative">
+			<div 
+				class="calendar-grid relative" 
+				:style="{ gridTemplateColumns: `repeat(${esColegio ? 5 : 7}, minmax(73px, 1fr))` }"
+			>
+				<div v-for="(item, ix) in filteredFullWeek" :key="item" class="relative">
 					<div class="absolute top-0 w-full h-full">
 						<div class="h-[10px] border-b-[1px] border-neutral"></div>
 						<!-- cuadros horas y marca de hora actual -->
@@ -232,7 +270,7 @@ onBeforeUnmount(() => {
 
 <style lang="postcss" scoped>
 .datesList {
-	@apply ml-[40px] grid grid-cols-[repeat(7,_minmax(73px,_1fr))] mb-2 overflow-hidden;
+	@apply ml-[40px] grid mb-2 overflow-hidden;
 }
 .dateList-item {
 	@apply flex flex-col lg:flex-row items-center justify-center;
@@ -250,6 +288,6 @@ onBeforeUnmount(() => {
 	@apply mb-[25px] overflow-hidden;
 }
 .calendar-grid {
-	@apply grid grid-cols-[repeat(7,_minmax(73px,_1fr))];
+	@apply grid;
 }
 </style>

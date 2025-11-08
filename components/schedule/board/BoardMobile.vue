@@ -2,6 +2,10 @@
 import { scheduleState } from '~/stores/scheduleStates';
 import type { HorarioData } from '~/types/cursos.types';
 import { type WeekDates } from '~/types/schedule.types';
+import { TipoInstitucion } from '~/types/institucion.types';
+
+const tokenStore = useTokenStore();
+const esColegio = computed(() => tokenStore.getDataToken?.Tipo_Institucion === TipoInstitucion.Colegio);
 
 const props = defineProps<{
 	data: HorarioData | null;
@@ -118,6 +122,25 @@ const getTopAndHeight = (init: string, fin: string) => {
 
 const getNumDay = (day: number) => (day + 6) % 7;
 
+// Filtrar días de la semana para ocultar sábado y domingo cuando es colegio
+const filteredWeekDays = computed(() => {
+	const weekDaysArray = [
+		props.dataWeek.Monday,
+		props.dataWeek.Tuesday,
+		props.dataWeek.Wednesday,
+		props.dataWeek.Thursday,
+		props.dataWeek.Friday,
+		props.dataWeek.Saturday,
+		props.dataWeek.Sunday,
+	];
+	
+	if (esColegio.value) {
+		return weekDaysArray.slice(0, 5); // Solo lunes a viernes
+	}
+	return weekDaysArray;
+});
+
+
 const getSelectedDay = computed(() => {
 	const weekDates = props.dataWeek;
 	const selectedDay = Object.keys(props.dataWeek)[states.day];
@@ -145,9 +168,12 @@ onBeforeUpdate(() => {
 
 <template>
 	<div class="px-3 pt-1 mb-2">
-		<div class="datesList">
+		<div 
+			class="datesList" 
+			:style="{ gridTemplateColumns: `repeat(${esColegio ? 5 : 7}, minmax(40px, 1fr))` }"
+		>
 			<button
-				v-for="(item, i) in dataWeek"
+				v-for="(item, i) in filteredWeekDays"
 				:key="i"
 				class="dateList-item"
 				@click="eventClick(item)"
@@ -214,7 +240,7 @@ onBeforeUpdate(() => {
 
 <style lang="postcss" scoped>
 .datesList {
-	@apply grid grid-cols-[repeat(7,_minmax(40px,_1fr))] mb-4 mr-2;
+	@apply grid mb-4 mr-2;
 }
 .dateList-item {
 	@apply flex flex-col lg:flex-row items-center justify-center;

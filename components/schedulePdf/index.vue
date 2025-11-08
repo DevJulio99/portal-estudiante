@@ -1,278 +1,434 @@
 <script setup lang="ts">
 import { useDateFormat } from '@vueuse/core';
 import type { CourseExtend } from '~/types/cursos.types';
+import { scheduleState } from '~/stores/scheduleStates';
+import { TipoInstitucion } from '~/types/institucion.types';
+import { useTokenStore } from '~/stores/token';
 
-defineProps<{
-	dataHorario: { [key: string]: CourseExtend[] };
+const props = defineProps<{
 	dataWeek: any;
 	currentCicle: { start: string; end: string; cicle: string } | null;
 }>();
+
+const tokenStore = useTokenStore();
+const esColegio = computed(() => tokenStore.getDataToken?.Tipo_Institucion === TipoInstitucion.Colegio);
+const states = scheduleState();
+
+// Obtener días de la semana
+const weekDays = computed(() => {
+	const days = [
+		{ date: props.dataWeek.Monday, name: 'Lunes', index: 0 },
+		{ date: props.dataWeek.Tuesday, name: 'Martes', index: 1 },
+		{ date: props.dataWeek.Wednesday, name: 'Miércoles', index: 2 },
+		{ date: props.dataWeek.Thursday, name: 'Jueves', index: 3 },
+		{ date: props.dataWeek.Friday, name: 'Viernes', index: 4 },
+		{ date: props.dataWeek.Saturday, name: 'Sábado', index: 5 },
+		{ date: props.dataWeek.Sunday, name: 'Domingo', index: 6 },
+	];
+	
+	if (esColegio.value) {
+		return days.slice(0, 5); // Solo lunes a viernes
+	}
+	return days;
+});
+
+// Calcular horas mínimas y máximas de todos los cursos
+const timeRange = computed(() => {
+	let minHour = 24;
+	let maxHour = 0;
+	
+	states.fullWeek.forEach((day) => {
+		if (!day?.empty && day?.detalleHorario) {
+			day.detalleHorario.forEach((course: any) => {
+				const [startHour] = course.horaInicio.split(':').map(Number);
+				const [endHour] = course.horaFin.split(':').map(Number);
+				
+				if (startHour < minHour) minHour = startHour;
+				// Solo considerar hasta la última hora donde comienza un curso
+				// No agregar una hora extra si el curso termina exactamente en una hora
+				if (endHour > maxHour) {
+					maxHour = endHour;
+				}
+			});
+		}
+	});
+	
+	// Si no hay cursos, usar horario por defecto
+	if (minHour === 24) {
+		minHour = 7;
+		maxHour = 22;
+	}
+	
+	return { minHour, maxHour };
+});
+
+// Generar array de horas a mostrar (solo hasta la última hora donde comienza un curso)
+const hoursToShow = computed(() => {
+	const hours = [];
+	// Solo mostrar hasta la última hora donde comienza un curso
+	for (let h = timeRange.value.minHour; h < timeRange.value.maxHour; h++) {
+		hours.push(h);
+	}
+	return hours;
+});
+
+// Obtener cursos que comienzan en una hora específica (solo mostrar una vez)
+const getCoursesStartingAtHour = (dayIndex: number, hour: number) => {
+	const day = states.fullWeek[dayIndex];
+	if (!day || day.empty || !day.detalleHorario) return [];
+	
+	return day.detalleHorario.filter((course: any) => {
+		const [startHour] = course.horaInicio.split(':').map(Number);
+		return startHour === hour;
+	});
+};
+
+// Calcular cuántas filas debe abarcar un curso
+const getCourseRowSpan = (course: any) => {
+	const [startHour, startMin] = course.horaInicio.split(':').map(Number);
+	const [endHour, endMin] = course.horaFin.split(':').map(Number);
+	
+	const startTime = startHour * 60 + startMin;
+	const endTime = endHour * 60 + endMin;
+	const duration = endTime - startTime;
+	
+	// Calcular cuántas horas completas abarca (redondeado hacia arriba)
+	const hoursSpanned = Math.ceil(duration / 60);
+	return hoursSpanned;
+};
+
+// Fecha y hora de descarga
+const downloadDateTime = computed(() => {
+	return useDateFormat(new Date(), 'DD/MM/YYYY - hh:mm A', {
+		locales: 'es-ES',
+	}).value;
+});
 </script>
 
 <template>
-	<div>
-		<div class="w-full">
-			<div class="relative flex mb-4">
-				<nuxt-icon name="upn-black-logo" class="text-[70px] mr-auto" filled />
-				<div class="mr-auto pr-20">
-					<BaseTitle
-						class="!my-0"
-						:text="`HORARIO ${currentCicle?.cicle || ''}`"
-					/>
-					<p
-						v-if="currentCicle?.start && currentCicle?.end"
-						class="text-[#523C0F] font-bold text-[13px]"
-					>
-						{{
-							useDateFormat(currentCicle?.start, 'DD/MM/YY', {
-								locales: 'es-ES',
-							}).value
-						}}
-						-
-						{{
-							useDateFormat(currentCicle?.end, 'DD/MM/YY', { locales: 'es-ES' })
-								.value
-						}}
-					</p>
-				</div>
-				<div class="absolute right-0 top-0 text-right">
-					<p class="text-[12px]">Fecha y hora de descarga:</p>
-					<p class="text-[12px]">
-						{{
-							useDateFormat(new Date(), 'DD/MM/YY - hh:mm A', {
-								locales: 'es-ES',
-							}).value
-						}}
-					</p>
+	<div class="schedule-pdf-container">
+		<!-- Encabezado con título y fecha de descarga -->
+		<div class="schedule-header">
+			<div class="schedule-title-wrapper">
+				<BaseTitle class="schedule-title" text="HORARIO DE CLASES" />
+			</div>
+			<div class="download-info">
+				<p class="download-label">Fecha y hora de descarga:</p>
+				<p class="download-date">{{ downloadDateTime }}</p>
+			</div>
+		</div>
+
+		<!-- Tabla del horario -->
+		<div class="schedule-table">
+			<!-- Encabezado de días -->
+			<div class="schedule-row header-row">
+				<div class="schedule-cell hour-header"></div>
+				<div
+					v-for="day in weekDays"
+					:key="day.index"
+					class="schedule-cell day-header"
+				>
+					<p class="day-name">{{ day.name }}</p>
 				</div>
 			</div>
-			<div
-				class="flex stripe-custom bg-black text-white items-center gap-[44px] p-[14px]"
-			>
+
+			<!-- Contenedor de horas y días -->
+			<div class="schedule-body">
+				<!-- Columna de horas -->
+				<div class="hours-column">
+					<div
+						v-for="hour in hoursToShow"
+						:key="hour"
+						class="hour-row"
+					>
+						<div class="schedule-cell hour-cell">
+							<div class="hour-range">
+								<span class="hour-start">{{ hour.toString().padStart(2, '0') }}:00</span>
+								<span class="hour-separator">a</span>
+								<span class="hour-end">{{ (hour + 1).toString().padStart(2, '0') }}:00</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Columnas de días -->
 				<div
-					class="grid grid-cols-[30%_11%_34%_15%_10%] w-full font-telegraf font-extrabold text-[13px]"
+					v-for="day in weekDays"
+					:key="day.index"
+					class="day-column"
 				>
 					<div
-						class="text-center uppercase col-start-2"
-						:style="{ paddingBottom: '10px' }"
+						v-for="hour in hoursToShow"
+						:key="`${day.index}-${hour}`"
+						class="course-cell-wrapper"
 					>
-						Modalidad
+						<div class="schedule-cell course-cell"></div>
 					</div>
-					<div class="text-center uppercase" :style="{ paddingBottom: '10px' }">
-						Horario y aula
-					</div>
-					<div class="text-center uppercase" :style="{ paddingBottom: '10px' }">
-						Inicio y fin
-					</div>
-					<div class="text-center uppercase" :style="{ paddingBottom: '10px' }">
-						Estado
-					</div>
-				</div>
-			</div>
-			<div class="mt-4">
-				<div
-					v-for="(calendar, index) of dataHorario"
-					:key="`day${index}`"
-					class="flex flex-wrap gap-2 mb-4"
-				>
-					<span
-						v-if="
-							calendar &&
-							(calendar[0].statusCurso === 'Finalizado' ||
-								calendar[0].statusCurso === 'Retirado')
-						"
-						class="block text-black text-sm font-extrabold font-telegraf mb-2 capitalize"
+					<!-- Cursos posicionados absolutamente sobre toda la columna -->
+					<template
+						v-for="hour in hoursToShow"
+						:key="`courses-${day.index}-${hour}`"
 					>
-						{{ calendar[0].statusCurso }}
-					</span>
-					<template v-if="calendar">
-						<div
-							v-for="(detail, index_) of calendar"
-							:key="`detail${index_}`"
-							class="grid grid-cols-[30%_11%_34%_15%_10%] pl-2 pr-4 w-full rounded-lg py-[10px] item-cource items-center"
-							:class="[
-								detail.statusCurso.toLowerCase() === 'retirado' ||
-								detail.statusCurso.toLowerCase() === 'finalizado'
-									? 'bg-[#F6F6F6]'
-									: 'bg-white',
-								{
-									'border-primary border-s-8':
-										detail.modalidad.toLowerCase() === 'presencial',
-									'border-violet_60 border-s-8':
-										detail.modalidad.toLowerCase() === 'remoto',
-									'border-cyan_80 border-s-8':
-										detail.modalidad.toLowerCase() === 'virtual',
-								},
-							]"
+						<template
+							v-for="course in getCoursesStartingAtHour(day.index, hour)"
+							:key="`${day.index}-${hour}-${course.codMateria}`"
 						>
-							<div class="flex flex-wrap mb-[7px]">
-								<p
-									class="w-full block text-black font-telegraf text-[13px] font-extrabold leading-[1]"
-								>
-									{{ detail.descCurso }}
-								</p>
-								<span class="text-gray_80 font-telegraf text-[11px]">{{
-									detail.codCurso
-								}}</span>
-							</div>
-							<span class="text-[13px] font-telegraf text-black text-center">
-								{{ detail.modalidad }}
-							</span>
-							<div v-if="detail.horario?.length">
-								<div
-									v-for="(item, i) in detail.horario"
-									:key="i"
-									class="text-[13px] text-center"
-								>
-									<span class="capitalize">
-										{{ item.diaNombre }}
-										{{ item.horaInicio.slice(0, 5) }}
-										-
-										{{ item.horaFin.slice(0, 5) }}
-									</span>
-									{{ ' ' }}
-									<span class="text-[#808080]">
-										{{ item.campus }} {{ item.codAula }}
-									</span>
-								</div>
-							</div>
-							<span v-else class="text-center">-</span>
-							<span
-								v-if="detail.horario?.length"
-								class="text-[12px] font-telegraf text-black text-center"
-							>
-								Del
-								{{
-									useDateFormat(detail.horario[0].fechaInicio, 'DD-MM-YY', {
-										locales: 'es-ES',
-									}).value
-								}}
-								<br />
-								al
-								{{
-									useDateFormat(detail.horario[0].fechaFin, 'DD-MM-YY', {
-										locales: 'es-ES',
-									}).value
-								}}
-							</span>
-							<span v-else class="text-center">-</span>
-							<span
-								class="flex items-center justify-center text-[12px] font-telegraf font-bold text-center"
+							<div
+								class="course-item"
 								:class="{
-									'rounded-full bg-[#1F7634] text-white':
-										detail.statusCurso.toLowerCase() === 'iniciado',
-									'rounded-full text-[#1F7634] bg-[#C1F1CB]':
-										detail.statusCurso.toLowerCase() === 'por iniciar',
-									'rounded-full text-white bg-[#DC3545]':
-										detail.statusCurso.toLowerCase() === 'finalizado',
-									'rounded-full text-[#B7192C] bg-[#FCCFCF]':
-										detail.statusCurso.toLowerCase() === 'retirado',
+									'course-presencial': course.descripMetodoEducativo?.toLowerCase() === 'presencial',
+									'course-remoto': course.descripMetodoEducativo?.toLowerCase() === 'remoto',
+									'course-virtual': course.descripMetodoEducativo?.toLowerCase() === 'virtual',
 								}"
-								:style="{ paddingBottom: '10px' }"
+								:style="{
+									top: `${(hour - timeRange.minHour) * 80}px`,
+									height: `${getCourseRowSpan(course) * 80}px`,
+								}"
 							>
-								{{ detail.statusCurso }}
-							</span>
-							<!-- <span class="text-[13px] font-telegraf text-black text-center"
-							>{{ detail.descripAula }} - {{ detail.descripEdificio }}</span
-						> -->
-						</div>
+								<p class="course-name">{{ course.descripMateria }}</p>
+								<p class="course-time">
+									{{ course.horaInicio.slice(0, 5) }} - {{ course.horaFin.slice(0, 5) }}
+								</p>
+								<p class="course-code">{{ course.codMateria }}</p>
+							</div>
+						</template>
 					</template>
 				</div>
 			</div>
 		</div>
-		<ul class="flex c-legend text-[13px]">
-			<li>
-				<span
-					class="rounded-full bg-primary text-[13px] inline-block h-[10px] w-[10px] mr-[5px] mb-[-12px]"
-				></span>
-				Curso Presencial
-			</li>
-			<li>
-				<span
-					class="rounded-full bg-violet_60 text-[13px] inline-block h-[10px] w-[10px] mr-[5px] mb-[-12px]"
-				></span>
-				Curso Remoto
-			</li>
-			<li>
-				<span
-					class="rounded-full bg-cyan_80 text-[13px] inline-block h-[10px] w-[10px] mr-[5px] mb-[-12px]"
-				></span>
-				Curso Virtual
-			</li>
-		</ul>
-
-		<div id="newPage" class="relative flex justify-center items-center mb-4">
-			<nuxt-icon
-				name="upn-black-logo"
-				class="absolute left-0 text-[70px]"
-				filled
-			/>
-			<BaseTitle class="mt-0" text="HORARIO SEMANAL" />
-		</div>
-		<ScheduleBoardDesktop
-			:dataWeek="dataWeek"
-			:pending="false"
-			:errorService="null"
-			:error="null"
-			pdf
-		/>
-		<p class="text-[14px] mb-1">
-			Los cursos virtuales no aparecen en el horario semanal porque se realizan
-			de manera asincrónica; asegúrate de tenerlos en cuenta.
-		</p>
 	</div>
 </template>
-<style>
-.stripe-custom {
-	padding: 12px 16px;
+
+<style scoped>
+.schedule-pdf-container {
+	width: 100%;
+	padding: 20px;
 }
-.title-pdf {
+
+.schedule-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 30px;
 	position: relative;
-	padding-left: 0.75em;
-	font-family: solano;
-	font-size: 1.5em;
-	line-height: 2em;
-	line-height: 1;
-	color: var(--base-color);
 }
-.point {
-	display: inline-block;
-	width: 0.5em;
-	height: 0.5em;
-	border-radius: 10px;
-	margin-right: 5px;
+
+.schedule-title-wrapper {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
+	text-align: center;
+	pointer-events: none;
 }
-.c-legend li {
+
+.schedule-title {
+	margin: 0;
+}
+
+.download-info {
+	text-align: right;
+	margin-left: auto;
+}
+
+.download-label {
+	font-size: 11px;
+	color: #666;
+	margin: 0 0 4px 0;
+}
+
+.download-date {
+	font-size: 12px;
+	font-weight: bold;
+	color: #333;
+	margin: 0;
+}
+
+.schedule-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.schedule-row {
+	display: grid;
+	grid-template-columns: 70px repeat(auto-fit, minmax(120px, 1fr));
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.schedule-body {
+	display: grid;
+	grid-template-columns: 70px repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.hours-column {
+	display: flex;
+	flex-direction: column;
+}
+
+.hour-row {
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.day-column {
+	display: flex;
+	flex-direction: column;
+	border-right: 1px solid #e0e0e0;
+	position: relative;
+}
+
+.day-column:last-child {
+	border-right: none;
+}
+
+.course-cell-wrapper {
+	border-bottom: 1px solid #e0e0e0;
+	position: relative;
+	min-height: 80px;
+	height: 80px;
+}
+
+.schedule-cell {
+	padding: 8px;
+	border-right: 1px solid #e0e0e0;
+	min-height: 80px;
 	display: flex;
 	align-items: center;
-	margin-right: 10px;
-	line-height: 1;
 }
-.title-pdf::before {
+
+.header-row .schedule-cell {
+	min-height: auto !important;
+	height: auto !important;
+	padding: 12px 8px !important;
+}
+
+.schedule-cell:last-child {
+	border-right: none;
+}
+
+.hour-header {
+	background-color: #f5f5f5;
+	font-weight: bold;
+}
+
+.day-header {
+	background-color: #031448;
+	color: white;
+	text-align: center;
+	padding: 0 !important;
+	justify-content: center;
+	align-items: center;
+	min-height: auto !important;
+	height: auto !important;
+	display: flex;
+}
+
+.day-name {
+	font-weight: bold;
+	font-size: 13px;
+	margin: 0;
+	padding: 8px 8px 18px 8px;
+	text-align: center;
+	line-height: 1.3;
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.hour-cell {
+	background-color: #f9f9f9;
+	font-weight: 600;
+	font-size: 11px;
+	justify-content: center;
+	align-items: center;
+	color: #333;
+	text-align: center;
+	padding: 8px 4px;
+}
+
+.hour-range {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+}
+
+.hour-start,
+.hour-end {
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.hour-separator {
+	font-size: 9px;
+	font-weight: 400;
+	opacity: 0.7;
+}
+
+.course-cell {
+	background-color: white;
+	padding: 0;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	min-height: 80px;
+}
+
+.course-item {
+	width: calc(100% - 12px);
+	padding: 8px;
+	border-radius: 4px;
+	border-left: 4px solid;
+	box-sizing: border-box;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 	position: absolute;
-	left: 0px;
-	height: 23px;
-	width: 6px;
-	border-bottom-right-radius: 1.5rem;
-	background-color: var(--primary);
-	--tw-content: '';
-	content: var(--tw-content);
+	left: 6px;
+	right: 6px;
+	top: 0;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	z-index: 1;
 }
-.item-cource {
-	border-top: 1px solid #d9d9d9;
-	border-bottom: 1px solid #d9d9d9;
-	border-right: 1px solid #d9d9d9;
+
+.course-item:last-child {
+	margin-bottom: 0;
 }
-@media (min-width: 1024px) {
-	.title-pdf {
-		padding-left: 1rem;
-		font-size: 1.75rem;
-	}
-	.title-pdf::before {
-		top: -5px;
-		height: 40px;
-		content: var(--tw-content);
-		width: 8px;
-	}
+
+.course-presencial {
+	background-color: #e8f5e9;
+	border-left-color: #4caf50;
+}
+
+.course-remoto {
+	background-color: #f3e5f5;
+	border-left-color: #9c27b0;
+}
+
+.course-virtual {
+	background-color: #e0f7fa;
+	border-left-color: #00bcd4;
+}
+
+.course-name {
+	font-size: 12px;
+	font-weight: bold;
+	color: #333;
+	margin: 0 0 4px 0;
+	line-height: 1.3;
+}
+
+.course-time {
+	font-size: 11px;
+	color: #666;
+	margin: 0 0 2px 0;
+}
+
+.course-code {
+	font-size: 10px;
+	color: #999;
+	margin: 0;
 }
 </style>

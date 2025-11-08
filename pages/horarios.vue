@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 // @ts-ignore
-// import html2pdf from 'html2pdf.js';
+import html2pdf from 'html2pdf.js';
 import { useDateFormat } from "@vueuse/core";
 import { EventStatus } from "~/types/calendar.types";
 import type { HorarioData, CourseExtend } from "~/types/cursos.types";
 import type { RangeWeek, WeekDates } from "~/types/schedule.types";
 import dataHorarioMock from "~/utils/data/dataHorarioMock.json";
+import { logoBase64 } from '~/utils/logoPortal';
 
 const { $api } = useNuxtApp();
 const { codAlum } = useUserStoreAuth();
@@ -27,7 +28,6 @@ const states = scheduleState();
 const weekDate = getWeekDates();
 const dataHorario = ref<HorarioData[]>([]);
 const dataWeek = ref<WeekDates>(weekDate);
-const dataPdf = ref<{ [key: string]: CourseExtend[] }>({});
 const loadingPdf = ref(false);
 const startDate = ref<string>(
   `${useDateFormat(weekDate.Monday, "YYYY-MM-DD").value}T00:00:00Z`
@@ -67,28 +67,70 @@ watch(data, (response) => {
 // 	});
 
 const generatePDF = async () => {
-  // loadingPdf.value = true;
-  // const newData = await useGeneratePdf(
-  // 	codAlum,
-  // 	profileData.data?.codNivel || '',
-  // 	profileData.data?.codPeriodoBanner || '',
-  // );
-  // dataPdf.value = newData;
-  // const content = document.getElementById('pdf-content');
-  // const pdfOptions = {
-  // 	margin: 5,
-  // 	filename: 'horario-semanal.pdf',
-  // 	image: { type: 'jpeg', quality: 0.98 },
-  // 	html2canvas: {
-  // 		scale: 2,
-  // 		dpi: 192,
-  // 		letterRendering: true,
-  // 	},
-  // 	jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-  // 	pagebreak: { mode: 'avoid-all', before: '#newPage' },
-  // };
-  // await html2pdf().from(content).set(pdfOptions).outputPdf().save();
-  // loadingPdf.value = false;
+  if (!dataHorario.value.length) {
+    return;
+  }
+
+  loadingPdf.value = true;
+
+  try {
+    await nextTick();
+
+    const content = document.getElementById('pdf-content');
+    if (!content) {
+      console.error('No se encontró el contenido para generar el PDF');
+      loadingPdf.value = false;
+      return;
+    }
+
+    const isMobile = window.innerWidth < 1024;
+    const pdfOptions = {
+      margin: 5,
+      filename: 'horario-clases.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: isMobile ? 1.5 : 2,
+        dpi: 192,
+        letterRendering: true,
+        useCORS: true,
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: 'avoid-all' },
+    };
+
+    const pdfBlob = await html2pdf()
+      .from(content)
+      .set(pdfOptions)
+      .toPdf()
+      .get('pdf')
+      .then((pdf: any) => {
+        const totalPages = pdf.internal.getNumberOfPages();
+        const logoWidth = isMobile ? 25 : 31.13;
+        const logoHeight = isMobile ? 4.33 : 5.4;
+        const logoX = isMobile ? 5 : 6.5;
+        const logoY = 10;
+
+        for (let i = 1; i <= totalPages; i++) {
+          pdf.setPage(i);
+          pdf.addImage(logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight);
+        }
+
+        return pdf.output('blob');
+      });
+
+    // Descargar el PDF
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(pdfBlob);
+    link.download = 'horario-clases.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(link.href), 100);
+  } catch (error) {
+    console.error('Error al generar el PDF:', error);
+  } finally {
+    loadingPdf.value = false;
+  }
 };
 
 const actionWeek = (range: RangeWeek) => {
@@ -119,7 +161,6 @@ onMounted(() => {
     <div class="layout-container">
       <div id="pdf-content" ref="pdfSection" class="mt-[18px]">
         <SchedulePdf
-          :dataHorario="dataPdf"
           :dataWeek="dataWeek"
           :current-cicle="states.currentCicle"
         />
