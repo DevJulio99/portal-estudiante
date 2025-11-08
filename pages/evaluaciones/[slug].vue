@@ -120,7 +120,18 @@ watch(() => examenStore.lista, (examenes)  => {
   if(examenes.length){
     totalQuestions.value = examenes.length;
     preguntaStore.totalPreguntas = examenes.length;
-    examenStore.setpreguntaActual();
+
+    const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+    const ultimaPreguntaGuardada = localStorage.getItem(`progreso_evaluacion_${idCompetencia}`);
+
+
+    if (ultimaPreguntaGuardada) {
+      const numeroPregunta = parseInt(ultimaPreguntaGuardada, 10);
+      preguntaStore.setPregunta(numeroPregunta);
+      examenStore.setpreguntaActual(numeroPregunta);
+    }else {
+      examenStore.setpreguntaActual();
+    }
   }
 });
 
@@ -227,6 +238,11 @@ const onNext = (resumen: ResumenPregunta) => {
   onActionQuestion(resumen);
   //opcionSeleccionada.value = '';
   preguntaStore.setOpcionSeleccionada('');
+  const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+  if (idCompetencia) {
+    localStorage.setItem(`progreso_evaluacion_${idCompetencia}`, String(resumen.currentQuestion));
+  }
+
   examenStore.setpreguntaActual(resumen.currentQuestion);
 }
 

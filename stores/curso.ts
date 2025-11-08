@@ -66,7 +66,6 @@ export const useCursoStore = defineStore('cursoStore', {
             this.pendingTable = true;
 			this.lista = [];
 			const request = {
-				codigoSede: tokenStore.getDataToken.Codigo_Sede,
 				...this.paginado
 			}
 
@@ -164,7 +163,6 @@ export const useCursoStore = defineStore('cursoStore', {
 			this.activeFilter = true;
 
 			const request = {
-				codigoSede: tokenStore.getDataToken.Codigo_Sede,
 				filtro: value,
 				pagina: this.paginado.pagina,
 				itemsPorPagina: this.paginado.itemsPorPagina,

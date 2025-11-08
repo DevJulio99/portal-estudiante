@@ -27,7 +27,7 @@ export interface Paginado {
 }
 
 export interface ListaCurso extends Paginado {
-    codigoSede: string;
+    codigoSede?: string;
 }
 
 export interface FiltroCurso extends ListaCurso {
