@@ -15,7 +15,7 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
     listaCompetencia: [],
     tiempo: 0,
     pending: true,
-    competenciaSeleccionada: localStorage.getItem('comp') ? JSON.parse(localStorage.getItem('comp') as string) : null,
+    competenciaSeleccionada: null,
     llegoAlFinal: false,
     finalizoCompetencia: false
   }),
@@ -26,7 +26,6 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
     },
     setCompetenciaSeleccionada(data: Competencia){
       this.competenciaSeleccionada = data;
-      localStorage.setItem('comp', JSON.stringify(data))
     },
     setTiempoCompetencia(data: Competencia) {
       if(data.tiempoLimite){
@@ -44,7 +43,7 @@ export const useCompetenciaStore = defineStore("competenciaStore", {
       this.pending = true;
       this.tiempo = 0;
       this.competenciaSeleccionada = null;
-      localStorage.removeItem('comp');
+      this.finalizoCompetencia = false;
     },
     async getLista() {
       try {

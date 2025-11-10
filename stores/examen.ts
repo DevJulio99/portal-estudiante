@@ -8,6 +8,7 @@ interface stateEstado {
     preguntaActual: Examen | null;
     respuestaSeleccionada: string | null;
     bancoRespuestas: BancoRespuesta[];
+    tiempoRestanteInicial: number | null;
     error: ErrorResponsePortal | null;
     guardadoPendiente: Boolean;
     pending: boolean;
@@ -20,6 +21,7 @@ export const useExamenStore = defineStore("examen", {
     preguntaActual: null,
     respuestaSeleccionada: null,
     bancoRespuestas: [],
+    tiempoRestanteInicial: null,
     error: null,
     guardadoPendiente: false,
     pending: true
@@ -30,6 +32,7 @@ export const useExamenStore = defineStore("examen", {
       this.preguntaActual = null;
       this.respuestaSeleccionada = null;
       this.bancoRespuestas = [];
+      this.tiempoRestanteInicial = null;
       this.error = null;
       this.guardadoPendiente = false;
       this.pending = true;
@@ -100,7 +103,10 @@ export const useExamenStore = defineStore("examen", {
         const request = {
           idPostulante: this.preguntaActual.examenGenerado.idPostulante,
           idPregunta: this.preguntaActual.examenGenerado.idPregunta,
-          respuestSeleccionada: opcion.respuestaSeleccionada
+          respuestSeleccionada: opcion.respuestaSeleccionada,
+          idCompetencia: opcion.idCompetencia,
+          ultimaPregunta: opcion.numeroPregunta,
+          tiempoUltimaPregunta: opcion.tiempoUltimaPregunta
         }
         await useNuxtApp().$api.examen.actualizarRespuesta(request);
         this.guardadoPendiente = false;

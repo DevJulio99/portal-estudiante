@@ -48,6 +48,7 @@ const showPreviewImage = ref({
 const finalizedBefore = ref(false);
 const wasNotSaved = ref(false);
 const forceNext = ref(false);
+const tiempoRestanteMs = ref(0);
 const responsesData = ref<any[]>([]);
 
 const competencia = ref<Competencia | null>();
@@ -100,6 +101,12 @@ watch([dataEstados, errorEstados, isLoadingEstados], async ([estados, error, loa
 
   if(estados?.data?.length){
     estadoStore.lista = estados.data;
+    const estadoActual = estados.data[0];
+    if (estadoActual) {
+      if (estadoActual.tiempoUltimaPregunta) {
+        examenStore.tiempoRestanteInicial = estadoActual.tiempoUltimaPregunta;
+      }
+    }
     await getExamenes();
     return;
   }
@@ -121,14 +128,14 @@ watch(() => examenStore.lista, (examenes)  => {
     totalQuestions.value = examenes.length;
     preguntaStore.totalPreguntas = examenes.length;
 
-    const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
-    const ultimaPreguntaGuardada = localStorage.getItem(`progreso_evaluacion_${idCompetencia}`);
+    const estadoActual = estadoStore.lista[0];
+    const ultimaPreguntaGuardada = estadoActual?.ultimaPregunta;
 
 
     if (ultimaPreguntaGuardada) {
-      const numeroPregunta = parseInt(ultimaPreguntaGuardada, 10);
-      preguntaStore.setPregunta(numeroPregunta);
+      const numeroPregunta = Number(ultimaPreguntaGuardada);
       examenStore.setpreguntaActual(numeroPregunta);
+      preguntaStore.setPregunta(numeroPregunta);
     }else {
       examenStore.setpreguntaActual();
     }
@@ -177,7 +184,9 @@ const guardarRespuesta = () => {
   wasNotSaved.value = false;
   const data = {
     numeroPregunta: preguntaActual.value?.preguntas.numeroPregunta ?? 0,
-    respuestaSeleccionada: opcionSeleccionada.value
+    respuestaSeleccionada: opcionSeleccionada.value,
+    idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
+    tiempoUltimaPregunta: tiempoRestanteMs.value
   }
   data.respuestaSeleccionada.trim().length && examenStore.setBancoRespuesta(data);
   // console.log('responsesData', responsesData.value)
@@ -197,7 +206,9 @@ const ultimaPregunta = () => {
     if(opcionSeleccionada.value.trim().length){
       const data = {
        numeroPregunta: totalQuestions.value,
-       respuestaSeleccionada: opcionSeleccionada.value
+       respuestaSeleccionada: opcionSeleccionada.value,
+       idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
+       tiempoUltimaPregunta: tiempoRestanteMs.value
       }
       examenStore.setBancoRespuesta(data);
       examenStore.setpreguntaActual(totalQuestions.value);
@@ -238,11 +249,7 @@ const onNext = (resumen: ResumenPregunta) => {
   onActionQuestion(resumen);
   //opcionSeleccionada.value = '';
   preguntaStore.setOpcionSeleccionada('');
-  const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
-  if (idCompetencia) {
-    localStorage.setItem(`progreso_evaluacion_${idCompetencia}`, String(resumen.currentQuestion));
-  }
-
+  preguntaStore.setPregunta(resumen.currentQuestion);
   examenStore.setpreguntaActual(resumen.currentQuestion);
 }
 
@@ -287,6 +294,7 @@ const finalizarCompetencia = () => {
 }
 
 onMounted(() => {
+  examenStore.resetExamen();
   if(!examenStore.lista.length) {
     examenStore.pending = true;
   }
@@ -334,16 +342,6 @@ onMounted(() => {
   }, 0);
 })
 
-onBeforeUnmount(() => {
-  const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-
-  if (navigationEntry?.type === 'reload') return;
-  postulanteStore.setHabilitado(0);
-  competenciaStore.resetCompetencia();
-  examenStore.resetExamen();
-  preguntaStore.setPregunta(1);
-  preguntaStore.setResumenActivo(false);
-});
 
 const imagenCargada = ref(false);
 const imagenUrl = ref("");
@@ -389,11 +387,13 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center my-5">        
         <div class="order-1 lg:order-3 flex justify-center lg:justify-end mt-2 mb-4 lg:my-0">
           <TiempoEvaluacion
+            v-model="tiempoRestanteMs"
             customClass="w-full flex justify-center lg:w-fit"
             :onExpired="EvaluacionExpirada"
             :stop="finishQuestion"
             :onfinish="(data) => timeData = data"
             :init="true"
+            :initialTimeMs="examenStore.tiempoRestanteInicial"
           />
         </div>
         <div class="hidden lg:block order-2"></div>        
