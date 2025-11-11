@@ -116,9 +116,7 @@ export const usePagoStore = defineStore('PagoStore', {
             this.limpiarPago();
 			if(serviceImagenPago.data.value?.error) return	
             
-            await $api.pagos.getPagosPendientes(parseInt(tokenStore.getDataToken.Id_Alumno), new Date().getFullYear(), {
-                lazy: true,
-            })
+			this.listarPagosPendientes();
 		}
 	},
 });
