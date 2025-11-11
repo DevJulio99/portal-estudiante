@@ -49,7 +49,7 @@
     {
         "id": 5,
         "etiqueta": "total-pagos",
-        "nombre": "Total Pagos",
+        "nombre": "Gestión de Pagos",
         "url": "/total-pagos",
         "icono": "../public/images/pagos.svg",
         "es_nuevo": false,

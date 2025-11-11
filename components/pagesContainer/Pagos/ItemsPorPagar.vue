@@ -20,6 +20,7 @@ const columns = [
 	{ key: 'saldo', label: 'SALDO' },
 	{ key: 'mora', label: 'MORA' },
 	{ key: 'totalAPagar', label: 'TOTAL A PAGAR' },
+	{ key: 'estado', label: 'ESTADO' },
 	{ key: 'subir', label: 'SUBIR' },
 	{ key: 'detalle', label: 'DETALLE', isAction: true }
 ];
@@ -45,11 +46,33 @@ const dateIsExpired = (strFechaDoc: string) => {
 	return fechaDocumento < fechaActual;
 };
 
-const SubirImagen = (idPago: number) => {
+const SubirImagen = (idPago: number, estado?: string) => {
+	// No permitir subir si está en revisión
+	if (estado === 'En Revisión') {
+		return;
+	}
 	pagoStore.setPago(idPago);
 	toggleHiddenScroll();
 	popupCaptcha.value = true;
 }
+
+const getEstadoBadgeClass = (estado?: string) => {
+	if (!estado) return 'bg-gray-100 text-gray-800';
+	switch (estado) {
+		case 'En Revisión':
+			return 'bg-yellow-100 text-yellow-800';
+		case 'Rechazado':
+			return 'bg-red-100 text-red-800';
+		case 'Aprobado':
+			return 'bg-green-100 text-green-800';
+		default:
+			return 'bg-gray-100 text-gray-800';
+	}
+}
+
+const pagosRechazados = computed(() => {
+	return pagoStore.lista.filter(p => p.estado === 'Rechazado' && p.observaciones);
+});
 
 const montoTotalPagar = computed(() => {
   return pagoStore.lista.reduce((total, item) => {
@@ -143,9 +166,30 @@ onMounted(() => {
 				<strong>S/ {{ item.totalAPagar.toFixed(2) }}</strong>
 			</template>
 
+			<template #cell-estado="{ item }">
+				<div class="flex justify-center">
+					<span 
+						:class="getEstadoBadgeClass(item.estado)"
+						class="px-2 py-1 rounded-full text-xs font-semibold"
+					>
+						{{ item.estado || 'Pendiente' }}
+					</span>
+				</div>
+			</template>
+
 			<template #cell-subir="{ item }">
 				<div class="flex justify-center">
-					<ImageUploader @click="() => SubirImagen(item.idPago)"/>
+					<div 
+						v-if="item.estado === 'En Revisión'"
+						class="p-2 bg-gray-300 rounded-lg cursor-not-allowed opacity-50"
+						title="El comprobante ya fue enviado y está en revisión"
+					>
+						<nuxt-icon name="icon-upload" filled class="text-[18px] text-gray-500" />
+					</div>
+					<ImageUploader 
+						v-else
+						@click="() => SubirImagen(item.idPago, item.estado)"
+					/>
 				</div>
 			</template>
 
@@ -165,6 +209,19 @@ onMounted(() => {
 				</div>
 			</template>
 		</BaseTable>
+
+		<!-- Mostrar observaciones de pagos rechazados -->
+		<div 
+			v-if="pagosRechazados.length > 0"
+			class="mt-4 p-4 bg-red-50 border border-red-200 rounded-md"
+		>
+			<p class="text-sm font-semibold text-red-800 mb-2">Pagos Rechazados:</p>
+			<div v-for="pago in pagosRechazados" :key="pago.idPago" class="mb-2">
+				<p class="text-xs text-red-700">
+					<strong>Documento {{ pago.documentoPago }}:</strong> {{ pago.observaciones }}
+				</p>
+			</div>
+		</div>
 
 		<div class="flex justify-between mt-7 items-center">
 			<p class="mb-0 lg:text-[16px] text-[14px] font-extrabold">Monto total:</p>

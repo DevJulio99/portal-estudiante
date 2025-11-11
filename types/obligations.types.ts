@@ -22,6 +22,7 @@ export interface Pago {
 	numeroCuota: number;
 	importe: number;
 	montoPagado: number;
+	idPagoOrigen?: number | null; // Para rastrear el pago original
 }
 export interface ObligacionPagada {
 	periodo: string;
