@@ -164,7 +164,7 @@ onUnmounted(() => {
                 </div>
 
                 <div class="mt-6 flex justify-end gap-2">
-                    <BaseButton :disabled="isLoading" type="submit" styles="btn-primary">
+                    <BaseButton :disabled="isLoading" type="submit" styles="btn-primary px-4">
                         <template v-if="isLoading">
                             <BaseStatusLoading />
                         </template>
@@ -172,7 +172,7 @@ onUnmounted(() => {
                             Subir
                         </template>
                     </BaseButton>
-                    <BaseButton @click="resetForm(); $emit('close')" styles="btn-cancel">Cancelar</BaseButton>
+                    <BaseButton @click="resetForm(); $emit('close')" styles="btn-cancel px-4">Cancelar</BaseButton>
                 </div>
             </form>
         </div>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import type { DataDocumento, ResponseCategoria } from '~/types/documento.types';
 import type { ErrorResponse } from '~/types/services.types';
 import { Roles } from '~/types/roles.types';
@@ -56,24 +56,19 @@ const reloadDocuments = async() => {
 });
 }
 
-const filterMock = [
-	{
+const filterOptions = computed(() => {
+	const todosOption = {
 		id: 0,
 		name: 'Todos',
-	},
-	{
-		id: 1,
-		name: 'Reglamentos',
-	},
-	{
-		id: 2,
-		name: 'Manuales',
-	},
-	{
-		id: 3,
-		name: 'Estatutos',
-	},
-];
+	};
+	
+	const categoriasOptions = categories.value.map((cat) => ({
+		id: cat.id,
+		name: cat.nombre,
+	}));
+	
+	return [todosOption, ...categoriasOptions];
+});
 
 const orderMock = [
 	{
@@ -460,7 +455,7 @@ const showUploadModal = ref(false);
 								icon="iconFilter"
 								class="w-[154px] md:w-[149px]"
 								label=""
-								:options="filterMock"
+								:options="filterOptions"
 								responsivePlaceholder="Filtrar"
 								borderDefault="border-darkBlue"
 								@change="handleChangeSelect"

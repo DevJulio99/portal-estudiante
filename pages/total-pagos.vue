@@ -25,7 +25,7 @@ onBeforeUnmount(() => {
 	<BaseLayout :rightAside="false" class="relative" bgWhite>
 		<BaseBreadcrumbs :items="breadcrumbsItem" />
 		<div class="flex items-center gap-2">
-			<BaseTitle text="Todos los Pagos" />
+			<BaseTitle text="Gestión de Pagos" />
 			<nuxt-icon name="clockPagos" filled class="text-[21px] cursor-pointer" />
 		</div>
 		<ItemTotalPagos />

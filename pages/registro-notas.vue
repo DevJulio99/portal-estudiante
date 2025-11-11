@@ -389,7 +389,7 @@ const guardarNotas = async () => {
 <template>
   <div class="p-4">
     <BaseBreadcrumbs :items="breadcrumbsItem" />
-    <h1 class="text-2xl font-bold mb-4">Registro de Notas</h1>
+    <BaseTitle text="Registro de Notas"></BaseTitle>
 
     <div v-if="isFromMatricula" class="bg-white p-4 rounded-lg shadow-md mb-6">
         <div class="flex justify-between items-start mb-4">
