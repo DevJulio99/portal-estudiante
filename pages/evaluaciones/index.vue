@@ -6,6 +6,8 @@ const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
 const competenciaStore = useCompetenciaStore();
 const examenStore = useExamenStore();
+const preguntaStore = usePreguntaStore();
+const estadoStore = useEstadoCompetenciaStore();
 const existeProfile = ref(0);
 const noHabilitado = ref();
 
@@ -39,17 +41,24 @@ watch(() => postulanteStore.habilitado , (habilitado) => {
   procesarHabilitado();
 })
 
-onMounted(() => {
+const resetAndLoad = async () => {
   competenciaStore.finalizoCompetencia = false;
   examenStore.resetExamen();
-  
+  competenciaStore.resetCompetencia();
+  preguntaStore.setPregunta(1);
+  preguntaStore.setResumenActivo(false);
+  estadoStore.setLista([]);
+  estadoStore.setData(null);
+
   if(existeProfile.value){
-    profileStore.postulanteHabilitado();
+    await profileStore.postulanteHabilitado();
     if(postulanteStore.habilitado !== 0){
       procesarHabilitado();
     }
   }
-})
+}
+
+onMounted(resetAndLoad);
 
 </script>
 

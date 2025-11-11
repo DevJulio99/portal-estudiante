@@ -15,7 +15,7 @@ export const useEstadoCompetenciaStore = defineStore("estadoCompetencia", {
     error: null,
   }),
   actions: {
-    setData(data: DataResponse<EstadoCompencia[]>) {
+    setData(data: DataResponse<EstadoCompencia[]> | null) {
       this.data = data;
     },
     setError(err: any) {

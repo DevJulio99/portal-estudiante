@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 
 export interface timeEvaluation {
   hour: string;
@@ -14,6 +15,7 @@ const props = withDefaults(
   onfinish?: (time: timeEvaluation) => void;
   timeDefect?: timeEvaluation;
   customClass?: string;
+  initialTimeMs?: number | null;
 }>(),
 {
   init: true,
@@ -21,121 +23,136 @@ const props = withDefaults(
   onfinish: () => {},
   onExpired: () => {},
   customClass: ''
-}
+  }
 );
 
-const littleTime = ref(true);
-const wasStopped = ref(false);
-const intervalTime = ref();
-const stopTime = ref({
-  countDownData: 0,
-  now: 0
-});
+// Variable reactiva para el tiempo restante, expuesta a través de v-model.
+const remainingTime = defineModel<number>({ default: 0 }); // Tiempo restante en milisegundos
+const hours = computed(() => Math.floor((remainingTime.value % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+const minutes = computed(() => Math.floor((remainingTime.value % (1000 * 60 * 60)) / (1000 * 60)));
+const seconds = computed(() => Math.floor((remainingTime.value % (1000 * 60)) / 1000));
+const littleTime = computed(() => minutes.value <= 20 && hours.value === 0);
+
+// Formatea el tiempo para que siempre tenga dos dígitos
+const formattedHours = computed(() => formatTime(hours.value));
+const formattedMinutes = computed(() => formatTime(minutes.value));
+const formattedSeconds = computed(() => formatTime(seconds.value));
+
+// Variable para controlar el intervalo
+let intervalId: ReturnType<typeof setInterval> | null = null;
 
 const storeCompetencia = useCompetenciaStore();
 
-watch(() => storeCompetencia.tiempo, (tiempo)  => {
-  if(tiempo > 0 ){
-    initTime(tiempo);
+const parseTimeToMilliseconds = (timeString: string): number => {
+  if (!timeString || !/^\d{2}:\d{2}:\d{2}$/.test(timeString)) {
+    return 0;
   }
-});
+  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  return (hours * 3600 + minutes * 60 + seconds) * 1000;
+};
 
-const initTime = (countDownDate_?: number, now_?: number) => {
-  var timeEvaluation = 5;
-
-  var countDownDate = countDownDate_ ?? new Date(new Date().getTime() + (timeEvaluation * 60 * 1000)).getTime();//new Date("Jan 5, 2030 15:37:25").getTime();
-
-  const elememtTime = document.getElementById("time-test");
-  const elememtHour = document.getElementById("hour");
-  const elememtMin = document.getElementById("min");
-  const elememtSeg = document.getElementById("seg");
-  // console.log('countDownDate', countDownDate);
-  // var currentDate = new Date();
-  // now_ && currentDate.setTime(now_);
-// Update the count down every 1 second
-intervalTime.value = setInterval(function() {
-  var current =  new Date();
-  // Get today's date and time
-  var now =  current.getTime();
-  // console.log('now interval', now);
-  // console.log('current interval', current);
-
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
-
-  // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  if(elememtHour && elememtMin && elememtSeg){
-     // Output the result in an element with id="time-test"
-  // elememtTime.innerHTML = days + "d " + hours + "h "
-  // + minutes + "m " + (seconds < 10 ? `0${seconds}` : seconds) + "s ";
-  elememtHour.innerHTML = formatTime(hours);
-  elememtMin.innerHTML = formatTime(minutes);
-  elememtSeg.innerHTML = formatTime(seconds);
-
-  if(minutes > 20) {
-    littleTime.value = false;
+const initializeCountdown = () => {
+  // Si se proporciona un tiempo inicial en ms, usarlo con prioridad.
+  if (props.initialTimeMs && props.initialTimeMs > 0) {
+    startTimer(props.initialTimeMs / 1000); // Convertir a segundos
+    return;
   }
 
-  if(minutes <= 20) {
-    littleTime.value = true;
+  const competencia = storeCompetencia.competenciaSeleccionada;
+  if (!competencia || !competencia.horaInicio || !competencia.tiempoLimite) {
+    return;
   }
 
-  // If the count down is over, write some text
-  if (distance < 0) {
-    clearInterval(intervalTime.value);
-    elememtHour.innerHTML = '00';
-    elememtMin.innerHTML = '00';
-    elememtSeg.innerHTML = '00';
-    props.onExpired && props.onExpired();
-    // elememtTime.innerHTML = "EXPIRED";
-  }
+  const { horaInicio, tiempoLimite } = competencia;
 
-  if(props.stop){
-    clearInterval(intervalTime.value);
-    // console.log('distance', distance);
-    // console.log('countDownDate', countDownDate);
-    // console.log('now', now);
-    stopTime.value = {
-      countDownData: countDownDate,
-      now
-    };
-    props.onfinish({
-      hour: elememtHour.innerText,
-      min: elememtMin.innerText,
-      seg: elememtSeg.innerText
-    })
-  }
-  }
-}, 1000);
-}
+  // 1. Crear la fecha de inicio para hoy
+  const startTime = new Date();
+  const [startHours, startMinutes, startSeconds] = horaInicio.split(':').map(Number);
+  startTime.setHours(startHours, startMinutes, startSeconds, 0);
 
+  // 2. Calcular la duración en milisegundos
+  const durationMs = parseTimeToMilliseconds(tiempoLimite);
+
+  // 3. Calcular la hora de finalización
+  const endTime = new Date(startTime.getTime() + durationMs);
+
+  // 4. Calcular el tiempo restante
+  const now = new Date();
+  const remainingMs = endTime.getTime() - now.getTime();
+  console.log('remainingMs:', remainingMs);
+  if (remainingMs > 0) {
+    startTimer(remainingMs / 1000); // Convertir a segundos
+  } else {
+    // Si el tiempo ya expiró al cargar, llamamos a onExpired directamente.
+    remainingTime.value = 0;
+    props.onExpired();
+  }
+};
+
+// Función para formatear el tiempo (añade un 0 delante si es menor que 10)
 const formatTime = (time: number) => time < 10 ? `0${time}` : `${time}`;
 
-onMounted(() => {
-  setTimeout(() => {
-    props.init && initTime(storeCompetencia.tiempo);
-  }, 0);
+// Función para iniciar el temporizador
+const startTimer = (durationInSeconds: number) => {
+console.log('startTimer:', durationInSeconds);
+  remainingTime.value = durationInSeconds * 1000; // Convertir a milisegundos
+
+  // Limpiar el intervalo anterior si existe
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+
+  // Establecer el intervalo para actualizar el tiempo restante cada segundo
+  intervalId = setInterval(() => {
+    remainingTime.value -= 1000;
+
+    // Si el tiempo se agota
+    if (remainingTime.value <= 0) {
+      clearInterval(intervalId);
+      remainingTime.value = 0;
+      props.onExpired();
+    }
+  }, 1000);
+};
+
+// Detener el temporizador cuando la prop 'stop' cambie a true
+watch(() => props.stop, (isStopped) => {
+  if (isStopped) {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+
+      // Llama a la función onfinish con el tiempo restante
+      props.onfinish({
+        hour: formattedHours.value,
+        min: formattedMinutes.value,
+        seg: formattedSeconds.value
+      });
+    }
+  } else {
+    // Si se reanuda el temporizador, volver a iniciarlo con el tiempo restante
+    startTimer(remainingTime.value / 1000);
+  }
 });
 
-onBeforeUpdate(() => {
-  if(wasStopped.value){
-    console.log('se detuvo va a volver a empezar');
-    wasStopped.value = false;
-    initTime(stopTime.value.countDownData, stopTime.value.now);
+// Observar cambios en la competencia seleccionada para iniciar el temporizador
+watch(() => storeCompetencia.competenciaSeleccionada, (competencia) => {
+  if (competencia) {
+    initializeCountdown();
   }
-  if(props.stop){
-    wasStopped.value = true;
-  }
-})
+}, { immediate: true });
 
+// Iniciar el temporizador cuando el componente se monta
+onMounted(() => {
+  initializeCountdown();
+});
+
+// Limpiar el intervalo cuando el componente se desmonta
 onBeforeUnmount(() => {
-  clearInterval(intervalTime.value);
-})
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+});
 </script>
 
 <template>
@@ -143,28 +160,17 @@ onBeforeUnmount(() => {
     <div id="time-test"></div>
     <div class="flex gap-[5px] text-gray_80 items-center">
       <div class="time-ev">
-        <p>Hora</p>
-        <div>
-          <span id="hour"
-            >{{ timeDefect?.hour ?? '00' }}</span
-          >
-        </div>
+        <p>Hora</p><div><span>{{ formattedHours }}</span></div>
       </div>
       <div class="relative top-[6px]">:</div>
       <div class="time-ev">
-        <p>Min</p>
-        <div>
-          <span id="min"
-            >{{ timeDefect?.min ?? '00' }}</span
-          >
-        </div>
+        <p>Min</p><div><span>{{ formattedMinutes }}</span></div>
       </div>
       <div class="relative top-[6px]">:</div>
       <div class="time-ev">
-        <p>Seg</p>
-        <div>
-          <span id="seg"
-            >{{ timeDefect?.seg ?? '00' }}</span
+        <p>Seg</p><div>
+          <span
+            >{{ formattedSeconds }}</span
           >
         </div>
       </div>

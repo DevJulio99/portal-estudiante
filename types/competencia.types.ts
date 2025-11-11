@@ -5,6 +5,8 @@ export interface EstadoCompencia {
     estado: string;
     tiempoIniciado: string;
     tiempoFinalizado: string;
+    ultimaPregunta: number;
+    tiempoUltimaPregunta: number;
 }
 
 export interface RequestEstado {

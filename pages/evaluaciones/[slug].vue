@@ -48,6 +48,7 @@ const showPreviewImage = ref({
 const finalizedBefore = ref(false);
 const wasNotSaved = ref(false);
 const forceNext = ref(false);
+const tiempoRestanteMs = ref(0);
 const responsesData = ref<any[]>([]);
 
 const competencia = ref<Competencia | null>();
@@ -64,55 +65,37 @@ const competenciaActual = computed(() => competenciaStore.competenciaSeleccionad
 const preguntaActual = computed(() => examenStore.preguntaActual)
 const opcionSeleccionada = computed(() => preguntaStore.opcionSeleccionada)
 
-const dataEstados = ref<any>(null);
-const errorEstados = ref<any>(null);
-const isLoadingEstados = ref(true);
-
 watch([
   () => postulanteStore.data?.idPostulante,
   () => competenciaActual.value?.id_compentencia
-], async ([idPostulante, idCompetencia]) => {
+], async ([idPostulante, idCompetencia], [oldIdPostulante, oldIdCompetencia]) => {
+  if (idPostulante === oldIdPostulante && idCompetencia === oldIdCompetencia) {
+    return;
+  }
+
   if (idPostulante && idCompetencia) {
-    isLoadingEstados.value = true;
-    const resp = await $api.estado.getListarEstado(idPostulante, idCompetencia, { lazy: true });
-    dataEstados.value = resp.data.value;
-    errorEstados.value = resp.error.value;
-    isLoadingEstados.value = false;
-  } else {
-    isLoadingEstados.value = false;
-  }
-}, { immediate: true });
+    const { data: estados, error } = await $api.estado.getListarEstado(idPostulante, idCompetencia);
 
+    if (examenStore.lista.length) {
+      return;
+    }
 
-watch([dataEstados, errorEstados, isLoadingEstados], async ([estados, error, loading])  => {
-  if(loading) return;
-
-  const idPostulante = postulanteStore.data?.idPostulante;
-  const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
-  
-  if(!idPostulante || !idCompetencia) {
-    return;
-  }
-
-  if(examenStore.lista.length) {
-    return;
-  }
-
-  if(estados?.data?.length){
-    estadoStore.lista = estados.data;
-    await getExamenes();
-    return;
-  }
-
-  if(error?.data?.success === false){
-    await RegistrarEstado(idPostulante, idCompetencia);
-    await getExamenes();
-    return;
-  }
-
-  if(!estados && !error && examenStore.pending) {
-    await RegistrarEstado(idPostulante, idCompetencia);
-    await getExamenes();
+    if (estados.value?.data?.length) {
+      estadoStore.lista = estados.value.data;
+      const estadoActual = estados.value.data[0];
+      if (estadoActual) {
+        if (estadoActual.tiempoUltimaPregunta) {
+          examenStore.tiempoRestanteInicial = estadoActual.tiempoUltimaPregunta;
+        }
+      }
+      await getExamenes();
+    } else if (error.value?.data?.success === false) {
+      await RegistrarEstado(idPostulante, idCompetencia);
+      await getExamenes();
+    } else if (!estados.value && !error.value) {
+      await RegistrarEstado(idPostulante, idCompetencia);
+      await getExamenes();
+    }
   }
 }, { immediate: true });
 
@@ -121,14 +104,14 @@ watch(() => examenStore.lista, (examenes)  => {
     totalQuestions.value = examenes.length;
     preguntaStore.totalPreguntas = examenes.length;
 
-    const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
-    const ultimaPreguntaGuardada = localStorage.getItem(`progreso_evaluacion_${idCompetencia}`);
+    const estadoActual = estadoStore.lista[0];
+    const ultimaPreguntaGuardada = estadoActual?.ultimaPregunta;
 
 
     if (ultimaPreguntaGuardada) {
-      const numeroPregunta = parseInt(ultimaPreguntaGuardada, 10);
-      preguntaStore.setPregunta(numeroPregunta);
+      const numeroPregunta = Number(ultimaPreguntaGuardada);
       examenStore.setpreguntaActual(numeroPregunta);
+      preguntaStore.setPregunta(numeroPregunta);
     }else {
       examenStore.setpreguntaActual();
     }
@@ -177,7 +160,9 @@ const guardarRespuesta = () => {
   wasNotSaved.value = false;
   const data = {
     numeroPregunta: preguntaActual.value?.preguntas.numeroPregunta ?? 0,
-    respuestaSeleccionada: opcionSeleccionada.value
+    respuestaSeleccionada: opcionSeleccionada.value,
+    idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
+    tiempoUltimaPregunta: tiempoRestanteMs.value
   }
   data.respuestaSeleccionada.trim().length && examenStore.setBancoRespuesta(data);
   // console.log('responsesData', responsesData.value)
@@ -197,7 +182,9 @@ const ultimaPregunta = () => {
     if(opcionSeleccionada.value.trim().length){
       const data = {
        numeroPregunta: totalQuestions.value,
-       respuestaSeleccionada: opcionSeleccionada.value
+       respuestaSeleccionada: opcionSeleccionada.value,
+       idCompetencia: competenciaStore.competenciaSeleccionada?.id_compentencia ?? 0,
+       tiempoUltimaPregunta: tiempoRestanteMs.value
       }
       examenStore.setBancoRespuesta(data);
       examenStore.setpreguntaActual(totalQuestions.value);
@@ -238,11 +225,7 @@ const onNext = (resumen: ResumenPregunta) => {
   onActionQuestion(resumen);
   //opcionSeleccionada.value = '';
   preguntaStore.setOpcionSeleccionada('');
-  const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
-  if (idCompetencia) {
-    localStorage.setItem(`progreso_evaluacion_${idCompetencia}`, String(resumen.currentQuestion));
-  }
-
+  preguntaStore.setPregunta(resumen.currentQuestion);
   examenStore.setpreguntaActual(resumen.currentQuestion);
 }
 
@@ -298,20 +281,20 @@ onMounted(() => {
   }
 
   // Mecanismo de respaldo: si después de un delay los datos están disponibles pero no se han cargado los exámenes, intentar cargarlos
-  setTimeout(async () => {
-    const idPostulante = postulanteStore.data?.idPostulante;
-    const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+  // setTimeout(async () => {
+  //   const idPostulante = postulanteStore.data?.idPostulante;
+  //   const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
     
-    if(idPostulante && idCompetencia && !examenStore.lista.length && examenStore.pending && !isLoadingEstados.value) {
-      if(!dataEstados.value && !errorEstados.value) {
-        await RegistrarEstado(idPostulante, idCompetencia);
-        await getExamenes();
-      } else if(dataEstados.value?.data?.length && !examenStore.lista.length) {
-        estadoStore.lista = dataEstados.value.data;
-        await getExamenes();
-      }
-    }
-  }, 500);
+  //   if(idPostulante && idCompetencia && !examenStore.lista.length && examenStore.pending && !isLoadingEstados.value) {
+  //     if(!dataEstados.value && !errorEstados.value) {
+  //       await RegistrarEstado(idPostulante, idCompetencia);
+  //       await getExamenes();
+  //     } else if(dataEstados.value?.data?.length && !examenStore.lista.length) {
+  //       estadoStore.lista = dataEstados.value.data;
+  //       await getExamenes();
+  //     }
+  //   }
+  // }, 500);
 
   setTimeout(() => {
     const container = document.getElementById('cont-img');
@@ -334,16 +317,6 @@ onMounted(() => {
   }, 0);
 })
 
-onBeforeUnmount(() => {
-  const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-
-  if (navigationEntry?.type === 'reload') return;
-  postulanteStore.setHabilitado(0);
-  competenciaStore.resetCompetencia();
-  examenStore.resetExamen();
-  preguntaStore.setPregunta(1);
-  preguntaStore.setResumenActivo(false);
-});
 
 const imagenCargada = ref(false);
 const imagenUrl = ref("");
@@ -389,11 +362,13 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center my-5">        
         <div class="order-1 lg:order-3 flex justify-center lg:justify-end mt-2 mb-4 lg:my-0">
           <TiempoEvaluacion
+            v-model="tiempoRestanteMs"
             customClass="w-full flex justify-center lg:w-fit"
             :onExpired="EvaluacionExpirada"
             :stop="finishQuestion"
             :onfinish="(data) => timeData = data"
             :init="true"
+            :initialTimeMs="examenStore.tiempoRestanteInicial"
           />
         </div>
         <div class="hidden lg:block order-2"></div>        

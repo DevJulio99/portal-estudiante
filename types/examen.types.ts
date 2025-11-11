@@ -48,6 +48,8 @@ export interface Respuesta {
 export interface BancoRespuesta {
     numeroPregunta: number;
     respuestaSeleccionada: string;
+    idCompetencia: number;
+    tiempoUltimaPregunta: number;
 }
 
 export interface ActualizarRespuesta {
