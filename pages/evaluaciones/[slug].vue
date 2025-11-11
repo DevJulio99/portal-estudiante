@@ -65,61 +65,37 @@ const competenciaActual = computed(() => competenciaStore.competenciaSeleccionad
 const preguntaActual = computed(() => examenStore.preguntaActual)
 const opcionSeleccionada = computed(() => preguntaStore.opcionSeleccionada)
 
-const dataEstados = ref<any>(null);
-const errorEstados = ref<any>(null);
-const isLoadingEstados = ref(true);
-
 watch([
   () => postulanteStore.data?.idPostulante,
   () => competenciaActual.value?.id_compentencia
-], async ([idPostulante, idCompetencia]) => {
+], async ([idPostulante, idCompetencia], [oldIdPostulante, oldIdCompetencia]) => {
+  if (idPostulante === oldIdPostulante && idCompetencia === oldIdCompetencia) {
+    return;
+  }
+
   if (idPostulante && idCompetencia) {
-    isLoadingEstados.value = true;
-    const resp = await $api.estado.getListarEstado(idPostulante, idCompetencia, { lazy: true });
-    dataEstados.value = resp.data.value;
-    errorEstados.value = resp.error.value;
-    isLoadingEstados.value = false;
-  } else {
-    isLoadingEstados.value = false;
-  }
-}, { immediate: true });
+    const { data: estados, error } = await $api.estado.getListarEstado(idPostulante, idCompetencia);
 
-
-watch([dataEstados, errorEstados, isLoadingEstados], async ([estados, error, loading])  => {
-  if(loading) return;
-
-  const idPostulante = postulanteStore.data?.idPostulante;
-  const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
-  
-  if(!idPostulante || !idCompetencia) {
-    return;
-  }
-
-  if(examenStore.lista.length) {
-    return;
-  }
-
-  if(estados?.data?.length){
-    estadoStore.lista = estados.data;
-    const estadoActual = estados.data[0];
-    if (estadoActual) {
-      if (estadoActual.tiempoUltimaPregunta) {
-        examenStore.tiempoRestanteInicial = estadoActual.tiempoUltimaPregunta;
-      }
+    if (examenStore.lista.length) {
+      return;
     }
-    await getExamenes();
-    return;
-  }
 
-  if(error?.data?.success === false){
-    await RegistrarEstado(idPostulante, idCompetencia);
-    await getExamenes();
-    return;
-  }
-
-  if(!estados && !error && examenStore.pending) {
-    await RegistrarEstado(idPostulante, idCompetencia);
-    await getExamenes();
+    if (estados.value?.data?.length) {
+      estadoStore.lista = estados.value.data;
+      const estadoActual = estados.value.data[0];
+      if (estadoActual) {
+        if (estadoActual.tiempoUltimaPregunta) {
+          examenStore.tiempoRestanteInicial = estadoActual.tiempoUltimaPregunta;
+        }
+      }
+      await getExamenes();
+    } else if (error.value?.data?.success === false) {
+      await RegistrarEstado(idPostulante, idCompetencia);
+      await getExamenes();
+    } else if (!estados.value && !error.value) {
+      await RegistrarEstado(idPostulante, idCompetencia);
+      await getExamenes();
+    }
   }
 }, { immediate: true });
 
@@ -294,7 +270,6 @@ const finalizarCompetencia = () => {
 }
 
 onMounted(() => {
-  examenStore.resetExamen();
   if(!examenStore.lista.length) {
     examenStore.pending = true;
   }
@@ -306,20 +281,20 @@ onMounted(() => {
   }
 
   // Mecanismo de respaldo: si después de un delay los datos están disponibles pero no se han cargado los exámenes, intentar cargarlos
-  setTimeout(async () => {
-    const idPostulante = postulanteStore.data?.idPostulante;
-    const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
+  // setTimeout(async () => {
+  //   const idPostulante = postulanteStore.data?.idPostulante;
+  //   const idCompetencia = competenciaStore.competenciaSeleccionada?.id_compentencia;
     
-    if(idPostulante && idCompetencia && !examenStore.lista.length && examenStore.pending && !isLoadingEstados.value) {
-      if(!dataEstados.value && !errorEstados.value) {
-        await RegistrarEstado(idPostulante, idCompetencia);
-        await getExamenes();
-      } else if(dataEstados.value?.data?.length && !examenStore.lista.length) {
-        estadoStore.lista = dataEstados.value.data;
-        await getExamenes();
-      }
-    }
-  }, 500);
+  //   if(idPostulante && idCompetencia && !examenStore.lista.length && examenStore.pending && !isLoadingEstados.value) {
+  //     if(!dataEstados.value && !errorEstados.value) {
+  //       await RegistrarEstado(idPostulante, idCompetencia);
+  //       await getExamenes();
+  //     } else if(dataEstados.value?.data?.length && !examenStore.lista.length) {
+  //       estadoStore.lista = dataEstados.value.data;
+  //       await getExamenes();
+  //     }
+  //   }
+  // }, 500);
 
   setTimeout(() => {
     const container = document.getElementById('cont-img');

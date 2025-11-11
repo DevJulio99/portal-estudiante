@@ -48,6 +48,7 @@ const resetAndLoad = async () => {
   preguntaStore.setPregunta(1);
   preguntaStore.setResumenActivo(false);
   estadoStore.setLista([]);
+  estadoStore.setData(null);
 
   if(existeProfile.value){
     await profileStore.postulanteHabilitado();
@@ -58,7 +59,6 @@ const resetAndLoad = async () => {
 }
 
 onMounted(resetAndLoad);
-onActivated(resetAndLoad);
 
 </script>
 
