@@ -52,20 +52,19 @@ const parseTimeToMilliseconds = (timeString: string): number => {
 };
 
 const initializeCountdown = () => {
-  // Si se proporciona un tiempo inicial en ms, usarlo con prioridad.
-  if (props.initialTimeMs && props.initialTimeMs > 0) {
-    startTimer(props.initialTimeMs / 1000); // Convertir a segundos
+  // Si se proporciona un tiempo restante inicial, usarlo.
+  if (props.initialTimeMs != null && props.initialTimeMs > 0) {
+    startTimer(props.initialTimeMs / 1000);
     return;
   }
 
-  const competencia = storeCompetencia.competenciaSeleccionada;
+  const competencia = storeCompetencia.competenciaSeleccionada;  
   if (!competencia || !competencia.horaInicio || !competencia.tiempoLimite) {
     return;
   }
 
   const { horaInicio, tiempoLimite } = competencia;
-
-  // 1. Crear la fecha de inicio para hoy
+  
   const startTime = new Date();
   const [startHours, startMinutes, startSeconds] = horaInicio.split(':').map(Number);
   startTime.setHours(startHours, startMinutes, startSeconds, 0);
@@ -73,11 +72,9 @@ const initializeCountdown = () => {
   // 2. Calcular la duración en milisegundos
   const durationMs = parseTimeToMilliseconds(tiempoLimite);
 
-  // 3. Calcular la hora de finalización
   const endTime = new Date(startTime.getTime() + durationMs);
-
-  // 4. Calcular el tiempo restante
   const now = new Date();
+  
   const remainingMs = endTime.getTime() - now.getTime();
   console.log('remainingMs:', remainingMs);
   if (remainingMs > 0) {

@@ -49,6 +49,15 @@ const finalizedBefore = ref(false);
 const wasNotSaved = ref(false);
 const forceNext = ref(false);
 const tiempoRestanteMs = ref(0);
+const horaInicioEvaluacion = ref<Date | null>(null);
+
+enum EvaluationStatus {
+  LOADING,
+  NOT_STARTED,
+  IN_PROGRESS,
+  EXPIRED
+}
+const evaluationStatus = ref<EvaluationStatus>(EvaluationStatus.LOADING);
 const responsesData = ref<any[]>([]);
 
 const competencia = ref<Competencia | null>();
@@ -65,36 +74,91 @@ const competenciaActual = computed(() => competenciaStore.competenciaSeleccionad
 const preguntaActual = computed(() => examenStore.preguntaActual)
 const opcionSeleccionada = computed(() => preguntaStore.opcionSeleccionada)
 
+let statusCheckInterval: ReturnType<typeof setInterval> | null = null;
+
+const parseTimeToMilliseconds = (timeString: string): number => {
+  if (!timeString || !/^\d{2}:\d{2}:\d{2}$/.test(timeString)) return 0;
+  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  return (hours * 3600 + minutes * 60 + seconds) * 1000;
+};
+
+const checkEvaluationStatus = () => {
+  const previousStatus = evaluationStatus.value;
+  const competencia = competenciaActual.value;
+  if (!competencia || !competencia.horaInicio || !competencia.tiempoLimite) {
+    return;
+  }
+
+  const { horaInicio, tiempoLimite } = competencia;
+
+  const now = new Date();
+  const startTime = new Date();
+  const [startHours, startMinutes, startSeconds] = horaInicio.split(':').map(Number);
+  startTime.setHours(startHours, startMinutes, startSeconds, 0);
+
+  horaInicioEvaluacion.value = startTime;
+
+  const durationMs = parseTimeToMilliseconds(tiempoLimite);
+  const endTime = new Date(startTime.getTime() + durationMs);
+
+  if (now < startTime) {
+    evaluationStatus.value = EvaluationStatus.NOT_STARTED;
+  } else if (previousStatus === EvaluationStatus.NOT_STARTED && now >= startTime && now < endTime) {
+    // La evaluación acaba de comenzar. Cambiamos el estado y cargamos los datos.
+    evaluationStatus.value = EvaluationStatus.IN_PROGRESS;
+    loadEvaluationData();
+
+  } else if (now >= startTime && now < endTime) {
+    evaluationStatus.value = EvaluationStatus.IN_PROGRESS;
+    // Una vez que la evaluación ha comenzado, ya no necesitamos el intervalo.
+    if (statusCheckInterval) {
+      clearInterval(statusCheckInterval);
+      statusCheckInterval = null;
+    }
+  } else {
+    evaluationStatus.value = EvaluationStatus.EXPIRED;
+    examenStore.pending = false;
+  }
+};
+
+const formattedHoraInicio = computed(() => {
+    if (!horaInicioEvaluacion.value) return '';
+    return horaInicioEvaluacion.value.toLocaleTimeString('es-PE');
+});
+
+const loadEvaluationData = async () => {
+  const idPostulante = postulanteStore.data?.idPostulante;
+  const idCompetencia = competenciaActual.value?.id_compentencia;
+
+  if (!idPostulante || !idCompetencia) return;
+
+  if (examenStore.lista.length) return;
+
+  const { data: estados, error } = await $api.estado.getListarEstado(idPostulante, idCompetencia);
+
+  if (estados.value?.data?.length) {
+    estadoStore.lista = estados.value.data;
+    const estadoActual = estados.value.data[0];
+    if (estadoActual?.tiempoUltimaPregunta) {
+      examenStore.tiempoRestanteInicial = estadoActual.tiempoUltimaPregunta;
+    }
+    await getExamenes();
+  } else {
+    // Si no hay estados (ya sea por error o porque es la primera vez), registramos y obtenemos los exámenes.
+    await RegistrarEstado(idPostulante, idCompetencia);
+    await getExamenes();
+  }
+};
+
 watch([
   () => postulanteStore.data?.idPostulante,
   () => competenciaActual.value?.id_compentencia
 ], async ([idPostulante, idCompetencia], [oldIdPostulante, oldIdCompetencia]) => {
-  if (idPostulante === oldIdPostulante && idCompetencia === oldIdCompetencia) {
-    return;
-  }
-
   if (idPostulante && idCompetencia) {
-    const { data: estados, error } = await $api.estado.getListarEstado(idPostulante, idCompetencia);
-
-    if (examenStore.lista.length) {
-      return;
-    }
-
-    if (estados.value?.data?.length) {
-      estadoStore.lista = estados.value.data;
-      const estadoActual = estados.value.data[0];
-      if (estadoActual) {
-        if (estadoActual.tiempoUltimaPregunta) {
-          examenStore.tiempoRestanteInicial = estadoActual.tiempoUltimaPregunta;
-        }
-      }
-      await getExamenes();
-    } else if (error.value?.data?.success === false) {
-      await RegistrarEstado(idPostulante, idCompetencia);
-      await getExamenes();
-    } else if (!estados.value && !error.value) {
-      await RegistrarEstado(idPostulante, idCompetencia);
-      await getExamenes();
+    checkEvaluationStatus();
+    // Solo cargamos los datos si la evaluación ya está en progreso.
+    if (evaluationStatus.value === EvaluationStatus.IN_PROGRESS) {
+      await loadEvaluationData();
     }
   }
 }, { immediate: true });
@@ -266,6 +330,12 @@ onMounted(() => {
     competencia.value = competenciaActual.value;
     competenciaStore.setTiempoCompetencia(competenciaActual.value);
     //getExamenes();
+    checkEvaluationStatus();
+
+    // Si la evaluación no ha comenzado, verificamos cada segundo.
+    if (evaluationStatus.value === EvaluationStatus.NOT_STARTED) {
+      statusCheckInterval = setInterval(checkEvaluationStatus, 1000);
+    }
   }
 
   // Mecanismo de respaldo: si después de un delay los datos están disponibles pero no se han cargado los exámenes, intentar cargarlos
@@ -304,6 +374,12 @@ onMounted(() => {
     }
   }, 0);
 })
+
+onBeforeUnmount(() => {
+  if (statusCheckInterval) {
+    clearInterval(statusCheckInterval);
+  }
+});
 
 
 const imagenCargada = ref(false);
@@ -346,7 +422,20 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
         class-img="w-[40px] h-[40px]"
 			/>
     </div>
-    <div v-else-if="!competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error" class="mb-[84px]">
+
+    <div v-else-if="evaluationStatus === EvaluationStatus.NOT_STARTED" class="text-center p-10 bg-white rounded-lg shadow-md my-5">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">La evaluación aún no ha comenzado</h2>
+        <p class="text-gray-600">
+            Podrás iniciar la evaluación de <strong>{{ competenciaActual?.nombreCompetencia }}</strong> a partir de las 
+            <strong class="text-primary">{{ formattedHoraInicio }}</strong>.
+        </p>
+    </div>
+
+    <div v-else-if="evaluationStatus === EvaluationStatus.EXPIRED" class="text-center p-10 bg-white rounded-lg shadow-md my-5">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">El tiempo para esta evaluación ha terminado</h2>
+    </div>
+
+    <div v-else-if="evaluationStatus === EvaluationStatus.IN_PROGRESS && !competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error" class="mb-[84px]">
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center my-5">        
         <div class="order-1 lg:order-3 flex justify-center lg:justify-end mt-2 mb-4 lg:my-0">
           <TiempoEvaluacion
@@ -437,7 +526,7 @@ watch(() => preguntaActual?.value?.preguntas.textoImagen, (newUrl) => {
     </div>
 
     <Preguntas
-        v-if="!competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error"
+        v-if="evaluationStatus === EvaluationStatus.IN_PROGRESS && !competenciaStore.finalizoCompetencia && !examenStore.pending && !examenStore.error"
         :cantidad="totalQuestions"
         :onBack="onBack"
         :onNext="onNext"
