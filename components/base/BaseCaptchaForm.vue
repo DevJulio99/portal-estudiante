@@ -10,20 +10,6 @@ const props = withDefaults(
 }
 )
 const captchaStore = useCaptcha();
-const msgPopupStore = useMsgPopUpStore();
-
-function setError(msg = "") {
-  msgPopupStore.setErrorBottom(true, msg);
-}
-
-watch(
-  () => captchaStore.error,
-  (err) => {
-    if (err) {
-      setError("CAPTCHA no válido.");
-    }
-  }
-);
 
 watch(
   () => captchaStore.captchaValido,
@@ -74,6 +60,17 @@ const handleReloadCaptcha = async () => {
   }, 3500);
 };
 
+const handleEnterKey = (event: KeyboardEvent) => {
+  event.preventDefault();
+  const form = (event.target as HTMLElement).closest('form');
+  if (form) {
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    if (submitButton && !submitButton.disabled) {
+      submitButton.click();
+    }
+  }
+};
+
 </script>
 
 <template>
@@ -86,6 +83,7 @@ const handleReloadCaptcha = async () => {
       >
         <img :src="captchaStore.data.captchaImage" alt="CAPTCHA" />
         <button
+          type="button"
           aria-label="Recargar CAPTCHA"
           :disabled="reloadDisabled"
           @click="handleReloadCaptcha"
@@ -97,7 +95,7 @@ const handleReloadCaptcha = async () => {
         </button>
       </div>
     </div>
-    <form
+    <div
       class="fmr-captcha w-full flex flex-wrap justify-center"
     >
       <input
@@ -105,12 +103,13 @@ const handleReloadCaptcha = async () => {
         @input="
           captchaStore.captchaModel = captchaStore.captchaModel.toUpperCase()
         "
+        @keydown.enter="handleEnterKey"
         placeholder="Ingrese el CAPTCHA"
         id="captchaCode"
         type="text"
         maxlength="4"
       />
-    </form>
+    </div>
   </div>
 </template>
 

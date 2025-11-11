@@ -64,13 +64,17 @@ export const useProfileStore = defineStore('profileStore', {
 		 */
 		async fetchProfile() {
 			const tokenStore = useTokenStore();
+			const router = useRouter();
 			const isAuth = tokenStore.accessToken.trim().length > 0;
+			const currentRoute = router.currentRoute.value.name;
 
-			// Si está autenticado y no hay datos, los busca.
+			if (currentRoute === 'login') {
+				return;
+			}
+
 			if (isAuth && !this.profileData.data) {
-				tokenStore.setPending(true); // Mantenemos el loader global
+				tokenStore.setPending(true);
 				try {
-					// La función getProfile ya setea los datos en el store
 					await getProfile(tokenStore.getDataToken.Dni_Usuario);
 				} finally {
 					tokenStore.setPending(false);

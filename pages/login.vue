@@ -7,15 +7,22 @@ const userLogin = ref({
   email: "",
   password: "",
 });
-const profileStore = useProfileStore();
 const tokenStore = useTokenStore();
 const captchaStore = useCaptcha();
-const msgPopupStore = useMsgPopUpStore();
 const router = useRouter();
 const { $api } = useNuxtApp();
-const dataLog = ref<ResponseLogin | null>();
 const pendingLogin = ref<boolean>(false);
 const textLogin = ref<string>('Iniciar sesión');
+const errorMessage = ref<string>('');
+const showError = ref<boolean>(false);
+
+watch(() => tokenStore.pending, (newValue) => {
+  if (newValue && (showError.value || !pendingLogin.value)) {
+    nextTick(() => {
+      tokenStore.setPending(false);
+    });
+  }
+});
 
 watch(() => captchaStore.error, (err) => {
    if(err){
@@ -23,68 +30,96 @@ watch(() => captchaStore.error, (err) => {
    }
 })
 
-const callLogin = async (captchaId: string, captchaCode: string) =>
-  await $api.login.login(userLogin.value.email, userLogin.value.password, captchaId, captchaCode, {
-    lazy: true,
-  });
-
-async function handleFormSubmit() {
+async function handleFormSubmit(event: Event) {
+  event.preventDefault();
+  event.stopPropagation();
+  
+  tokenStore.setPending(false);
+  
   const isvalid = Object.values(userLogin.value).every(
     (x) => x.trim().length > 0
   );
   const captchaId = captchaStore.data?.captchaId;
 
-  if (!isvalid) setError("Complete todos los campos");
-  if(!captchaId) setError("CAPTCHA no válido.");
-  if (isvalid && captchaId) {
-    textLogin.value = 'Ingresando...';
-    const { data, error, pending } = await callLogin(captchaId, captchaStore.captchaModel);
-    // console.log('data.value', data.value)
-    if (error.value){
-      const dataErr = error.value.data as any;
-      if(dataErr.code == 'PS-EVAL-4000'){
-        setError();
-        refreshCaptcha();
-      }
-      if(dataErr.code == 'PS-EVAL-4001'){
-        setError("CAPTCHA no válido.");
-      }
-      
-      textLogin.value = 'Iniciar sesión';
-    }
-    console.log("error", error.value);
-    setTimeout(() => {
-      if(error.value){
-        unWatch();
-      }
-      data.value && (dataLog.value = data.value);
-      pendingLogin.value = pending.value;
-    }, 0);
+  if (!isvalid) {
+    setError("Complete todos los campos");
+    return false;
   }
+  
+  if(!captchaId) {
+    setError("CAPTCHA no válido.");
+    return false;
+  }
+  
+  textLogin.value = 'Ingresando...';
+  pendingLogin.value = true;
+  
+  try {
+    const loginData = await $api.login.loginDirect(
+      userLogin.value.email, 
+      userLogin.value.password, 
+      captchaId, 
+      captchaStore.captchaModel
+    );
+    
+    await handleLoginSuccess(loginData);
+    return false;
+    
+  } catch (error: any) {
+    pendingLogin.value = false;
+    textLogin.value = 'Iniciar sesión';
+    tokenStore.setPending(false);
+    handleLoginError(error);
+    return false;
+  }
+}
 
-  const unWatch = watch(dataLog, async(response) => {
-    if (response) {
-      // Indicamos que el proceso de carga ha comenzado
-      tokenStore.setPending(true);
-      // 1. Se guarda el token en el store
-      tokenStore.setToken(response.accessToken, response.refreshToken);
-      localStorage.setItem("access", JSON.stringify(response));
-      // 2. Se espera a que el perfil se cargue
-      await getProfile(tokenStore.getDataToken.Dni_Usuario);
-      // 3. Solo después de cargar el perfil, se redirige según el rol
-      const userRole = tokenStore.getDataToken?.Role?.toLowerCase();
-      if (userRole === Roles.Admin) {
-        await router.push("/alumnos");
+function handleLoginError(error: any) {
+  const errorResponse = error.data || error.response?.data || error;
+  const errorCode = errorResponse?.code || errorResponse?.data?.code;
+  const status = error.status || error.statusCode;
+  
+  let errorMsg = "Error al iniciar sesión. Inténtalo nuevamente.";
+  
+  switch (errorCode) {
+    case 'PS-EVAL-4000':
+      errorMsg = "Correo o contraseña incorrecta";
+      refreshCaptcha();
+      break;
+    case 'PS-EVAL-4001':
+      errorMsg = "CAPTCHA no válido.";
+      break;
+    case 'PS-EVAL-4003':
+      errorMsg = "Usuario o contraseña incorrectos. Inténtalo nuevamente.";
+      break;
+    default:
+      if (status === 401) {
+        errorMsg = "Usuario o contraseña incorrectos. Inténtalo nuevamente.";
       } else {
-        await router.push("/inicio");
+        errorMsg = errorResponse?.message || errorResponse?.Message || errorMsg;
       }
-      // 4. Indicamos que el proceso de carga ha finalizado
-      tokenStore.setPending(false);
-    }
-    if (!response) {
-      unWatch();
-    }
-  });
+  }
+  
+  setError(errorMsg);
+}
+
+async function handleLoginSuccess(loginData: ResponseLogin) {
+  pendingLogin.value = false;
+  textLogin.value = 'Iniciar sesión';
+  tokenStore.setPending(true);
+  
+  try {
+    tokenStore.setToken(loginData.accessToken, loginData.refreshToken);
+    localStorage.setItem("access", JSON.stringify(loginData));
+    await getProfile(tokenStore.getDataToken.Dni_Usuario);
+    
+    const userRole = tokenStore.getDataToken?.Role?.toLowerCase();
+    const redirectPath = userRole === Roles.Admin ? "/alumnos" : "/inicio";
+    await router.push(redirectPath);
+  } catch (err) {
+    tokenStore.setPending(false);
+    setError("Error al procesar el inicio de sesión. Inténtalo nuevamente.");
+  }
 }
 
 function changeEl(ev: any) {
@@ -92,11 +127,21 @@ function changeEl(ev: any) {
     ...userLogin.value,
     [ev.target.name]: ev.target.value,
   };
+  // Ocultar el error cuando el usuario empieza a escribir
+  if (showError.value) {
+    showError.value = false;
+    errorMessage.value = '';
+  }
 }
 
 function setError(msg = "Correo o contraseña incorrecta") {
-  dataLog.value = null;
-  msgPopupStore.setErrorBottom(true, msg);
+  tokenStore.setPending(false);
+  errorMessage.value = msg;
+  showError.value = true;
+  
+  setTimeout(() => {
+    showError.value = false;
+  }, 5000);
 }
 
 const validCaptcha = async() => {
@@ -109,49 +154,12 @@ const refreshCaptcha = () => {
 }
 
 onMounted(() => {
+  tokenStore.setPending(false);
+  tokenStore.setIsLoggingOut(false);
   captchaStore.generarCaptcha();
 })
 
 </script>
-
-<!-- <template>
-  <div class="bg-gray_40 h-screen flex justify-center items-center">
-    <div
-      class="bg-[#287f6b] p-6 rounded-lg w-full max-w-[600px] flex flex-wrap justify-center shadow-2xl"
-    >
-      <span
-        class="w-full block text-center mb-4 uppercase font-grotesk text-xl font-bold text-white"
-        >login</span
-      >
-
-      <div class="w-full max-w-[400px] flex flex-wrap justify-center gap-4">
-        <input
-          class="w-full border-none rounded-md h-10 outline-none px-2"
-          type="text"
-          name="email"
-          placeholder="Correo"
-          @input="changeEl"
-        />
-        <input
-          class="w-full border-none rounded-md h-10 outline-none px-2"
-          type="password"
-          name="password"
-          placeholder="Contraseña"
-          @input="changeEl"
-        />
-        <button
-          class="bg-green_40 text-black py-3.5 px-4 text-base rounded-md font-nunito shadow-2xl font-semibold"
-          @click="handleFormSubmit"
-        >
-          {{pendingLogin ? 'Ingresando...' : 'Ingresar'}}
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="w-full text-center font-nunito popup-error bg-error fixed text-white block p-4 z-[1000] bottom-[-100px] left-[50%] opacity-0" id="popuperr">
-    <p>{{ errorMsg }}</p>
-  </div>
-</template> -->
 
 <template>
   <div>
@@ -164,42 +172,46 @@ onMounted(() => {
           <div class="title-container">
             <h2>Bienvenidos</h2>
           </div>
-          <!-- <div class="login-social-container">
-            <button class="btn-google">Iniciar sesión con Google</button>
-          </div>
-          <div class="separator-container">
-            <div class="line"></div>
-            <span>o inicia sesión con tu correo</span>
-            <div class="line"></div>
-          </div> -->
           <form @submit.prevent="handleFormSubmit">
             <div class="inputs-container">
               <label for="email">USUARIO</label>
-              <input id="email" type="text" name="email" @input="changeEl">
+              <input 
+                id="email" 
+                type="text" 
+                name="email" 
+                @input="changeEl"
+                autocomplete="username"
+              >
 
               <label for="password">CONTRASEÑA</label>
-              <input id="password" type="password" name="password" @input="changeEl">
+              <input 
+                id="password" 
+                type="password" 
+                name="password" 
+                @input="changeEl"
+                autocomplete="current-password"
+              >
 
-              <!-- <div class="options-container">
-                <div>
-                  <input type="checkbox">Mantenerme conectado
+              <!-- Mensaje de error visible ANTES del CAPTCHA para mayor visibilidad -->
+              <Transition name="error-fade">
+                <div v-if="showError && errorMessage" class="error-message-container" key="error-msg">
+                  <p class="error-message">{{ errorMessage }}</p>
                 </div>
-                <div class="right">
-                  <a href="#">Olvidé mi contraseña</a>
-                </div>
-              </div> -->
+              </Transition>
 
               <BaseCaptchaForm />
 
               <div class="buttons-container">
-                <button class="btn-login" type="submit" :disabled="!captchaStore.captchaValido">{{ textLogin }}</button>
+                <button 
+                  class="btn-login" 
+                  type="submit"
+                  :disabled="!captchaStore.captchaValido || pendingLogin"
+                >
+                  {{ textLogin }}
+                </button>
               </div>
             </div>
           </form>
-          <!-- <div class="register-container">
-            <span>¿No tienes una cuenta?</span>
-            <a href="#">Regístrate</a>
-          </div> -->
 
         </div>
       </div>
@@ -255,43 +267,6 @@ onMounted(() => {
     padding: 8px;
   }
 
-  .login-social-container {}
-
-  .btn-google {
-    background-color: white;
-    background-image: url(../assets/icons/google-icon-small.png);
-    background-repeat: no-repeat;
-    background-position: 16px center;
-    border-radius: 4px;
-    border: solid 1px;
-    border-color: #ccc;
-    width: 100%;
-    padding: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    font-weight: bolder;
-    cursor: pointer;
-  }
-
-  .separator-container {
-    text-align: center;
-  }
-
-  .separator-container span {
-    color: #ccc;
-    font-weight: bolder;
-    display: inline-block;
-    vertical-align: middle;
-    padding: 0 10px;
-  }
-
-  .line {
-    height: 2px;
-    background-color: #ccc;
-    width: 50px;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
   .inputs-container label {
     display: block;
     padding: 8px 0;
@@ -319,25 +294,6 @@ onMounted(() => {
     border: solid 2px #1E6657;
   }
 
-  .options-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 0;
-  }
-
-  .options-container div {
-    display: flex;
-    align-items: center;
-  }
-
-  .options-container div.right {
-    text-align: right;
-  }
-
-  .options-container div input[type="checkbox"] {
-    margin-right: 8px;
-  }
-
   .buttons-container {
     margin-top: 40px; 
     text-align: center;
@@ -348,6 +304,41 @@ onMounted(() => {
     cursor: not-allowed;
   }
 
+  .error-message-container {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    padding: 16px;
+    background-color: #fee;
+    border: 2px solid #f00;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(204, 51, 51, 0.3);
+    animation: shake 0.5s;
+  }
+
+  .error-message {
+    color: #c33;
+    font-weight: bold;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+
+  .error-fade-enter-active,
+  .error-fade-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .error-fade-enter-from,
+  .error-fade-leave-to {
+    opacity: 0;
+  }
+
   .btn-login {
     border: 0;
     background-color: #287F6B;
@@ -356,28 +347,11 @@ onMounted(() => {
     padding: 8px;
     width: 100%;
     cursor: pointer;
+    transition: background-color 0.3s ease;
   }
 
-  .btn-login:hover {
+  .btn-login:hover:not(:disabled) {
     background-color: #1E6657;
-  }
-
-  .register-container {
-    padding: 16px 0;
-    text-align: center;
-  }
-
-  .register-container span {
-    margin-right: 8px;
-  }
-  
-  a {
-    color: black;
-    font-weight: bolder;
-  }
-
-  a:hover {
-    color: #4548AD;
   }
 
   @media screen and (max-width: 768px) {
@@ -395,11 +369,6 @@ onMounted(() => {
     .form-container {
       max-width: 100%;
       padding: 10px;
-    }
-    .btn-google {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
     }
     .right-container {
       display: none;
