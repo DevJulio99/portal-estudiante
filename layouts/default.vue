@@ -10,7 +10,9 @@ const profileStore = useProfileStore();
 // --- INICIO: LÓGICA DE CARGA DE PERFIL EN EL LAYOUT ---
 // Esta función se ejecutará una sola vez cuando el layout se monte.
 onMounted(async () => {
-  await profileStore.fetchProfile();
+  if (router.currentRoute.value.name !== 'login') {
+    await profileStore.fetchProfile();
+  }
 });
 
 </script>
@@ -26,7 +28,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <div class="h-full" v-if="!tokenStore.pending && router.currentRoute.value.name === 'login'">
+  <div class="h-full" v-if="router.currentRoute.value.name === 'login'">
     <NuxtPage />
   </div>
   <PopUpMensaje 

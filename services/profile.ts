@@ -5,8 +5,6 @@ export const getProfile = async (codAlum: string) => {
     const { $api } = useNuxtApp();
     const profileStore = useProfileStore();
 
-    console.log('codAlum', codAlum)
-    console.log('profileStore.profileData.data', profileStore.profileData.data)
 	if (profileStore.profileData.data) return;
 	const responseProfile = await $api.profile.getProfile(codAlum);
 	

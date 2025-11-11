@@ -23,15 +23,19 @@ class FetchFactory<T> {
 		const tokenStore = useTokenStore();
 		
 		// Determinar si es una ruta pública que no requiere token
+		const normalizedUrl = url.startsWith('/') ? url : `/${url}`;
+		
 		const publicRoutes = [
-			'/api/auth/login',
-			'/api/auth/generar-captcha',
-			'/api/auth/validar-captcha',
-			'/api/auth/refresh-token',
-			'/swagger'
+			'api/auth/login',
+			'api/auth/generar-captcha',
+			'api/auth/validar-captcha',
+			'api/auth/refresh-token',
+			'swagger'
 		];
 		
-		const isPublicRoute = publicRoutes.some(route => url.includes(route));
+		const isPublicRoute = publicRoutes.some(route => 
+			normalizedUrl.includes(`/${route}`) || url.includes(route)
+		);
 		
 		// Construir headers
 		const headers: Record<string, string> = {
@@ -56,14 +60,8 @@ class FetchFactory<T> {
 			});
 			return $res;
 		} catch (error: any) {
-			// Manejar errores 401 específicamente
 			if (error?.status === 401 || error?.statusCode === 401) {
-				const tokenStore = useTokenStore();
-				
-				console.warn('[FetchFactory] Error 401: No autorizado. Token inválido o expirado.');
-				
-				// Limpiar tokens y redirigir al login
-				if (typeof window !== 'undefined' && !tokenStore.isLoggingOut) {
+				if (!isPublicRoute && typeof window !== 'undefined' && !tokenStore.isLoggingOut) {
 					tokenStore.setIsLoggingOut(true);
 					tokenStore.clearTokens();
 				}

@@ -3,20 +3,20 @@ import dataMenuAdmin from "~/utils/data/dataMenuAdmin.json";
 import { Roles } from "~/types/roles.types";
 import { getProfile } from "~/services/profile";
 
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
     const tokenStore = useTokenStore();
     const profileStore = useProfileStore();
     const preguntaStore = usePreguntaStore();
 
-    // console.log('refreshToken',tokenStore.refreshToken)
+    if (to.name === 'login') {
+        return;
+    }
 
     const isAuth = tokenStore.accessToken.trim().length && tokenStore.refreshToken.trim().length;
     const isEvaluaciones = to.fullPath.includes('evaluaciones');
     const detalleEvaluacion = to.fullPath.split('/');
 
-    // Si el usuario no está autenticado Y la ruta no es /login, redirigimos a /login.
-    // Añadimos una comprobación para no hacer nada si se está cerrando la sesión.
-    if(!isAuth && to.name !== 'login' && !tokenStore.isLoggingOut){
+    if(!isAuth && !tokenStore.isLoggingOut){
         return navigateTo("/login", { replace: true });
     }
     

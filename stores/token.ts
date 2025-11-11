@@ -35,9 +35,9 @@ export const useTokenStore = defineStore('tokenStore', {
 			//    Esto destruye el estado actual de la app y evita cualquier condición de carrera.
 			window.location.href = '/login';
 		},
-		setPending(status: boolean) {
-			this.pending = status;
-		},
+	setPending(status: boolean) {
+		this.pending = status;
+	},
 		setIsLoggingOut(status: boolean) {
 			this.isLoggingOut = status;
 		}
