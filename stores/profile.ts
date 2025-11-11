@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { getPostulante } from '~/services/postulante';
 import { getProfile } from '~/services/profile';
 import { Roles } from '~/types/roles.types';
+import { HabilitadoState } from '~/utils/enums';
 import type { ProfileDataStore } from '~/types/profile.types';
 
 export const useProfileStore = defineStore('profileStore', {
@@ -51,9 +52,9 @@ export const useProfileStore = defineStore('profileStore', {
 
 			if(serviceHabilitado.data.value?.success){
 				console.log('habilitado service', serviceHabilitado.data.value);
-				postulanteStore.setHabilitado(1);	
+				postulanteStore.setHabilitado(HabilitadoState.HABILITADO);	
 			}else {
-				postulanteStore.setHabilitado(2);	
+				postulanteStore.setHabilitado(HabilitadoState.NO_HABILITADO);	
 			}
 			
 		},

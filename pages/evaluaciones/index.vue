@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Lista from '~/components/pagesContainer/Evaluaciones/lista.vue';
+import { HabilitadoState } from '~/utils/enums';
 import { useProfileStore } from '~/stores/profile';
 
 const profileStore = useProfileStore();
@@ -21,11 +22,11 @@ if(profileStore.profileData.data){
 }
 
 const procesarHabilitado = () => {
-  if(postulanteStore.habilitado === 1){
+  if(postulanteStore.habilitado === HabilitadoState.HABILITADO){
     competenciaStore.getLista();
     noHabilitado.value = false;
   }
-  if(postulanteStore.habilitado === 2) {
+  if(postulanteStore.habilitado === HabilitadoState.NO_HABILITADO) {
     noHabilitado.value = true;
     competenciaStore.pending = false;
   }
@@ -59,6 +60,9 @@ const resetAndLoad = async () => {
 }
 
 onMounted(resetAndLoad);
+onBeforeUnmount(() => {
+  postulanteStore.setHabilitado(HabilitadoState.PENDIENTE);
+});
 
 </script>
 

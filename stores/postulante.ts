@@ -2,18 +2,19 @@ import { defineStore } from "pinia";
 import type { EstadoCompencia } from "~/types/competencia.types";
 import type { Postulante } from "~/types/postulante.types";
 import type { DataResponse } from "~/types/services.types";
+import { HabilitadoState } from "~/utils/enums";
 
 interface stateEstado {
     data: Postulante | null;
     error: "nodata"| "other"| null;
-    habilitado: number;
+    habilitado: HabilitadoState;
 }
 
 export const usePostulanteStore = defineStore("postulanteStore", {
   state: (): stateEstado => ({
     data: null,
     error: null,
-    habilitado: 0
+    habilitado: HabilitadoState.PENDIENTE
   }),
   actions: {
     setPostulante(data: Postulante) {
@@ -23,13 +24,13 @@ export const usePostulanteStore = defineStore("postulanteStore", {
     setError(err: any) {
       this.error = err;
     },
-    setHabilitado(status: number){
+    setHabilitado(status: HabilitadoState){
       this.habilitado = status;
     },
     limpiarPostulante() {
       this.data = null;
       this.error = null;
-      this.habilitado = 0;
+      this.habilitado = HabilitadoState.PENDIENTE;
     }
     // async getEstado(idPostulante: number) {
     //   try {

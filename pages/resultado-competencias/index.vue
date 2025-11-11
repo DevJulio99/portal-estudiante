@@ -1,51 +1,38 @@
 <script lang="ts" setup>
 import Lista from '~/components/pagesContainer/Evaluaciones/lista.vue';
+import { HabilitadoState } from '~/utils/enums';
 import { useProfileStore } from '~/stores/profile';
 
 const profileStore = useProfileStore();
 const postulanteStore = usePostulanteStore();
 const resultadoCompetenciaStore = useResultadoCompetenciaStore();
-const existeProfile = ref(0);
 const noHabilitado = ref();
 
 let breadcrumbsItem = [
   { name: 'Inicio', current: false, url: '/inicio' },
   { name: "Resultado de evaluaciones", current: true, url: "/resultado-competencias" }
 ];
-
-if(profileStore.profileData.data){
-  existeProfile.value = 1;
-}
-
-
+ 
 watch(() => profileStore.profileData.data , (profileData) => {
-  if(!existeProfile.value && profileData){
+  if(profileData){
     profileStore.postulanteHabilitado();
   }
-})
+}, { immediate: true });
 
 watch(() => postulanteStore.habilitado , (habilitado) => {
   console.log('habilitado ev result', habilitado);
-  if(habilitado === 1){
+  if(habilitado === HabilitadoState.HABILITADO){
     resultadoCompetenciaStore.getLista();
     noHabilitado.value = false;
   }
-  if(habilitado === 2) {
+  if(habilitado === HabilitadoState.NO_HABILITADO) {
     noHabilitado.value = true;
     resultadoCompetenciaStore.pending = false;
   }
 })
 
-
-
-onMounted(() => {
-  if(existeProfile.value){
-    profileStore.postulanteHabilitado();
-  }
-})
-
 onBeforeUnmount(() => {
-  postulanteStore.setHabilitado(0);
+  postulanteStore.setHabilitado(HabilitadoState.PENDIENTE);
 });
 
 </script>
@@ -62,10 +49,6 @@ onBeforeUnmount(() => {
     <div v-if="resultadoCompetenciaStore.pending" class="text-xs text-black py-16">
 			<BaseStatusLoading />
 		</div>
-
-    <div class="w-full py-10 px-3 font-nunito flex justify-center text-xl font-semibold" v-else-if="noHabilitado">
-      No tiene habilitado dar la prueba
-    </div>
 
     <div class="w-full py-10 px-3 font-nunito flex justify-center text-xl font-semibold" v-else-if="noHabilitado">
       No tiene habilitado dar la prueba
