@@ -82,14 +82,28 @@ export interface PagosPendientesData {
 	mora: number;
 	totalAPagar: number;
 	detalle: string;
-	imagen: string;
+	imagen: string | null;
 	anio: number;
 	total: number;
+	// Campos de estado
+	estado?: string; // 'Pendiente', 'En Revisión', 'Aprobado', 'Rechazado'
+	fechaSubidaComprobante?: string | null;
+	fechaAprobacion?: string | null;
+	idUsuarioAprobador?: number | null;
+	observaciones?: string | null;
+	nombreAlumno?: string; // Para administrador
 }
 
 export interface ImagenPago {
 	idPago: number;
 	imagen: string;
+}
+
+export interface AprobarPagoRequest {
+	idPago: number;
+	idUsuarioAprobador: number;
+	estado: 'Aprobado' | 'Rechazado';
+	observaciones?: string | null;
 }
 
 export interface ListaPagos extends Paginado {

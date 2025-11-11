@@ -2,12 +2,12 @@
 import ItemTotalPagos from '~/components/pagesContainer/TotalPagos/itemTotalPagos.vue';
 
 useHead({
-	title: 'Total Pagos',
+	title: 'Gestión de Pagos',
 });
 
 const breadcrumbsItem = [
 	{ name: 'Inicio', current: false, url: '/inicio' },
-	{ name: 'Total Pagos', current: true, url: '' },
+	{ name: 'Gestión de Pagos', current: true, url: '' },
 ];
 
 const pagoStore = usePagoStore();

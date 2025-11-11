@@ -51,6 +51,25 @@ class PagosModule extends FetchFactory<DataResponse<PagosPendientesData[]>> {
 			asyncDataOptions,
 		);
 	}
+
+	async getPagosEnRevision(
+		asyncDataOptions?: AsyncDataOptions<DataResponse<PagosPendientesData[]>>,
+	) {
+		return await useAsyncData(
+			() => {
+				const fetchOptions: FetchOptions<'json'> = {
+					headers: {},
+				};
+				return this.call(
+					'GET',
+					`${this.RESOURCE}pagos-en-revision`,
+					undefined,
+					fetchOptions,
+				);
+			},
+			asyncDataOptions,
+		);
+	}
 }
 
 export default PagosModule;

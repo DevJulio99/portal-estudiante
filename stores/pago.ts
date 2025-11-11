@@ -53,9 +53,8 @@ export const usePagoStore = defineStore('PagoStore', {
 		async listarPagos() {
 			this.pending = true;
 			const { $api } = useNuxtApp();
-			const tokenStore = useTokenStore();
 			const request = {
-                codigoSede: tokenStore.getDataToken.Codigo_Sede,
+                codigoSede: '', // El backend no usa este valor, lo obtiene del contexto del tenant
                 ...this.paginado
             }
 			const servicePagos = await $api.pagos.getPagosPorSede(request);

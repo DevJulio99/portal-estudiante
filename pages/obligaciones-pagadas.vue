@@ -71,6 +71,11 @@ onMounted(() => {
 				:icono="obligationError?.icono"
 			/> -->
 
+			<div v-if="!loading && !pending && !dataObligations.length" class="w-full py-10 text-center">
+				<p class="text-gray-500 text-lg font-semibold">No hay obligaciones pagadas registradas</p>
+				<p class="text-gray-400 text-sm mt-2">Las obligaciones pagadas aparecerán aquí una vez que sean aprobadas</p>
+			</div>
+
 			<div v-if="dataObligations.length">
 				<BaseAcordion
 					v-for="obligation in dataObligations"
