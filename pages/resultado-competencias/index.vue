@@ -45,7 +45,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-
+  postulanteStore.setHabilitado(0);
 });
 
 </script>

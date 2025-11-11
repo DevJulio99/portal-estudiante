@@ -139,20 +139,8 @@ const totalPreguntasGrupo = computed(() => {
 
 
 const onResponse = (id: string, option: string) => {
-  // console.log('option select', option);
-  // console.log('summaryEvaluation', summaryEvaluation.value);
-  // const isRegister = responsesData.value.findIndex((x: any) => x.id === summaryEvaluation.value.currentQuestion);
-  // if(isRegister < 0) {
-  //   responsesData.value = [...responsesData.value, {id: summaryEvaluation.value.currentQuestion, response: option}]
-  // }
-  // if(isRegister >= 0) {
-  //   responsesData.value[isRegister] = {...responsesData.value[isRegister], response: option};
-  // }
   preguntaStore.setOpcionSeleccionada(option)
-  //opcionSeleccionada.value = option;
   savedAnswer.value = true;
-  // currentSelect.value = option;
-  // wasNotSaved.value = true;
 };
 
 const guardarRespuesta = () => {
