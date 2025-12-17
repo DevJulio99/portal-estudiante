@@ -39,7 +39,7 @@ const formattedMinutes = computed(() => formatTime(minutes.value));
 const formattedSeconds = computed(() => formatTime(seconds.value));
 
 // Variable para controlar el intervalo
-let intervalId: ReturnType<typeof setInterval> | null = null;
+let intervalId: ReturnType<typeof setInterval> | undefined = undefined;
 
 const storeCompetencia = useCompetenciaStore();
 
@@ -117,7 +117,7 @@ watch(() => props.stop, (isStopped) => {
   if (isStopped) {
     if (intervalId) {
       clearInterval(intervalId);
-      intervalId = null;
+      intervalId = undefined;
 
       // Llama a la función onfinish con el tiempo restante
       props.onfinish({

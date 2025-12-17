@@ -218,5 +218,17 @@
         "submenu": [],
         "es_clasico": 0,
         "modalidad": "ALL"
+    },
+        {
+        "id": 16,
+        "etiqueta": "aula-virtual",
+        "nombre": "aula virtual",
+        "url": "/aula-virtual",
+        "icono": "../public/images/evaluaciones.svg",
+        "es_nuevo": false,
+        "abrir_nueva_pagina": false,
+        "submenu": [],
+        "es_clasico": 0,
+        "modalidad": "ALL"
     }
 ]
