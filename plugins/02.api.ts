@@ -37,6 +37,7 @@ import NotasAlumnoModulo from '~/repository/modules/NotasAlumnoModulo';
 import ReporteNotaModulo from '~/repository/modules/ReporteNotaModulo';
 import RegistroNotaModulo from '~/repository/modules/RegistroNotaModulo';
 import CursoGradoModule from '~/repository/modules/cursoGrado';
+import SilaboModulo from '~/repository/modules/SilaboModulo';
 
 
 interface IApiInstance {
@@ -78,6 +79,7 @@ interface IApiInstance {
 	cursoGrado: CursoGradoModule;
 	reporteNota: ReporteNotaModulo;
 	registroNota: RegistroNotaModulo;
+	silabo: SilaboModulo;
 }
 
 export default defineNuxtPlugin(() => {
@@ -135,6 +137,7 @@ export default defineNuxtPlugin(() => {
 		cursoGrado: new CursoGradoModule(apiFecther),
 		reporteNota: new ReporteNotaModulo(apiFecther),
 		registroNota: new RegistroNotaModulo(apiFecther),
+		silabo: new SilaboModulo(apiFecther),
 	};
 
 	return {

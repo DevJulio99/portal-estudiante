@@ -7,10 +7,16 @@ useHead({
   title: "Material Complementario",
 });
 
+let breadcrumbsItem = [
+	{ name: 'Inicio', current: false, url: '/inicio' },
+	{ name: 'Aula Virtual', current: false, url: '/aula-virtual' },
+	{ name: 'Material Complementario', current: true, url: '' }
+];
+
 const files = ref([
-    { name: 'Lectura Complementaria - Semana 1.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'file-pdf', color: 'text-red-500' },
-    { name: 'Ejercicios Prácticos - Unidad 1.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'file-pdf', color: 'text-red-500' },
-    { name: 'Glosario de Términos.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'file-word', color: 'text-blue-500' },
+    { name: 'Lectura Complementaria - Semana 1.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'icon-pdf-outline', color: 'text-red-500' },
+    { name: 'Ejercicios Prácticos - Unidad 1.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'icon-pdf-outline', color: 'text-red-500' },
+    { name: 'Glosario de Términos.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'icon-pdf-outline', color: 'text-red-500' },
 ]);
 
 const downloadingFile = ref<string | null>(null);
@@ -46,6 +52,7 @@ const goBack = () => {
 
 <template>
     <BaseLayout :rightAside="false" class="relative" bgWhite>
+        <BaseBreadcrumbs :items="breadcrumbsItem"/>
         <div class="flex justify-between items-center mb-6">
             <BaseTitle text="Material complementario" />
             <button @click="goBack" class="text-sm text-primary hover:underline font-semibold flex items-center gap-1">
