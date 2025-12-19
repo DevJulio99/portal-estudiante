@@ -2,6 +2,7 @@
 import SessionContent from './SessionContent.vue';
 
 interface Resource {
+  id?: number;
   type: string;
   title: string;
   material: boolean;

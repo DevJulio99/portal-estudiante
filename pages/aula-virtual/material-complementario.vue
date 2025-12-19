@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const router = useRouter();
+const { $api } = useNuxtApp();
+const aulaVirtualStore = useAulaVirtualStore();
+const tokenStore = useTokenStore();
 
 useHead({
   title: "Material Complementario",
@@ -13,11 +16,43 @@ let breadcrumbsItem = [
 	{ name: 'Material Complementario', current: true, url: '' }
 ];
 
-const files = ref([
-    { name: 'Lectura Complementaria - Semana 1.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'icon-pdf-outline', color: 'text-red-500' },
-    { name: 'Ejercicios Prácticos - Unidad 1.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'icon-pdf-outline', color: 'text-red-500' },
-    { name: 'Glosario de Términos.pdf', url: 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf', icon: 'icon-pdf-outline', color: 'text-red-500' },
-]);
+const files = ref<any[]>([]);
+const pending = ref(false);
+
+const loadMateriales = async () => {
+    const idContenido = aulaVirtualStore.selectedResource?.id;
+    const idAlumno = tokenStore.getDataToken?.Id_Alumno;
+
+    if (!idContenido || !idAlumno) {
+        console.warn("Faltan datos (idContenido o idAlumno) para cargar los materiales.");
+        return;
+    }
+
+    try {
+        pending.value = true;
+        const { data } = await $api.material.GetMateriales({ 
+            idContenido: idContenido, 
+            idAlumno: parseInt(idAlumno) 
+        });
+
+        if (data.value) {
+            files.value = data.value.data.map((item: any) => ({
+                name: item.nombre,
+                url: item.url,
+                icon: item.extension === 'pdf' ? 'icon-pdf-outline' : 'icon-document',
+                color: item.extension === 'pdf' ? 'text-red-500' : 'text-blue-500'
+            }));
+        }
+    } catch (error) {
+        console.error("Error al cargar materiales:", error);
+    } finally {
+        pending.value = false;
+    }
+};
+
+onMounted(() => {
+    loadMateriales();
+});
 
 const downloadingFile = ref<string | null>(null);
 
@@ -61,7 +96,11 @@ const goBack = () => {
             </button>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-lg p-6">
+        <div v-if="pending" class="flex justify-center py-10">
+            <BaseStatusLoading text="Cargando materiales..." />
+        </div>
+
+        <div v-else-if="files.length > 0" class="bg-white border border-gray-200 rounded-lg p-6">
             <div class="flex justify-between items-center mb-4 pb-4 border-b">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-primary rounded-md flex justify-center items-center text-white">
@@ -91,5 +130,8 @@ const goBack = () => {
                 </li>
             </ul>
             </div>
+        <div v-else class="bg-white border border-gray-200 rounded-lg p-6 text-center text-gray-500">
+            No se encontraron materiales complementarios para este recurso.
+        </div>
     </BaseLayout>
 </template>

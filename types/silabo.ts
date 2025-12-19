@@ -1,8 +1,10 @@
 export interface ISilaboRequestBody {
 	codCurso: string;
+	idAlumno: number;
 }
 
 interface IContenidoHijo {
+	id_contenido_hijo: number;
 	tipo: string;
 	titulo: string;
 	fecha_apertura: string | null;
@@ -36,4 +38,21 @@ export interface IApiResponse<T> {
 	success: boolean;
 	message: string | null;
 	data: T;
+}
+
+export interface MaterialSesion {
+	id_archivo:   number;
+	id_contenido: number;
+	nombre:       string;
+	url:          string;
+	extension:    string;
+}
+
+export interface RequestMaterial {
+	idContenido: number;
+	nombre:      string;
+	url:         string;
+	extension:   string;
+	pesoMb:      number;
+	idAlumno:    number;
 }

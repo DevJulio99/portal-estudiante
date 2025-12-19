@@ -34,6 +34,7 @@ export interface Curso {
 	grado?:string;
 	fechaInicio?: string;
 	fechaFin?: string;
+	porcentaje_avance?: number;
 }
 
 export interface CursoAsistencia {

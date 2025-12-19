@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import CursoCard from './CursoCard.vue';
+import { onMounted } from 'vue';
 import type { Curso } from '~/types/cursos.types';
+import CursoCard from './CursoCard.vue';
 
 useHead({
   title: "Aula Virtual",
@@ -14,31 +14,11 @@ let breadcrumbsItem = [
 	{ name: 'Aula Virtual', current: true, url: '' },
 ];
 
-const { $api } = useNuxtApp();
-const tokenStore = useTokenStore();
+const cursosStore = useCursosAlumnoStore();
 
-const cursosColegio = ref<Curso[]>([]);
-const pendingCursos = ref(false);
-
-const loadCursos = async () => {
-  if (!tokenStore.getDataToken?.Id_Alumno) {
-    console.warn("No se encontró el Id_Alumno en el token.");
-    return;
-  }
-
-  try {
-    pendingCursos.value = true;
-    const { data } = await $api.cursos.getCursosColegio(parseInt(tokenStore.getDataToken.Id_Alumno), 0, '');
-    cursosColegio.value = data.value?.data || [];
-  } catch (error) {
-    console.error("Error al cargar los cursos del colegio:", error);
-    cursosColegio.value = [];
-  } finally {
-    pendingCursos.value = false;
-  }
-};
-
-onMounted(loadCursos);
+onMounted(() => {
+  cursosStore.fetchCursosColegio();
+});
 
 </script>
 <template>
@@ -47,18 +27,18 @@ onMounted(loadCursos);
     <BaseBreadcrumbs :items="breadcrumbsItem"/>
     <BaseTitle text="Aula virtual" />
 
-    <div v-if="pendingCursos" class="text-xs text-black py-16">
+    <div v-if="cursosStore.pending" class="text-xs text-black py-16">
       <BaseStatusLoading text="Cargando tus cursos..." />
     </div>
 
-    <div v-else-if="cursosColegio.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+    <div v-else-if="cursosStore.listaCursos.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       <CursoCard
-        v-for="(curso, index) in cursosColegio"
+        v-for="(curso, index) in cursosStore.listaCursos"
         :key="curso.codCurso"
         :title="curso.descCurso"
         :teacher="curso.nombreDocente"
-        :cod-curso="curso.codCurso"
-        :progress="(index * 15 + 20) % 100"
+        :codCurso="curso.codCurso"
+        :progress="curso.porcentaje_avance || 0"
       />
     </div>
 

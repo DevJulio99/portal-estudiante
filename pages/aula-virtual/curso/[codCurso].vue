@@ -6,15 +6,12 @@ import ModuleAccordion from '../ModuleAccordion.vue';
 
 const route = useRoute();
 const { $api } = useNuxtApp();
+const cursosStore = useCursosAlumnoStore();
 const tokenStore = useTokenStore();
 
 const curso = ref<Curso | null>(null);
 const silaboData = ref<IUnidad[]>([]);
-const silaboPending = ref(false);
 const silaboError = ref(false);
-
-const pending = ref(false);
-const errorState = ref(false);
 
 const codCurso = computed(() => {
   const param = route.params.codCurso;
@@ -31,58 +28,37 @@ const breadcrumbsItem = computed(() => [
 	{ name: curso.value?.descCurso || 'Detalle del Curso', current: true, url: '' },
 ]);
 
+const { pending, error: errorState } = useAsyncData('curso-detalle', async () => {
+    const alumnoId = tokenStore.getDataToken?.Id_Alumno;
+    const cursoId = codCurso.value;
+    const idAlumno = parseInt(tokenStore.getDataToken?.Id_Alumno || '');
 
-const loadCursoDetalle = async () => {
-  if (!tokenStore.getDataToken?.Id_Alumno || !codCurso.value) {
-    console.warn("Faltan datos para cargar el detalle del curso.");
-    errorState.value = true;
-    return;
-  }
 
-  try {
-    pending.value = true;
-    errorState.value = false;
-    const { data } = await $api.cursos.getCursosColegio(
-      parseInt(tokenStore.getDataToken.Id_Alumno),
-      0,
-      ''
-    );
-    
-    const todosLosCursos: Curso[] = data.value?.data || [];
-    curso.value = todosLosCursos.find(c => c.codCurso == codCurso.value) || null;
-
-    if (curso.value) {
-      await loadSilabo(curso.value.codCurso);
-    } else {
-      errorState.value = true;
+    if (!alumnoId || !cursoId || isNaN(idAlumno)) {
+        console.warn("Faltan datos para cargar el detalle del curso.");
+        throw new Error("Faltan datos para cargar el detalle del curso.");
     }
-  } catch (error) {
-    console.error("Error al cargar el detalle del curso:", error);
-    errorState.value = true;
-  } finally {
-    pending.value = false;
-  }
-};
 
-const loadSilabo = async (codCurso: string) => {
-  try {
-    silaboPending.value = true;
-    silaboError.value = false;
-    const { data, error } = await $api.silabo.obtenerSilaboPorCurso({ codCurso });
-    
-    if (error.value || !data.value?.success) {
-      throw error.value || new Error('La respuesta de la API de sílabo no fue exitosa');
+    try {
+        await cursosStore.fetchCursosColegio();
+        const cursoEncontrado = cursosStore.listaCursos.find(c => c.codCurso == cursoId) || null;
+        curso.value = cursoEncontrado;
+
+        if (cursoEncontrado) {
+            const silaboResponse = await $api.silabo.obtenerSilaboPorCurso({ codCurso: cursoId, idAlumno });
+            if (silaboResponse.error.value || !silaboResponse.data.value?.success) {
+                silaboError.value = true; // Marcamos error de sílabo pero no detenemos la renderización del resto
+            } else {
+                silaboData.value = silaboResponse.data.value.data;
+            }
+        } else {
+            throw new Error("Curso no encontrado");
+        }
+    } catch (error) {
+        console.error("Error al cargar el detalle del curso:", error);
+        throw error;
     }
-    silaboData.value = data.value.data;
-  } catch (err) {
-    console.error("Error al cargar el sílabo:", err);
-    silaboError.value = true;
-  } finally {
-    silaboPending.value = false;
-  }
-};
-
-onMounted(loadCursoDetalle);
+}, { lazy: true });
 
 const downloadingFile = ref<string | null>(null);
 
@@ -133,18 +109,20 @@ const modulesData = computed(() => {
         sessions: unidad.sesiones?.map(sesion => ({
             title: sesion.titulo,
             date: sesion.fecha,
-            resources: sesion.contenido_sesion?.flatMap(contenido =>
-                contenido.contenido_hijo.map(hijo => ({
-                    type: contenido.tipo,
-                    title: hijo.titulo,
-                    material: hijo.tiene_material,
-                    dates: (hijo.fecha_apertura || hijo.fecha_cierre)
-                        ? {
-                            opens: formatDate(hijo.fecha_apertura),
-                            closes: formatDate(hijo.fecha_cierre),
-                          }
-                        : undefined,
-                }))
+            resources: sesion.contenido_sesion?.flatMap(contenido => {
+                if (!contenido.contenido_hijo || !Array.isArray(contenido.contenido_hijo)) {
+                    return [];
+                }
+                return contenido.contenido_hijo.map(hijo => ({
+                        id: hijo.id_contenido_hijo,
+                        type: contenido.tipo,
+                        title: hijo.titulo,
+                        material: hijo.tiene_material,
+                        dates: (hijo.fecha_apertura || hijo.fecha_cierre)
+                            ? { opens: formatDate(hijo.fecha_apertura), closes: formatDate(hijo.fecha_cierre) }
+                            : undefined,
+                    }));
+                }
             ) || [],
         })) || [],
     }));
@@ -162,7 +140,7 @@ const modulesData = computed(() => {
         </NuxtLink>
       </div>
 
-      <div v-if="pending || silaboPending" class="text-center py-16">
+      <div v-if="pending" class="text-center py-16">
         <BaseStatusLoading text="Cargando detalle del curso..." />
       </div>
 
@@ -203,7 +181,7 @@ const modulesData = computed(() => {
         </div>
       </div>
 
-      <div v-if="!pending && !silaboPending && curso" class="mt-6 space-y-4">
+      <div v-if="!pending && curso" class="mt-6 space-y-4">
         <BaseAcordion title="Documentos Generales">
           <div class="p-4 bg-white rounded-b-lg border border-t-0 border-gray-100">
             <ul class="space-y-1">

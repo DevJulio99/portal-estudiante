@@ -1,5 +1,6 @@
 <script setup lang="ts">
 interface Resource {
+  id?: number;
   type: string;
   title: string;
   material: boolean;
@@ -8,6 +9,8 @@ interface Resource {
     closes: string;
   };
 }
+
+const aulaVirtualStore = useAulaVirtualStore();
 
 const props = defineProps({
   title: {
@@ -27,15 +30,29 @@ const props = defineProps({
 
 const getResourceStyle = (type: string) => {
     const styles: { [key: string]: { icon: string; iconBgColor: string } } = {
-        'Recurso': { icon: 'icon-resources', iconBgColor: 'bg-green-200' },
-        'Carpeta': { icon: 'icon-folder-outline', iconBgColor: 'bg-green-200' },
-        'Página': { icon: 'icon-page-flip', iconBgColor: 'bg-green-200' },
-        'Tarea': { icon: 'icon-upload-file', iconBgColor: 'bg-red-200' },
+        'recurso': { icon: 'icon-resources', iconBgColor: 'bg-green-200' },
+        'carpeta': { icon: 'icon-folder-outline', iconBgColor: 'bg-green-200' },
+        'página': { icon: 'icon-page-flip', iconBgColor: 'bg-green-200' },
+        'tarea': { icon: 'icon-upload-file', iconBgColor: 'bg-red-200' },
         'default': { icon: 'icon-document', iconBgColor: 'bg-gray-200' },
     };
-    return styles[type] || styles.default;
+    return styles[type?.toLowerCase()] || styles.default;
 };
 
+const getResourceLink = (resource: Resource) => {
+    const type = resource.type?.toLowerCase();
+    if (type === 'tarea') {
+        return { path: '/aula-virtual/tareaDetalle', query: { title: resource.title } };
+    }
+    if (type === 'página' || type === 'pagina') {
+        return '/aula-virtual/pagina-grabacion';
+    }
+    return '/aula-virtual/material-complementario';
+};
+
+const handleResourceClick = (resource: Resource) => {
+    aulaVirtualStore.setSelectedResource(resource);
+};
 </script>
 
 <template>
@@ -58,7 +75,7 @@ const getResourceStyle = (type: string) => {
         </div>
         <div>
           <p class="text-xs font-semibold text-gray-500">{{ resource.type }}</p>
-          <NuxtLink v-if="resource.material" to="/aula-virtual/material-complementario" class="text-md font-bold text-gray-800 hover:text-primary hover:underline">
+          <NuxtLink v-if="resource.material || resource.type?.toLowerCase() === 'tarea'" :to="getResourceLink(resource)" @click="handleResourceClick(resource)" class="text-md font-bold text-gray-800 hover:text-primary hover:underline">
             {{ resource.title }}
           </NuxtLink>
           <span v-else class="text-md font-bold text-gray-800">
